@@ -13,6 +13,25 @@
         <version>2.2.4.RELEASE</version>
     </parent>
     <name>petclinic</name>
+    
+    <developers>
+		 <developer>
+		 <id>David</id>
+		 <name>David</name>
+		 <email>daviddana61@gmail.com</email>
+		 <url></url>
+		 <roles>
+		 <role>developer</role>
+		 </roles>
+		 <properties>
+		 <picUrl>
+		</picUrl>
+		 </properties>
+		 </developer>
+		 
+		
+
+	</developers>
 
     <properties>
 
