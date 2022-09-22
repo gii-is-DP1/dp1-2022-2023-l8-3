@@ -12,7 +12,97 @@
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.2.4.RELEASE</version>
     </parent>
+    
     <name>L8-3</name>
+    
+    <developers>
+		 <developer>
+		 <id>David</id>
+		 <name>David</name>
+		 <email>daviddana61@gmail.com</email>
+		 <url></url>
+		 <roles>
+		 <role>developer</role>
+		 </roles>
+		 <properties>
+		 <picUrl>
+		</picUrl>
+		 </properties>
+		 </developer>
+		 
+		  <developer>
+		 <id>Sergio</id>
+		 <name>Sergio</name>
+		 <email>ahydul1@gmail.com</email>
+		 <url></url>
+		 <roles>
+		 <role>developer</role>
+		 </roles>
+		 <properties>
+		 <picUrl>
+		</picUrl>
+		 </properties>
+		 </developer>
+		 
+		 <developer>
+		 <id>Fran</id>
+		 <name>Fran</name>
+		 <email>fj.montero.informatica@gmail.com</email>
+		 <url></url>
+		 <roles>
+		 <role>developer</role>
+		 </roles>
+		 <properties>
+		 <picUrl>
+		</picUrl>
+		 </properties>
+		 </developer>
+		 
+		 <developer>
+		 <id>José Miguel</id>
+		 <name>José Miguel</name>
+		 <email>josibocon@us.es</email>
+		 <url></url>
+		 <roles>
+		 <role>developer</role>
+		 </roles>
+		 <properties>
+		 <picUrl>
+		</picUrl>
+		 </properties>
+		 </developer>
+		 
+		 <developer>
+		 <id>Manuel</id>
+		 <name>Manuel</name>
+		 <email>manortgar2@us.es</email>
+		 <url></url>
+		 <roles>
+		 <role>developer</role>
+		 </roles>
+		 <properties>
+		 <picUrl>
+		</picUrl>
+		 </properties>
+		 </developer>
+		 
+		 <developer>
+		 <id>Juan Jesús</id>
+		 <name>Juan Jesús</name>
+		 <email>juamarher7@us.es</email>
+		 <url></url>
+		 <roles>
+		 <role>developer</role>
+		 </roles>
+		 <properties>
+		 <picUrl>
+		</picUrl>
+		 </properties>
+		 </developer>
+		 
+		
+
+	</developers>
 
     <properties>
 
