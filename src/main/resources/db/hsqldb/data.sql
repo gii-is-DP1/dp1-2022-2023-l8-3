@@ -6,10 +6,11 @@ INSERT INTO authorities(id,username,authority) VALUES (1,'admin1','admin');
 INSERT INTO users(username,password,enabled) VALUES ('owner1','0wn3r',TRUE);
 INSERT INTO users(username,password,enabled) VALUES ('davdancab','davdancab',TRUE);
 INSERT INTO users(username,password,enabled) VALUES ('seraguoro','seraguoro',TRUE);
-
+INSERT INTO users(username,password,enabled) VALUES ('framonmar7','framonmar7',TRUE);
 INSERT INTO authorities(id,username,authority) VALUES (2,'owner1','owner');
 INSERT INTO authorities(id,username,authority) VALUES (4,'davdancab','owner');
 INSERT INTO authorities(id,username,authority) VALUES (5,'seraguoro','owner');
+INSERT INTO authorities(id,username,authority) VALUES (6,'framonmar7','owner');
 
 -- One vet user, named vet1 with passwor v3t
 INSERT INTO users(username,password,enabled) VALUES ('vet1','v3t',TRUE);
@@ -52,6 +53,7 @@ INSERT INTO owners VALUES (9, 'David', 'Schroeder', '2749 Blackhawk Trail', 'Mad
 INSERT INTO owners VALUES (10, 'Carlos', 'Estaban', '2335 Independence La.', 'Waunakee', '6085555487', 'owner1');
 INSERT INTO owners VALUES (11, 'David', 'Dana', 'Calle Nueva', 'La Campana', '657154890', 'davdancab');
 INSERT INTO owners VALUES (12, 'Sergio', 'Aguayo', 'Failed Tramway', 'Deepnest', '666536267', 'seraguoro');
+INSERT INTO owners VALUES (13, 'Francisco', 'Montero', 'Test Street', 'Sevilla', '123456789', 'framonmar7');
 
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (1, 'Leo', '2010-09-07', 1, 1);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (2, 'Basil', '2012-08-06', 6, 2);
@@ -68,6 +70,7 @@ INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (12, 'Lucky', '2010
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (13, 'Sly', '2012-06-08', 1, 10);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (14, 'Zafina', '2015-06-08', 2, 11);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (15, 'Blacky', '2016-09-05', 2, 12);
+INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (16, 'Cloe', '2022-01-02', 1, 13);
 
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (1, 7, '2013-01-01', 'rabies shot');
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (2, 8, '2013-01-02', 'rabies shot');
