@@ -6,13 +6,20 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.owner.Owner;
+import org.springframework.samples.petclinic.owner.OwnerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PlayerService {
-	@Autowired
+	
+	
 	private PlayerRepository playerRepo;
+	
+	@Autowired
+	public PlayerService(PlayerRepository playerRepository) {
+		this.playerRepo = playerRepository;
+	}	
 	
 	@Transactional
 	public int playerCount() {
@@ -30,9 +37,14 @@ public class PlayerService {
 	}
 	
 	@Transactional(readOnly = true)
-	public Collection<Owner> findOwnerByLastName(String lastName) throws DataAccessException {
+	public Collection<Jugador> findPlayerByLastName(String lastName) throws DataAccessException {
 		return playerRepo.findByLastName(lastName);
 	}
+	
+//	@Transactional(readOnly = true)
+//	public Collection<Owner> findOwnerByLastName(String lastName) throws DataAccessException {
+//		return playerRepo.findByLastName(lastName);
+//	}
 	
 	
 }
