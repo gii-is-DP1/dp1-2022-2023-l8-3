@@ -4,6 +4,10 @@ INSERT INTO authorities(id,username,authority) VALUES (1,'admin1','admin');
 -- One owner user, named owner1 with passwor 0wn3r
 INSERT INTO users(username,password,enabled) VALUES ('owner1','0wn3r',TRUE);
 INSERT INTO authorities(id,username,authority) VALUES (2,'owner1','owner');
+INSERT INTO users(username,password,enabled) VALUES ('davdancab','davdancab',TRUE);
+INSERT INTO authorities(id,username,authority) VALUES (4,'davdancab','jugador');
+INSERT INTO users(username,password,enabled) VALUES ('juamarher','juamarher',TRUE);
+INSERT INTO authorities(id,username,authority) VALUES (7,'juamarher','jugador');
 -- One vet user, named vet1 with passwor v3t
 INSERT INTO users(username,password,enabled) VALUES ('vet1','v3t',TRUE);
 INSERT INTO authorities(id,username,authority) VALUES (3,'vet1','veterinarian');
@@ -62,4 +66,11 @@ INSERT INTO visits(id,pet_id,visit_date,description) VALUES (1, 7, '2013-01-01',
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (2, 8, '2013-01-02', 'rabies shot');
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (3, 8, '2013-01-03', 'neutered');
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (4, 7, '2013-01-04', 'spayed');
+
+INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,numero_De_Contaminacion,numero_de_bacterias,numero_de_sarcinas) 
+VALUES(1,'David','Dana','davdancab',true,0,20,4);
+INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,numero_De_Contaminacion,numero_de_bacterias,numero_de_sarcinas) 
+VALUES(2,'Juan Jesus','Martin','juamarher',true,0,20,4);
+
+INSERT INTO lista_amigos(id_jugador1,id_jugador2) VALUES (1,2);
 
