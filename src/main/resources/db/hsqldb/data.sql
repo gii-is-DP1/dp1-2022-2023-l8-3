@@ -81,7 +81,7 @@ INSERT INTO visits(id,pet_id,visit_date,description) VALUES (4, 7, '2013-01-04',
 INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,numero_De_Contaminacion,numero_de_bacterias,numero_de_sarcinas) 
 VALUES(1,'David','Dana','davdancab',true,0,20,4);
 INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,numero_De_Contaminacion,numero_de_bacterias,numero_de_sarcinas) 
-VALUES(2,'Juan Jesus','Martin','juamarher',true,0,20,4);
+VALUES(2,'Juan Jesus','Martin','juamarher',false,0,20,4);
 INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,numero_De_Contaminacion,numero_de_bacterias,numero_de_sarcinas) 
 VALUES(3,'Manuel','Ortega','manortgar',true,0,20,4);
 

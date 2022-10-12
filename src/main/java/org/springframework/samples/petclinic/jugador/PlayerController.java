@@ -35,20 +35,16 @@ public class PlayerController {
 	
 	@GetMapping(value = "/jugadores")
 	public String showAllPlayers(Map<String, Object> model,Jugador jugador) {
-		Collection<Jugador> results = this.playerService.findPlayerByLastName(jugador.getLastName());
+		Collection<Jugador> results = this.playerService.findAllJugadores();
 		model.put("selections", results);
-		return "jugadores/jugador";
+		return "jugadores/listJugador";
 	}
 	
 	@GetMapping("/jugadores/{jugadorId}")
 	public ModelAndView showPlayer(@PathVariable("jugadorId") int id) {
-		ModelAndView mav = new ModelAndView("jugadores/jugador");
+		ModelAndView mav = new ModelAndView("jugadores/listJugador");
 		mav.addObject(this.playerService.findJugadorById(id));
 		return mav;
 	}
-	@GetMapping("/hello")
-    public String sayHello() {
-        return "Hello dev";
-    }
 
 }
