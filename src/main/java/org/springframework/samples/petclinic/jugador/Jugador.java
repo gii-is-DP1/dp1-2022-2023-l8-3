@@ -49,6 +49,15 @@ public class Jugador extends Person{
 	private Integer sarcinas;
 	
 	
+	
+	@Override
+	public String toString() {
+		return "Jugador [estadoOnline=" + estadoOnline + ", numeroDeContaminacion=" + numeroDeContaminacion
+				+ ", bacterias=" + bacterias + ", sarcinas=" + sarcinas + ", user=" + user + "]";
+	}
+
+
+
 	@ManyToOne
 	@JoinColumn(name = "username",referencedColumnName = "username")
 	private User user;
