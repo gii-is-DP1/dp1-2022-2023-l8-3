@@ -1,19 +1,21 @@
 -- One admin user, named admin1 with passwor 4dm1n and authority admin
 INSERT INTO users(username,password,enabled) VALUES ('admin1','4dm1n',TRUE);
 INSERT INTO authorities(id,username,authority) VALUES (1,'admin1','admin');
-
 -- One owner user, named owner1 with passwor 0wn3r
 INSERT INTO users(username,password,enabled) VALUES ('owner1','0wn3r',TRUE);
 INSERT INTO authorities(id,username,authority) VALUES (2,'owner1','owner');
 INSERT INTO users(username,password,enabled) VALUES ('davdancab','davdancab',TRUE);
+INSERT INTO authorities(id,username,authority) VALUES (4,'davdancab','jugador');
+INSERT INTO users(username,password,enabled) VALUES ('manortgar','petclinic',TRUE);
+INSERT INTO authorities(id,username,authority) VALUES (5,'manortgar','jugador');
 INSERT INTO users(username,password,enabled) VALUES ('seraguoro','seraguoro',TRUE);
-INSERT INTO users(username,password,enabled) VALUES ('framonmar7','framonmar7',TRUE);
+INSERT INTO authorities(id,username,authority) VALUES (6,'seraguoro','jugador');
+INSERT INTO users(username,password,enabled) VALUES ('juamarher','juamarher',TRUE);
+INSERT INTO authorities(id,username,authority) VALUES (7,'juamarher','jugador');
+INSERT INTO users(username,password,enabled) VALUES ('framonmar','framonmar',TRUE);
+INSERT INTO authorities(id,username,authority) VALUES (8,'framonmar','jugador');
 INSERT INTO users(username,password,enabled) VALUES ('josibocon','josibocon',TRUE);
-
-INSERT INTO authorities(id,username,authority) VALUES (4,'davdancab','owner');
-INSERT INTO authorities(id,username,authority) VALUES (5,'seraguoro','owner');
-INSERT INTO authorities(id,username,authority) VALUES (6,'framonmar7','owner');
-INSERT INTO authorities(id,username,authority) VALUES (9,'josibocon','owner');
+INSERT INTO authorities(id,username,authority) VALUES (9,'josibocon','jugador');
 
 -- One vet user, named vet1 with passwor v3t
 INSERT INTO users(username,password,enabled) VALUES ('vet1','v3t',TRUE);
@@ -52,12 +54,9 @@ INSERT INTO owners VALUES (5, 'Peter', 'McTavish', '2387 S. Fair Way', 'Madison'
 INSERT INTO owners VALUES (6, 'Jean', 'Coleman', '105 N. Lake St.', 'Monona', '6085552654', 'owner1');
 INSERT INTO owners VALUES (7, 'Jeff', 'Black', '1450 Oak Blvd.', 'Monona', '6085555387', 'owner1');
 INSERT INTO owners VALUES (8, 'Maria', 'Escobito', '345 Maple St.', 'Madison', '6085557683', 'owner1');
+INSERT INTO owners VALUES (12, 'Manuel', 'Ortega', 'plaza pueblo cortijo 7', 'Camas', '620401349', 'manortgar');
 INSERT INTO owners VALUES (9, 'David', 'Schroeder', '2749 Blackhawk Trail', 'Madison', '6085559435', 'owner1');
 INSERT INTO owners VALUES (10, 'Carlos', 'Estaban', '2335 Independence La.', 'Waunakee', '6085555487', 'owner1');
-INSERT INTO owners VALUES (11, 'David', 'Dana', 'Calle Nueva', 'La Campana', '657154890', 'davdancab');
-INSERT INTO owners VALUES (12, 'Sergio', 'Aguayo', 'Failed Tramway', 'Deepnest', '666536267', 'seraguoro');
-INSERT INTO owners VALUES (13, 'Francisco', 'Montero', 'Test Street', 'Sevilla', '123456789', 'framonmar7');
-INSERT INTO owners VALUES (16, 'Jose Miguel', 'Iborra', 'Nameless Street', 'Somewhere', '6134568348', 'josibocon');
 
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (1, 'Leo', '2010-09-07', 1, 1);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (2, 'Basil', '2012-08-06', 6, 2);
@@ -70,15 +69,21 @@ INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (8, 'Max', '2012-09
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (9, 'Lucky', '2011-08-06', 5, 7);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (10, 'Mulligan', '2007-02-24', 2, 8);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (11, 'Freddy', '2010-03-09', 5, 9);
+INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (15, 'Noa', '2006-11-16', 1, 12);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (12, 'Lucky', '2010-06-24', 2, 10);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (13, 'Sly', '2012-06-08', 1, 10);
-INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (14, 'Zafina', '2015-06-08', 2, 11);
-INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (15, 'Blacky', '2016-09-05', 2, 12);
-INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (16, 'Cloe', '2022-01-02', 1, 13);
-INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (19, 'Tango', '2017-10-17', 1, 16);
 
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (1, 7, '2013-01-01', 'rabies shot');
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (2, 8, '2013-01-02', 'rabies shot');
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (3, 8, '2013-01-03', 'neutered');
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (4, 7, '2013-01-04', 'spayed');
+
+INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,numero_De_Contaminacion,numero_de_bacterias,numero_de_sarcinas) 
+VALUES(1,'David','Dana','davdancab',true,0,20,4);
+INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,numero_De_Contaminacion,numero_de_bacterias,numero_de_sarcinas) 
+VALUES(2,'Juan Jesus','Martin','juamarher',false,0,20,4);
+INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,numero_De_Contaminacion,numero_de_bacterias,numero_de_sarcinas) 
+VALUES(3,'Manuel','Ortega','manortgar',true,0,20,4);
+
+INSERT INTO lista_amigos(id_jugador1,id_jugador2) VALUES (1,2);
 
