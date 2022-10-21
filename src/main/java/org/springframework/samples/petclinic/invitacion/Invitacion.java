@@ -13,7 +13,7 @@ import org.springframework.samples.petclinic.jugador.Jugador;
 import org.springframework.samples.petclinic.model.BaseEntity;
 import org.springframework.samples.petclinic.model.NamedEntity;
 import org.springframework.samples.petclinic.owner.Owner;
-import org.springframework.samples.petclinic.partida.Partida;
+import org.springframework.samples.petclinic.partida.Match;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -36,7 +36,7 @@ public class Invitacion extends BaseEntity{
     
     @ManyToOne
     @JoinColumn(name = "partida_id")
-    private Partida partida;
+    private Match partida;
     
     @ManyToOne
     @JoinColumn(name = "jugador_id")

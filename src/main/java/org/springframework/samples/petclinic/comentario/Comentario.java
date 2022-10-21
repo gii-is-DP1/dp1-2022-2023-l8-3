@@ -12,7 +12,7 @@ import javax.validation.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.petclinic.jugador.Jugador;
 import org.springframework.samples.petclinic.model.NamedEntity;
-import org.springframework.samples.petclinic.partida.Partida;
+import org.springframework.samples.petclinic.partida.Match;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -38,7 +38,7 @@ public class Comentario extends NamedEntity{
 	
 	@ManyToOne
 	@JoinColumn(name = "id_partida")
-	private Partida partida;
+	private Match partida;
 	
 	//---------------------------------------------------------------------------------------------//
 	
@@ -54,7 +54,7 @@ public class Comentario extends NamedEntity{
 		return jugador;
 	}
 	
-	public Partida getPartida() {
+	public Match getPartida() {
 		return partida;
 	}
 	

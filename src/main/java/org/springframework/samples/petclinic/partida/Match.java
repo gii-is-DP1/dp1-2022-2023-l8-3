@@ -24,7 +24,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "partidas")
-public class Partida extends BaseEntity{
+public class Match extends BaseEntity{
 	
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	@Column(name = "inicio_de_partida")
@@ -56,7 +56,7 @@ public class Partida extends BaseEntity{
 	
 	@Column(name = "ganador_de_partida")
 	@OneToOne
-	private GanadorPartida ganadorPartida;	
+	private GameWinner ganadorPartida;	
 	
 	/*
 	//Falta comentario
