@@ -5,13 +5,16 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.samples.petclinic.comentario.Comentario;
 import org.springframework.samples.petclinic.disco.Disco;
 import org.springframework.samples.petclinic.invitacion.Invitacion;
 import org.springframework.samples.petclinic.jugador.Jugador;
@@ -37,32 +40,28 @@ public class Match extends BaseEntity{
 	@Column(name = "es_privada")
 	private Boolean esPrivada;
 	
-    @OneToMany(mappedBy="discos")
+	// TODO
 	private Disco[] discos;
 	
-	@Column(name = "primer_jugador")
-	@ManyToOne()
+	@ManyToOne
+	@JoinColumn(name = "id_jugador1")
 	private Jugador jugador1;
 	
-	@Column(name = "segundo_jugador")
-	@ManyToOne()
+	@ManyToOne
+	@JoinColumn(name = "id_jugador2")
 	private Jugador jugador2;
 
-	@ManyToMany(mappedBy="espectador")
+	@ManyToMany
 	private List<Jugador> espectadores;
 	
-	@OneToMany(mappedBy="invitacion")
+	@OneToMany(mappedBy="id")
 	private List<Invitacion> invitaciones;
 	
 	@Column(name = "ganador_de_partida")
-	@OneToOne
+	@Enumerated(EnumType.STRING)
 	private GameWinner ganadorPartida;	
 	
-	/*
-	//Falta comentario
-	 * 
-	@OneToMany(mappedBy="comentario")
+	@OneToMany(mappedBy="id")
 	private List<Comentario> comentarios;
 	
-	*/
 }

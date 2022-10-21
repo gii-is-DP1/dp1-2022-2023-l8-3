@@ -11,7 +11,7 @@ import javax.validation.constraints.NotEmpty;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.petclinic.jugador.Jugador;
-import org.springframework.samples.petclinic.model.NamedEntity;
+import org.springframework.samples.petclinic.model.BaseEntity;
 import org.springframework.samples.petclinic.partida.Match;
 
 import lombok.Getter;
@@ -21,7 +21,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "comentarios")
-public class Comentario extends NamedEntity{
+public class Comentario extends BaseEntity {
 	
 	//---------------------------------------------------------------------------------------------//
 	@Column(name = "texto")
