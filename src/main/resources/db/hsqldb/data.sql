@@ -87,3 +87,8 @@ VALUES(3,'Manuel','Ortega','manortgar',true,0,20,4);
 
 INSERT INTO lista_amigos(id_jugador1,id_jugador2) VALUES (1,2);
 
+INSERT INTO achievement(id,name,threshold,description,badge_image) VALUES
+	(1, 'Viciado', 10.0, 'Si juegas <THRESHOLD> partidas o más, consideramos que ya estás enganchado', 
+	'https://bit.ly/certifiedGamer'),
+	(2, 'Triunfador', 20.0, 'Si ganas <THRESHOLD> o más partidas es que eres todo un triunfador', 
+	'https://bit.ly/proGamer');
