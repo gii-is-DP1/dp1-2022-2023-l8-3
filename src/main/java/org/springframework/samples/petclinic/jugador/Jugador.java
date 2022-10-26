@@ -18,7 +18,7 @@ import javax.validation.constraints.NotEmpty;
 
 import org.springframework.samples.petclinic.comentario.Comentario;
 import org.springframework.samples.petclinic.invitacion.Invitacion;
-import org.springframework.samples.petclinic.logro.Logro;
+import org.springframework.samples.petclinic.statistics.Achievement;
 import org.springframework.samples.petclinic.model.Person;
 import org.springframework.samples.petclinic.partida.Match;
 import org.springframework.samples.petclinic.user.User;
