@@ -68,5 +68,31 @@ public class Disco extends BaseEntity{
     
     @Column(name="num_movimientos")
     private Integer numMov;
+    
+    private Integer[] bacterias = {numBact1, numBact2};
+    private Integer[] sarcinas = {numSarc1, numSarc2};
+    
+    // ----------------------------------------------------------------------------------------------- //
 	
+    public Integer getNumeroDeBacterias(Integer idJugador) {
+		return bacterias[idJugador];
+	}
+    
+    public Integer getNumeroDeSarcinas(Integer idJugador) {
+    	return sarcinas[idJugador];
+	}
+    
+    public void annadirBacterias(Integer idJugador, Integer numeroDeBacterias) {
+		bacterias[idJugador] += numeroDeBacterias;
+	}
+	
+	public void eliminarBacterias(Integer idJugador, Integer numeroDeBacterias) {
+		bacterias[idJugador] -= numeroDeBacterias;
+	}
+	
+	public void annadirSarcina(Integer idJugador) {
+		sarcinas[idJugador] ++;
+	}
+	
+	// ----------------------------------------------------------------------------------------------- //
 }
