@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.partida;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -11,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -31,11 +33,11 @@ public class Match extends BaseEntity{
 	private static final Integer PRIMER_JUGADOR = 0;
 	private static final int SEGUNDO_JUGADOR = 1;
 	
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
 	@Column(name = "inicio_de_partida")
 	private LocalDateTime inicioPartida;
     
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss.69")
     @Column(name = "fin_de_partida")
 	private LocalDateTime finPartida;
 
@@ -43,6 +45,8 @@ public class Match extends BaseEntity{
 	private Boolean esPrivada;
 	
 	// TODO
+	@OneToMany
+	@OrderColumn()
 	private Disco[] discos;
 	
 	@ManyToOne

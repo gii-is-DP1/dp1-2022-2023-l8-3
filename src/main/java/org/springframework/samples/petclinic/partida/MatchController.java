@@ -27,4 +27,10 @@ public class MatchController {
 		return result;
 	}
 	
+	@GetMapping(value = "/currentMatch")
+	public ModelAndView showCurrentMatch() {
+		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
+		return result;
+	}
+	
 }
