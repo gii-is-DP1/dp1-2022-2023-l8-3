@@ -1,7 +1,6 @@
 package org.springframework.samples.petclinic.partida;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -32,6 +31,13 @@ import lombok.Setter;
 public class Match extends BaseEntity{
 	private static final Integer PRIMER_JUGADOR = 0;
 	private static final int SEGUNDO_JUGADOR = 1;
+	
+	/*@Column(name = "siguiente_movimiento")
+	private String[] sigMov; //La idea es poner aqui el movimiento de una manera pero no consigo que me funcione, puede que use otra forma al final
+	*/
+	
+	@Column(name = "turno_primer_jugador")
+	private Boolean turnoJugador1;  //Creo que esto es necesario
 	
     @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
 	@Column(name = "inicio_de_partida")
@@ -69,6 +75,7 @@ public class Match extends BaseEntity{
 	
 	@OneToMany(mappedBy="id")
 	private List<Comentario> comentarios;
+
 	
 	// ----------------------------------------------------------------------------------------------- //
 	
@@ -81,6 +88,17 @@ public class Match extends BaseEntity{
 	}
 	
 	// ----------------------------------------------------------------------------------------------- //
+	
+	public String chooseTag(int i){
+		if(i==0) return "col23";
+		else if(i==1) return "col45";
+		else if(i==2) return "row2";
+		else if(i==3) return "row2";
+		else if(i==4) return "row2";
+		else if(i==5) return "col23 row3";
+		else return "col45 row3";
+	}
+
 	
 	private Boolean movingBacteria(Integer playerId, Integer initialDiskId, Integer targetDiskId, Integer numberOfBacteriaDisplaced) {
 		Boolean correctMovement = true;	// TODO: mensaje para que el usuario sepa por qué su movimiento no es correcto

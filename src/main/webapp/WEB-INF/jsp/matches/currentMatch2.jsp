@@ -5,7 +5,7 @@
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 <petclinic:layout pageName="currentMatch">
 
-	<form:form class="tablero" modelAttribute="match" onsubmit="return validate()">>
+	<form:form class="tablero" modelAttribute="">>
 		<h2>Partida en curso</h2>
 
 		<div class="seccion1">
@@ -33,46 +33,28 @@
 			<div class="discos">
 				<c:forEach var="i" begin="0" end="6" >
 					<div class="disco ${match.chooseTag(i)}">
-						<input type="checkbox" name="disco" id="disco${i}" value="a disco ${i}">
+						<input type="checkbox" name="disco${i}" id="disco${i}" value="a disco ${i}">
 						<label for="disco${i}" class="pointer">a</label>
 
 						<div class="bs1">
 							<c:forEach var="b1" begin="1" end="${match.discos[i].numBact1}">
-
-								<c:choose>
-										<c:when test="${match.turnoJugador1}">
-											<input type="checkbox" name="bacteria" id="j1bacteria${b1}disco${i}" value="bacteria jug1 de disco ${i}">
-											<label for="j1bacteria${b1}disco${i}" class="bacteria pointer">a</label>
-										</c:when>
-										<c:otherwise>
-											<div class="bacteria"></div>
-										</c:otherwise>
-								</c:choose>
-
+								<input type="checkbox" name="j1bacteria${b1}disco${i}" id="j1bacteria${b1}disco${i}" value="bacteria jug1 de disco ${i}">
+								<label for="j1bacteria${b1}disco${i}" class="bacteria pointer">a</label>
 							</c:forEach>
 
 							<c:forEach var="s1" begin="1" end="${match.discos[i].numSarc1}">
-								<div class="sarcina"></div>
+								<div class="sarcina pointer"></div>
 							</c:forEach>
 						</div>
 
 						<div class="bs2">
 							<c:forEach var="b2" begin="1" end="${match.discos[i].numBact2}">
-
-								<c:choose>
-									<c:when test="${match.turnoJugador1}">
-										<div class="bacteria"></div>
-									</c:when>
-									<c:otherwise>
-										<input type="checkbox" name="bacteria" id="j2bacteria${b2}disco${i}" value="bacteria jug2 de disco ${i}">
-										<label for="j2bacteria${b2}disco${i}" class="bacteria pointer">a</label>
-									</c:otherwise>
-								</c:choose>
-
+								<input type="checkbox" name="j2bacteria${b2}disco${i}" id="j2bacteria${b2}disco${i}" value="bacteria jug2 de disco ${i}">
+								<label for="j2bacteria${b2}disco${i}" class="bacteria pointer">a</label>
 							</c:forEach>
 
 							<c:forEach var="s2" begin="1" end="${match.discos[i].numSarc2}">
-								<div class="sarcina"></div>
+								<div class="sarcina pointer"></div>
 							</c:forEach>
 						</div>
 
@@ -119,13 +101,7 @@
 
 			<div class="botones">
 				<input type="submit" value="Siguiente fase"/>
-				<form:input class="form-control" path="${name}"/>
-
-<!--
-
-				<input type="submit" value="Siguiente fase"/>
-				<button type="button" name="button">Abandonar partida</button> -->
-
+				<button type="button" name="button">Abandonar partida</button>
 			</div>
 		</div>
 
@@ -136,7 +112,6 @@
 </petclinic:layout>
 
 <script type="text/javascript">
-
 	const discos = document.getElementsByClassName("disco");
 
 	for (let i = 0; i < discos.length; i++) {
@@ -145,36 +120,6 @@
 			input.checked = !input.checked;
 		}
 	}
-
-
-//Comprobar
-	function validate(){
-		const c1 = document.getElementsByName("bacteria");
-		const c2 = document.getElementsByName("disco");
-
-		const cb == [];
-		const cd == [];
-		for (var i = 0; i < c1.length; i++) {
-			if (c1[i].checked) {
-				cb.push(c1[i].value);
-			}
-		}
-		for (var i = 0; i < c2.length; i++) {
-			if (c2[i].checked) {
-				cd.push(c2[i].value);
-			}
-		}
-
-		if(cd.length != 1 || cb.length == 0) return false;
-
-		const disco = cb[0].id.substring(11);
-		for (var i = 1; i < cb.length; i++) {
-			const disco2 = db[i].id.substring(11);
-			if(disco != disco2) return false;
-		}
-
-	}
-
 
 
 </script>

@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.partida;
 
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,10 +28,12 @@ public class MatchController {
 		return result;
 	}
 	
+	//Temporales
 	@GetMapping(value = "/currentMatch")
 	public ModelAndView showCurrentMatch() {
 		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
+		result.addObject("match", matchService.getMatchById(1));
 		return result;
 	}
-	
+
 }

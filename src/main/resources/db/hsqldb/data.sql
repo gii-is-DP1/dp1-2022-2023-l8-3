@@ -95,37 +95,36 @@ INSERT INTO achievement(id,name,threshold,description,badge_image) VALUES
 	(2, 'Triunfador', 20.0, 'Si ganas <THRESHOLD> o más partidas es que eres todo un triunfador',
 	'https://bit.ly/proGamer');
 
-INSERT INTO partidas(id, id_jugador1, id_jugador2, es_privada, inicio_de_partida, fin_de_partida, ganador_de_partida)
-VALUES(1, 1, 2, true, '1999-04-12 10:12:12.55', '1999-04-12 10:12:12.55', 'UNDEFINED');
+INSERT INTO partidas(id, id_jugador1, id_jugador2, es_privada, inicio_de_partida, fin_de_partida, ganador_de_partida,turno_primer_jugador)
+VALUES(1, 1, 2, true, '1999-04-12 10:12:12.55', '1999-04-12 10:12:12.55', 'UNDEFINED',true);
+
+INSERT INTO disco(id, num_bacteria_j1, num_bacteria_j2, num_movimientos, num_sarcina_j1, num_sarcina_j2)
+VALUES(1,4,0,0,0,1);
+INSERT INTO disco(id, num_bacteria_j1, num_bacteria_j2, num_movimientos, num_sarcina_j1, num_sarcina_j2)
+VALUES(2,1,3,0,0,0);
+INSERT INTO disco(id, num_bacteria_j1, num_bacteria_j2, num_movimientos, num_sarcina_j1, num_sarcina_j2)
+VALUES(3,2,1,0,0,0);
+INSERT INTO disco(id, num_bacteria_j1, num_bacteria_j2, num_movimientos, num_sarcina_j1, num_sarcina_j2)
+VALUES(4,0,2,0,1,0);
+INSERT INTO disco(id, num_bacteria_j1, num_bacteria_j2, num_movimientos, num_sarcina_j1, num_sarcina_j2)
+VALUES(5,0,0,0,0,0);
+INSERT INTO disco(id, num_bacteria_j1, num_bacteria_j2, num_movimientos, num_sarcina_j1, num_sarcina_j2)
+VALUES(6,2,0,0,0,0);
+INSERT INTO disco(id, num_bacteria_j1, num_bacteria_j2, num_movimientos, num_sarcina_j1, num_sarcina_j2)
+VALUES(7,2,4,0,0,0);
 
 
-INSERT INTO partidas_discos(match_id, discos_id, 	discos_order)
+INSERT INTO partidas_discos(match_id, discos_id,discos_order)
 VALUES(1,1,0);
-INSERT INTO partidas_discos(match_id, discos_id, 	discos_order)
+INSERT INTO partidas_discos(match_id, discos_id,discos_order)
 VALUES(1,2,1);
-INSERT INTO partidas_discos(match_id, discos_id, 	discos_order)
+INSERT INTO partidas_discos(match_id, discos_id,discos_order)
 VALUES(1,3,2);
-INSERT INTO partidas_discos(match_id, discos_id, 	discos_order)
+INSERT INTO partidas_discos(match_id, discos_id,discos_order)
 VALUES(1,4,3);
-INSERT INTO partidas_discos(match_id, discos_id, 	discos_order)
+INSERT INTO partidas_discos(match_id, discos_id,discos_order)
 VALUES(1,5,4);
-INSERT INTO partidas_discos(match_id, discos_id, 	discos_order)
+INSERT INTO partidas_discos(match_id, discos_id,discos_order)
 VALUES(1,6,5);
-INSERT INTO partidas_discos(match_id, discos_id, 	discos_order)
+INSERT INTO partidas_discos(match_id, discos_id,discos_order)
 VALUES(1,7,6);
-
-
-INSERT INTO disco(id, num_bacteria_j1, num_bacteria_j2, num_movimientos, num_sarcina_j1, num_sarcina_j2)
-VALUES(1,1,2,0,1,2);
-INSERT INTO disco(id, num_bacteria_j1, num_bacteria_j2, num_movimientos, num_sarcina_j1, num_sarcina_j2)
-VALUES(2,1,2,0,1,2);
-INSERT INTO disco(id, num_bacteria_j1, num_bacteria_j2, num_movimientos, num_sarcina_j1, num_sarcina_j2)
-VALUES(3,1,2,0,1,2);
-INSERT INTO disco(id, num_bacteria_j1, num_bacteria_j2, num_movimientos, num_sarcina_j1, num_sarcina_j2)
-VALUES(4,1,2,0,1,2);
-INSERT INTO disco(id, num_bacteria_j1, num_bacteria_j2, num_movimientos, num_sarcina_j1, num_sarcina_j2)
-VALUES(5,1,2,0,1,2);
-INSERT INTO disco(id, num_bacteria_j1, num_bacteria_j2, num_movimientos, num_sarcina_j1, num_sarcina_j2)
-VALUES(6,1,2,0,1,2);
-INSERT INTO disco(id, num_bacteria_j1, num_bacteria_j2, num_movimientos, num_sarcina_j1, num_sarcina_j2)
-VALUES(7,1,2,0,1,2);

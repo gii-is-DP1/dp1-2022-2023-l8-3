@@ -15,29 +15,11 @@
  */
 package org.springframework.samples.petclinic.disco;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.springframework.beans.support.MutableSortDefinition;
-import org.springframework.beans.support.PropertyComparator;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.petclinic.model.BaseEntity;
-import org.springframework.samples.petclinic.model.NamedEntity;
-import org.springframework.samples.petclinic.owner.Owner;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -69,10 +51,7 @@ public class Disco extends BaseEntity{
     @Column(name="num_movimientos")
     private Integer numMov;
     
-    
-    private Integer[] bacterias = {numBact1, numBact2};
-    private Integer[] sarcinas = {numSarc1, numSarc2};
-    
+        
     // ----------------------------------------------------------------------------------------------- //
 	
     public Integer getNumeroDeBacterias(Integer idJugador) {
