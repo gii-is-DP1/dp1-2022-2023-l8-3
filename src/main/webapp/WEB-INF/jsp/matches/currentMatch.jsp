@@ -8,7 +8,7 @@
 	<form:form class="tablero" modelAttribute="match" onsubmit="return validate()">
 		<h2>Partida en curso</h2>
 	-->
-	
+
 	<form:form class="tablero" modelAttribute="movimiento">
 		<h2>Partida en curso</h2>
 
@@ -35,6 +35,10 @@
 
 
 			<div class="discos">
+
+
+
+				<!--
 				<c:forEach var="i" begin="0" end="6" >
 					<div class="disco ${match.chooseTag(i)}">
 						<input type="checkbox" name="disco" id="disco${i}" value="a disco ${i}">
@@ -83,6 +87,8 @@
 					</div>
 
 				</c:forEach>
+			-->
+
 			</div>
 
 

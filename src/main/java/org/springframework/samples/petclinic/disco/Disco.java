@@ -17,9 +17,13 @@ package org.springframework.samples.petclinic.disco;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.springframework.samples.petclinic.model.BaseEntity;
+import org.springframework.samples.petclinic.partida.Match;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -51,7 +55,20 @@ public class Disco extends BaseEntity{
     @Column(name="num_movimientos")
     private Integer numMov;
     
-        
+    @ManyToOne
+    @JoinColumn(name="id_match")
+    private Match match;
+
+    public Disco(Match match) {
+		this.numBact1 = 20;
+		this.numBact2 = 20;
+		this.numSarc1 = 4;
+		this.numSarc2 = 4;
+		this.numMov = 0;
+		this.match = match;
+	}    
+    
+    
     // ----------------------------------------------------------------------------------------------- //
 	
     public Integer getNumeroDeBacterias(Integer idJugador) {
