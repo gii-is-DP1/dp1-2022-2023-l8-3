@@ -9,7 +9,7 @@
 		<h2>Partida en curso</h2>
 	-->
 
-	<form:form class="tablero" modelAttribute="movimiento">
+	<form:form class="tablero" >
 		<h2>Partida en curso</h2>
 
 		<div class="seccion1">
@@ -38,20 +38,23 @@
 
 				<c:forEach var="i" begin="0" end="6" >
 					<div class="disco ${match.chooseTag(i)}">
-						<input type="checkbox" name="disco" id="disco${i}" value="a disco ${i}">
+						<form:checkbox path="match.aDisco" name="disco" id="disco${i}" value="D${i}"/>
 						<label for="disco${i}" class="pointer">a</label>
 
 						<div class="bs1">
 							<c:forEach var="b1" begin="1" end="${match.discos[i].numBact1}">
 
 								<c:choose>
-										<c:when test="${match.turnoJugador1}">
-											<input type="checkbox" name="bacteria" id="j1bacteria${b1}disco${i}" value="bacteria jug1 de disco ${i}">
+									<c:when test="${match.turnoJugador1}"><!-- Falta poner clase bacteria pointer al label que no esta-->
+										<div>
+											<form:checkbox path="match.bacteriasAmover" name="bacteria" id="j1bacteria${b1}disco${i}" value="BJ1-D${i}"/>
 											<label for="j1bacteria${b1}disco${i}" class="bacteria pointer">a</label>
-										</c:when>
-										<c:otherwise>
-											<div class="bacteria"></div>
-										</c:otherwise>
+
+										</div>
+									</c:when>
+									<c:otherwise>
+										<div class="bacteria"></div>
+									</c:otherwise>
 								</c:choose>
 
 							</c:forEach>
@@ -69,8 +72,9 @@
 										<div class="bacteria"></div>
 									</c:when>
 									<c:otherwise>
-										<input type="checkbox" name="bacteria" id="j2bacteria${b2}disco${i}" value="bacteria jug2 de disco ${i}">
-										<label for="j2bacteria${b2}disco${i}" class="bacteria pointer">a</label>
+										<form:checkbox path="match.bacteriasAmover" name="bacteria" id="j2bacteria${b1}disco${i}" value="BJ2-D${i}"/>
+										<label for="j2bacteria${b1}disco${i}" class="bacteria pointer">a</label>
+
 									</c:otherwise>
 								</c:choose>
 
@@ -194,7 +198,7 @@
 	}
 
 	input[type=checkbox] {
-	 display: none;
+	 display: initial;
 	}
 
 	input:checked + label {

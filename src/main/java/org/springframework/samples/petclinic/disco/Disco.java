@@ -59,14 +59,16 @@ public class Disco extends BaseEntity{
     @JoinColumn(name="id_match")
     private Match match;
 
+    /*
     public Disco(Match match) {
-		this.numBact1 = 20;
-		this.numBact2 = 20;
-		this.numSarc1 = 4;
-		this.numSarc2 = 4;
+		this.numBact1 = 0;
+		this.numBact2 = 0;
+		this.numSarc1 = 0;
+		this.numSarc2 = 0;
 		this.numMov = 0;
 		this.match = match;
-	}    
+	}  
+	*/  
     
     
     // ----------------------------------------------------------------------------------------------- //

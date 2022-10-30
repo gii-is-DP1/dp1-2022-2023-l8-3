@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.petclinic.comentario.Comentario;
@@ -36,10 +38,17 @@ public class Match extends BaseEntity{
 	
 	/*@Column(name = "siguiente_movimiento")
 	private String[] sigMov; //La idea es poner aqui el movimiento de una manera pero no consigo que me funcione, puede que use otra forma al final
-	*/
+
+	@Transient
+	private String[] bacteriasAmover;
+	@Transient
+	private String[] aDisco;
+*/
+	@Transient
+	private String movimiento;
 	
 	@Column(name = "turno_primer_jugador")
-	private Boolean turnoJugador1;  //Creo que esto es necesario
+	private Boolean turnoJugador1;  
 	
     @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
 	@Column(name = "inicio_de_partida")
@@ -52,8 +61,11 @@ public class Match extends BaseEntity{
 	@Column(name = "es_privada")
 	private Boolean esPrivada;
 	
-	@OneToMany(mappedBy="id")
-	private List<Disco> discos;
+	
+	@OneToMany
+	@OrderColumn()
+	private Disco[] discos;
+	
 	
 	@ManyToOne
 	@JoinColumn(name = "id_jugador1")
@@ -76,7 +88,7 @@ public class Match extends BaseEntity{
 	@OneToMany(mappedBy="id")
 	private List<Comentario> comentarios;
 
-	
+	/*
 	public Match(Boolean esPrivada, Jugador jugadorAnfitrion) {
 		this.inicioPartida = LocalDateTime.now();
 		this.esPrivada = esPrivada;
@@ -85,24 +97,24 @@ public class Match extends BaseEntity{
 		this.invitaciones = new ArrayList<Invitacion>();
 		this.comentarios = new ArrayList<Comentario>();
 		this.ganadorPartida = GameWinner.UNDEFINED;
+		this.turnoJugador1 = true;
 		createDisks();
 	}
-	
 	private void createDisks() {
-		discos = new ArrayList<Disco>();
+		discos = new Disco[6];
 		for(int i = 0; i<NUMBER_OF_DISKS; i++) {
-			discos.add(new Disco(this));
+			discos[i] = new Disco(this);
 		}
-	}
+	}*/
 	
 	// ----------------------------------------------------------------------------------------------- //
 	
-	public List<Disco> getDiscos() {
+	public Disco[] getDiscos() {
 		return discos;
 	}
 	
 	public Disco getDisco(Integer diskId) {
-		return discos.get(diskId);
+		return discos[diskId];
 	}
 	
 	// ----------------------------------------------------------------------------------------------- //
