@@ -37,6 +37,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.petclinic.model.BaseEntity;
 import org.springframework.samples.petclinic.model.NamedEntity;
 import org.springframework.samples.petclinic.owner.Owner;
+import org.springframework.samples.petclinic.partida.Match;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -69,29 +70,47 @@ public class Disco extends BaseEntity{
     @Column(name="num_movimientos")
     private Integer numMov;
     
-    private Integer[] bacterias = {numBact1, numBact2};
-    private Integer[] sarcinas = {numSarc1, numSarc2};
+    @ManyToOne
+    @JoinColumn(name="id_match")
+    private Match match;
+    
+    public Disco(Match match) {
+		this.numBact1 = 20;
+		this.numBact2 = 20;
+		this.numSarc1 = 4;
+		this.numSarc2 = 4;
+		this.numMov = 0;
+		this.match = match;
+	}
     
     // ----------------------------------------------------------------------------------------------- //
 	
+    private Integer[] getBacterias() {
+    	return new Integer[] {numBact1, numBact2};
+    }
+    
+    private Integer[] getSarcinas() {
+    	return new Integer[] {numSarc1, numSarc2};
+    }
+    
     public Integer getNumeroDeBacterias(Integer idJugador) {
-		return bacterias[idJugador];
+		return getBacterias()[idJugador];
 	}
     
     public Integer getNumeroDeSarcinas(Integer idJugador) {
-    	return sarcinas[idJugador];
+    	return getSarcinas()[idJugador];
 	}
     
     public void annadirBacterias(Integer idJugador, Integer numeroDeBacterias) {
-		bacterias[idJugador] += numeroDeBacterias;
+		getBacterias()[idJugador] += numeroDeBacterias;
 	}
 	
 	public void eliminarBacterias(Integer idJugador, Integer numeroDeBacterias) {
-		bacterias[idJugador] -= numeroDeBacterias;
+		getBacterias()[idJugador] -= numeroDeBacterias;
 	}
 	
 	public void annadirSarcina(Integer idJugador) {
-		sarcinas[idJugador] ++;
+		getSarcinas()[idJugador] ++;
 	}
 	
 	// ----------------------------------------------------------------------------------------------- //
