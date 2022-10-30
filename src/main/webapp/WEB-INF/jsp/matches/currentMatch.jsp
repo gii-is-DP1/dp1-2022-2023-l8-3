@@ -4,8 +4,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 <petclinic:layout pageName="currentMatch">
-
-	<form:form class="tablero" modelAttribute="match" onsubmit="return validate()">>
+<!--
+	<form:form class="tablero" modelAttribute="match" onsubmit="return validate()">
+		<h2>Partida en curso</h2>
+	-->
+	
+	<form:form class="tablero" modelAttribute="movimiento">
 		<h2>Partida en curso</h2>
 
 		<div class="seccion1">
@@ -27,8 +31,8 @@
 				</div>
 
 				<h4>Contaminacion: ${match.jugador1.numeroDeContaminacion}</h4>
-
 			</div>
+
 
 			<div class="discos">
 				<c:forEach var="i" begin="0" end="6" >
@@ -76,7 +80,6 @@
 							</c:forEach>
 						</div>
 
-
 					</div>
 
 				</c:forEach>
@@ -101,9 +104,7 @@
 				</div>
 
 				<h4>Contaminacion: ${match.jugador2.numeroDeContaminacion}</h4>
-
 			</div>
-
 
 		</div>
 
@@ -119,11 +120,8 @@
 
 			<div class="botones">
 				<input type="submit" value="Siguiente fase"/>
-				<form:input class="form-control" path="${name}"/>
 
 <!--
-
-				<input type="submit" value="Siguiente fase"/>
 				<button type="button" name="button">Abandonar partida</button> -->
 
 			</div>
@@ -136,24 +134,26 @@
 </petclinic:layout>
 
 <script type="text/javascript">
-
+/*
+//No necesario creo
 	const discos = document.getElementsByClassName("disco");
 
 	for (let i = 0; i < discos.length; i++) {
 		discos[i].onclick = (e) => {
+			console.log("a");
 			const input = e.target.querySelector('input');
 			input.checked = !input.checked;
 		}
 	}
-
+*/
 
 //Comprobar
 	function validate(){
 		const c1 = document.getElementsByName("bacteria");
 		const c2 = document.getElementsByName("disco");
 
-		const cb == [];
-		const cd == [];
+		let cb = [];
+		let cd = [];
 		for (var i = 0; i < c1.length; i++) {
 			if (c1[i].checked) {
 				cb.push(c1[i].value);
@@ -167,9 +167,9 @@
 
 		if(cd.length != 1 || cb.length == 0) return false;
 
-		const disco = cb[0].id.substring(11);
+		let disco = cb[0].id.substring(11);
 		for (var i = 1; i < cb.length; i++) {
-			const disco2 = db[i].id.substring(11);
+			let disco2 = db[i].id.substring(11);
 			if(disco != disco2) return false;
 		}
 
