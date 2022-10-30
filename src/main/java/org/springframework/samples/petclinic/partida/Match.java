@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.partida;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -29,6 +30,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "partidas")
 public class Match extends BaseEntity{
+	private static final int NUMBER_OF_DISKS = 7;
 	private static final Integer PRIMER_JUGADOR = 0;
 	private static final int SEGUNDO_JUGADOR = 1;
 	
@@ -50,10 +52,8 @@ public class Match extends BaseEntity{
 	@Column(name = "es_privada")
 	private Boolean esPrivada;
 	
-	// TODO
-	@OneToMany
-	@OrderColumn()
-	private Disco[] discos;
+	@OneToMany(mappedBy="id")
+	private List<Disco> discos;
 	
 	@ManyToOne
 	@JoinColumn(name = "id_jugador1")
@@ -77,14 +77,32 @@ public class Match extends BaseEntity{
 	private List<Comentario> comentarios;
 
 	
+	public Match(Boolean esPrivada, Jugador jugadorAnfitrion) {
+		this.inicioPartida = LocalDateTime.now();
+		this.esPrivada = esPrivada;
+		this.jugador1 = jugadorAnfitrion;
+		this.espectadores = new ArrayList<Jugador>();
+		this.invitaciones = new ArrayList<Invitacion>();
+		this.comentarios = new ArrayList<Comentario>();
+		this.ganadorPartida = GameWinner.UNDEFINED;
+		createDisks();
+	}
+	
+	private void createDisks() {
+		discos = new ArrayList<Disco>();
+		for(int i = 0; i<NUMBER_OF_DISKS; i++) {
+			discos.add(new Disco(this));
+		}
+	}
+	
 	// ----------------------------------------------------------------------------------------------- //
 	
-	public Disco[] getDiscos() {
+	public List<Disco> getDiscos() {
 		return discos;
 	}
 	
 	public Disco getDisco(Integer diskId) {
-		return discos[diskId];
+		return discos.get(diskId);
 	}
 	
 	// ----------------------------------------------------------------------------------------------- //
