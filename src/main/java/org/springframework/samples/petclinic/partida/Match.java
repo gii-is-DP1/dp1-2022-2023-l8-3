@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -33,11 +34,18 @@ public class Match extends BaseEntity{
 	private static final Integer PRIMER_JUGADOR = 0;
 	private static final int SEGUNDO_JUGADOR = 1;
 	
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+	/*@Column(name = "siguiente_movimiento")
+	private String[] sigMov; //La idea es poner aqui el movimiento de una manera pero no consigo que me funcione, puede que use otra forma al final
+	*/
+	
+	@Column(name = "turno_primer_jugador")
+	private Boolean turnoJugador1;  //Creo que esto es necesario
+	
+    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
 	@Column(name = "inicio_de_partida")
 	private LocalDateTime inicioPartida;
     
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss.69")
     @Column(name = "fin_de_partida")
 	private LocalDateTime finPartida;
 
@@ -67,6 +75,7 @@ public class Match extends BaseEntity{
 	
 	@OneToMany(mappedBy="id")
 	private List<Comentario> comentarios;
+
 	
 	public Match(Boolean esPrivada, Jugador jugadorAnfitrion) {
 		this.inicioPartida = LocalDateTime.now();
@@ -97,6 +106,17 @@ public class Match extends BaseEntity{
 	}
 	
 	// ----------------------------------------------------------------------------------------------- //
+	
+	public String chooseTag(int i){
+		if(i==0) return "col23";
+		else if(i==1) return "col45";
+		else if(i==2) return "row2";
+		else if(i==3) return "row2";
+		else if(i==4) return "row2";
+		else if(i==5) return "col23 row3";
+		else return "col45 row3";
+	}
+
 	
 	private Boolean movingBacteria(Integer playerId, Integer initialDiskId, Integer targetDiskId, Integer numberOfBacteriaDisplaced) {
 		Boolean correctMovement = true;	// TODO: mensaje para que el usuario sepa por qué su movimiento no es correcto
