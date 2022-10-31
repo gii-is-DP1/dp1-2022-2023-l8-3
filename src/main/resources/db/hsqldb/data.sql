@@ -95,8 +95,9 @@ INSERT INTO achievement(id,name,threshold,description,badge_image) VALUES
 	(2, 'Triunfador', 20.0, 'Si ganas <THRESHOLD> o más partidas es que eres todo un triunfador',
 	'https://bit.ly/proGamer');
 
-INSERT INTO matches(id, id_jugador1, id_jugador2, es_privada, inicio_de_partida, fin_de_partida, ganador_de_partida, turn)
-VALUES(1, 1, 2, true, '1999-04-12 10:12:12.55', '1999-04-12 10:12:12.55', 'UNDEFINED', 0);
+
+INSERT INTO matches(id, turno_primer_jugador, id_jugador1, id_jugador2, es_privada, inicio_de_partida, fin_de_partida, ganador_de_partida, turn)
+VALUES(1, true, 1, 2, true, '1999-04-12 10:12:12.55', '1999-04-12 10:12:12.55', 'UNDEFINED', 0);
 
 INSERT INTO disco VALUES(1,4,0,0,0,1,1);
 INSERT INTO disco VALUES(2,1,3,0,0,0,1);

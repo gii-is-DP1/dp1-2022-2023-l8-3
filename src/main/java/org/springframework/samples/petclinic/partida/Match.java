@@ -76,7 +76,6 @@ public class Match extends BaseEntity{
 	@OneToMany(mappedBy="match")
 	private List<Disco> discos;
 
-
 	@ManyToOne
 	@JoinColumn(name = "id_jugador1")
 	private Jugador jugador1;
@@ -120,15 +119,16 @@ public class Match extends BaseEntity{
 		this.invitaciones = new ArrayList<Invitacion>();
 		this.comentarios = new ArrayList<Comentario>();
 
-    createDisks();
+		createDisks();
 		createTurns();
 	}
+	
 	private void createDisks() {
-		discos = new Disco[6];
+		discos = new ArrayList<Disco>();
 		for(int i = 0; i<NUMBER_OF_DISKS; i++) {
-			discos[i] = new Disco(this);
+			discos.add(new Disco(this));
 		}
-	}*/
+	}
 	
 	private void createTurns() {
 		turns = new ArrayList<String>();
@@ -149,12 +149,12 @@ public class Match extends BaseEntity{
 	
 	// ----------------------------------------------------------------------------------------------- //
 	
-	public Disco[] getDiscos() {
+	public List<Disco> getDiscos() {
 		return discos;
 	}
 	
 	public Disco getDisco(Integer diskId) {
-		return discos[diskId];
+		return discos.get(diskId);
 	}
 	
 	public Integer getTurn() {
@@ -169,6 +169,17 @@ public class Match extends BaseEntity{
 	
 	public void nextTurn() {
 		turn++;
+	}
+	
+	public String chooseTag(int i) {
+		if(i==0) return "col23";
+		else if(i==1) return "col45";
+		else if(i==2) return "row2";
+		else if(i==3) return "row2";
+		else if(i==4) return "row2";
+		else if(i==5) return "col23 row3";
+		else if(i==6) return "col45 row3";
+		else return "error";
 	}
 	
 	private Boolean movingBacteria(Integer playerId, Integer initialDiskId, Integer targetDiskId, Integer numberOfBacteriaDisplaced) {

@@ -16,7 +16,7 @@
 <spring:bind path="${name}">
 
   <c:set var="jugador" value="${divJugador1 ? 'J1' : 'J2'}"/>
-  <c:set var="idCheckbox" value="${jugador}-bacteria${indexBacteria}disco${numeroDisco}"/>
+  <c:set var="idCheckbox" value="${jugador}-bacteria${indexBacteria}-disco${numeroDisco}"/>
   <c:set var="valueCheckbox" value="${jugador}-D${numeroDisco}-B${indexBacteria}"/>
 
   <c:choose>
