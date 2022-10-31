@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -38,12 +39,16 @@ public class Match extends BaseEntity{
 	private static final Integer PRIMER_JUGADOR = 0;
 	private static final int SEGUNDO_JUGADOR = 1;
 	
-	/*@Column(name = "siguiente_movimiento")
-	private String[] sigMov; //La idea es poner aqui el movimiento de una manera pero no consigo que me funcione, puede que use otra forma al final
-	*/
+	@Transient
+	private String[] bacteriasAmover;
+	@Transient
+	private String[] aDisco;
+
+	@Transient
+	private String movimiento;
 	
 	@Column(name = "turno_primer_jugador")
-	private Boolean turnoJugador1;  //Creo que esto es necesario
+	private Boolean turnoJugador1;  
 	
     @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
 	@Column(name = "inicio_de_partida")
@@ -56,6 +61,12 @@ public class Match extends BaseEntity{
 	@Column(name = "es_privada")
 	private Boolean esPrivada;
 	
+	/*
+	@OneToMany
+	@OrderColumn()
+	private Disco[] discos;
+	*/
+  
 	@Column(name = "turn")
 	private Integer turn;
 	
@@ -64,7 +75,8 @@ public class Match extends BaseEntity{
 	
 	@OneToMany(mappedBy="match")
 	private List<Disco> discos;
-	
+
+
 	@ManyToOne
 	@JoinColumn(name = "id_jugador1")
 	private Jugador jugador1;
@@ -86,6 +98,7 @@ public class Match extends BaseEntity{
 	@OneToMany(mappedBy="match")
 	private List<Comentario> comentarios;
 
+
 	// Constructor para cuando se crea una partida desde la aplicación
 	public Match(Boolean esPrivada, Jugador jugadorAnfitrion) {
 		this.inicioPartida = LocalDateTime.now();
@@ -95,6 +108,7 @@ public class Match extends BaseEntity{
 		this.invitaciones = new ArrayList<Invitacion>();
 		this.comentarios = new ArrayList<Comentario>();
 		this.ganadorPartida = GameWinner.UNDEFINED;
+		this.turnoJugador1 = true;
 		this.turn = 0;
 		createDisks();
 		createTurns();
@@ -105,16 +119,16 @@ public class Match extends BaseEntity{
 		this.espectadores = new ArrayList<Jugador>();
 		this.invitaciones = new ArrayList<Invitacion>();
 		this.comentarios = new ArrayList<Comentario>();
-		createDisks();
+
+    createDisks();
 		createTurns();
 	}
-	
 	private void createDisks() {
-		discos = new ArrayList<Disco>();
+		discos = new Disco[6];
 		for(int i = 0; i<NUMBER_OF_DISKS; i++) {
-			discos.add(new Disco(this));
+			discos[i] = new Disco(this);
 		}
-	}
+	}*/
 	
 	private void createTurns() {
 		turns = new ArrayList<String>();
@@ -135,12 +149,12 @@ public class Match extends BaseEntity{
 	
 	// ----------------------------------------------------------------------------------------------- //
 	
-	public List<Disco> getDiscos() {
+	public Disco[] getDiscos() {
 		return discos;
 	}
 	
 	public Disco getDisco(Integer diskId) {
-		return discos.get(diskId);
+		return discos[diskId];
 	}
 	
 	public Integer getTurn() {

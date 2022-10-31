@@ -4,10 +4,12 @@ package org.springframework.samples.petclinic.partida;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -61,6 +63,7 @@ public class MatchController {
 		return result;
 	}
 	
+  
 	//Temporales
 	@GetMapping(value = "/currentMatch")
 	public ModelAndView showCurrentMatch() {
@@ -69,11 +72,19 @@ public class MatchController {
 		return result;
 	}
 	
+
 	@PostMapping(value = "/currentMatch")
-	public ModelAndView next(String movimiento) {
+	public ModelAndView next(Match match) {
 		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
 		result.addObject("match", matchService.getMatchById(1));
-		System.out.println("PITO"+movimiento);
+		
+		String[] st = match.getBacteriasAmover();
+		String[] st2 = match.getADisco();
+
+		for(String s: st) System.out.println(s);
+		
+		for(String s: st2) System.out.println(s);
+
 		return result;
 	}
 	

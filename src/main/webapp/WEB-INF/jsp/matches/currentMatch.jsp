@@ -1,137 +1,34 @@
 <%@ page session="false" trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
+
+
 <petclinic:layout pageName="currentMatch">
-	
-	<form:form class="tablero" modelAttribute="movimiento">
+
+	<form:form class="tablero" modelAttribute="match" >
 		<h2>Partida en curso</h2>
 
 		<div class="seccion1">
+
 			<div class="jugador1">
-				<h4>${match.jugador1.user.username}</h4>
-
-				<div class="bacterias">
-					<h4>N. bacterias: ${match.jugador2.bacterias}</h4>
-					<c:forEach var="i" begin="1" end="${match.jugador1.bacterias}" >
-						<div class="smallbacteria"></div>
-					</c:forEach>
-				</div>
-
-				<div class="sarcinas">
-					<h4>N. sarcinas: ${match.jugador2.sarcinas}</h4>
-					<c:forEach var="i" begin="1" end="${match.jugador1.sarcinas}" >
-						<div class="smallsarcina"></div>
-					</c:forEach>
-				</div>
-				
-				<h4>Contaminacion: ${match.jugador1.numeroDeContaminacion}</h4>
-				
-			</div>
-			<div class="discos">
-				
-				<div class="disco">
-					<c:forEach var="i" begin="0" end="1" >
-						<div class="circulo">
-							<div class="j1">
-								<c:forEach var="j" begin="1" end="${match.discos[i].numBact1}" >
-									<div class="smallbacteria"></div>
-								</c:forEach>
-							</div>
-							<div class="j1">
-								<c:forEach var="j" begin="1" end="${match.discos[i].numSarc1}" >
-									<div class="smallsarcina"></div>
-								</c:forEach>
-							</div>
-							<div class="j2">
-								<c:forEach var="j" begin="1" end="${match.discos[i].numBact2}" >
-									<div class="smallbacteria"></div>
-								</c:forEach>
-							</div>
-							<div class="j2">
-								<c:forEach var="j" begin="1" end="${match.discos[i].numSarc2}" >
-									<div class="smallsarcina"></div>
-								</c:forEach>
-							</div>												
-						</div>
-					</c:forEach>
-				</div>
-				<div class="disco">
-					<c:forEach var="i" begin="2" end="4" >
-						<div class="circulo">
-							<div class="j1">
-								<c:forEach var="j" begin="1" end="${match.discos[i].numBact1}" >
-									<div class="smallbacteria"></div>
-								</c:forEach>
-							</div>
-							<div class="j1">
-								<c:forEach var="j" begin="1" end="${match.discos[i].numSarc1}" >
-									<div class="smallsarcina"></div>
-								</c:forEach>
-							</div>
-							<div class="j2">
-								<c:forEach var="j" begin="1" end="${match.discos[i].numBact2}" >
-									<div class="smallbacteria"></div>
-								</c:forEach>
-							</div>
-							<div class="j2">
-								<c:forEach var="j" begin="1" end="${match.discos[i].numSarc2}" >
-									<div class="smallsarcina"></div>
-								</c:forEach>
-							</div>										
-						</div>
-					</c:forEach>
-				</div>
-				<div class="disco">
-					<c:forEach var="i" begin="5" end="6" >
-						<div class="circulo">
-							<div class="j1">
-								<c:forEach var="j" begin="1" end="${match.discos[i].numBact1}" >
-									<div class="smallbacteria"></div>
-								</c:forEach>
-							</div>
-							<div class="j1">
-								<c:forEach var="j" begin="1" end="${match.discos[i].numSarc1}" >
-									<div class="smallsarcina"></div>
-								</c:forEach>
-							</div>
-							<div class="j2">
-								<c:forEach var="j" begin="1" end="${match.discos[i].numBact2}" >
-									<div class="smallbacteria"></div>
-								</c:forEach>
-							</div>
-							<div class="j2">
-								<c:forEach var="j" begin="1" end="${match.discos[i].numSarc2}" >
-									<div class="smallsarcina"></div>
-								</c:forEach>
-							</div>												
-						</div>
-					</c:forEach>
-				</div>
-
+				<c:set var="jugador" value="${match.jugador1}"/>
+				<petclinic:seccionJugador usuario="${jugador.user.username}" numeroBacterias="${jugador.bacterias}"
+					 numeroSarcinas="${jugador.sarcinas}" contaminacion="${jugador.numeroDeContaminacion}"/>
 			</div>
 
+			<div class="discos disable-select">
+				<c:forEach var="i" begin="0" end="6" >
+					<petclinic:disco indexDisco="${i}" clase="disco ${match.chooseTag(i)}"/>
+				</c:forEach>
+			</div>
 
 			<div class="jugador2">
-				<h4>${match.jugador2.user.username}</h4>
-
-				<div class="bacterias">
-					<h4>N. bacterias: ${match.jugador2.bacterias}</h4>
-					<c:forEach var="i" begin="1" end="${match.jugador2.bacterias}" >
-						<div class="smallbacteria"></div>
-					</c:forEach>
-				</div>
-
-				<div class="sarcinas">
-					<h4>N. sarcinas: ${match.jugador2.sarcinas}</h4>
-					<c:forEach var="i" begin="1" end="${match.jugador2.sarcinas}" >
-						<div class="smallsarcina"></div>
-					</c:forEach>
-				</div>
-
-				<h4>Contaminacion: ${match.jugador2.numeroDeContaminacion}</h4>
-
+				<c:set var="jugador" value="${match.jugador2}"/>
+				<petclinic:seccionJugador usuario="${jugador.user.username}" numeroBacterias="${jugador.bacterias}"
+					 numeroSarcinas="${jugador.sarcinas}" contaminacion="${jugador.numeroDeContaminacion}"/>
 			</div>
 
 		</div>
@@ -150,9 +47,10 @@
 			</div>
 
 			<div class="botones">
-				<a href="/matches/${match.id}/nextPhase"><input type="submit" value="Siguiente fase"/></a>
-				<a href="/matches/${match.id}/completedMatch"><input type="submit" value="Abandonar partida"/></a>
+				<input type="hidden" name="id" value="${match.id}"/>
+				<input type="submit" value="Siguiente fase"/>
 			</div>
+
 		</div>
 
 	</form:form>
@@ -310,15 +208,16 @@
 	}
 
 	input[type=checkbox] {
-	 display: none;
+	 display: initial;
 	}
 
 	input:checked + label {
 	  border: solid 2px purple;
 	  background-color: purple;
 		color: purple;
-		opacity: 20%;
+		/*opacity: 20%;*/
 	}
+
 	label{
 		position: absolute ;
 	  top: 0;
@@ -329,6 +228,14 @@
   	width: 100%;
 		border-radius: 50%;
 	}
+
+	.disable-select {
+	  -webkit-user-select: none;
+	  -moz-user-select: none;
+	  -ms-user-select: none;
+	  user-select: none;
+	}
+
 	.pointer{
 		cursor: pointer;
 	}
@@ -417,6 +324,6 @@
 	}
 	.seccion2 div{
 		border: 1px solid black;
-	{
+	}
 
 </style>
