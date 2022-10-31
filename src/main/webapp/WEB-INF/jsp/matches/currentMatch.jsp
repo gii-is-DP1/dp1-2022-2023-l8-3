@@ -4,10 +4,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 <petclinic:layout pageName="currentMatch">
-<!--
-	<form:form class="tablero" modelAttribute="match" onsubmit="return validate()">
-		<h2>Partida en curso</h2>
-	-->
 	
 	<form:form class="tablero" modelAttribute="movimiento">
 		<h2>Partida en curso</h2>
@@ -30,7 +26,7 @@
 					</c:forEach>
 				</div>
 				
-				<h4>Contaminación: ${match.jugador1.numeroDeContaminacion}</h4>
+				<h4>Contaminacion: ${match.jugador1.numeroDeContaminacion}</h4>
 				
 			</div>
 			<div class="discos">
@@ -134,7 +130,8 @@
 					</c:forEach>
 				</div>
 
-				<h4>Contaminación: ${match.jugador2.numeroDeContaminacion}</h4>
+				<h4>Contaminacion: ${match.jugador2.numeroDeContaminacion}</h4>
+
 			</div>
 
 		</div>
@@ -147,7 +144,7 @@
 
 			<div class="informacion">
 				<p>
-					Información <br/>
+					Informacion <br/>
 					${match.turns[match.turn]}
 				</p>
 			</div>
@@ -155,7 +152,6 @@
 			<div class="botones">
 				<a href="/matches/${match.id}/nextPhase"><input type="submit" value="Siguiente fase"/></a>
 				<a href="/matches/${match.id}/completedMatch"><input type="submit" value="Abandonar partida"/></a>
-
 			</div>
 		</div>
 
@@ -212,6 +208,7 @@
 </script>
 
 <style type="text/css">
+
 	.circulo {
 		width: 10vw; 
 		height: 20vh; 
@@ -219,11 +216,34 @@
 		border-radius: 50%; 
 		text-align: center;
 		display: flex;
-		align-items: center;
 	}
-	.circulo p {
-		font-weight: bold;
+  
+	.seccion1{
+		height: min(var(--discos-vw),var(--discos-vh));
 	}
+
+	.seccion1 div{
+		margin:0 auto 0 auto;
+	}
+
+	.jugador1, .jugador2{
+		width: var(--jugadores);
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		padding-top:100px;
+		padding-bottom: 100px;
+		padding-left: 10px;
+		padding-right: 10px;
+		border-radius: 10px;
+		background-color: var(--color-background-divs);
+	}
+
+	.bacterias, .sarcinas{
+		display: inline-flex;
+    flex-wrap: wrap;
+	}
+  
 	.discos{
 		display: flex;
 		flex-direction: column;
@@ -231,8 +251,50 @@
 		background-color: var(--color-background-divs);
 		justify-content: space-between;
 	}
+  
 	.disco {
 		display: flex;
+		align-items: center;
+		grid-column-end: span 2;
+		justify-content: space-evenly;
+		padding: auto;
+		position:relative;
+		color:var(--color-disco);
+	}
+
+	.col23{
+		grid-column-start: 2;
+	}
+	.col45{
+		grid-column-start: 4;
+	}
+
+	.row3{
+		grid-row-start: 3;
+	}
+	.row2{
+		grid-row-start: 2;
+	}
+
+	.bacteria {
+		width: min(calc(var(--discos-vw)/15),calc(var(--discos-vh)/15));
+		height: min(calc(var(--discos-vw)/15),calc(var(--discos-vh)/15));
+		border-radius: 50%;
+		border: none;
+		position: relative;
+		z-index: 4;
+	}
+
+	.sarcina {
+		width: min(calc(var(--discos-vw)/10),calc(var(--discos-vh)/10));
+		height: min(calc(var(--discos-vw)/10),calc(var(--discos-vh)/10));
+		border-radius: 20%;
+		border: none;
+	}
+
+	.disco div{
+		display: flex;
+		flex-wrap: wrap;
 		justify-content: center;
 		word-break:break-all;
 	}
@@ -245,7 +307,6 @@
 		--jugadores:min(calc(100vw - var(--discos-vw))/2, calc(100vh - var(--discos-vh))/2);
 		--color-j1:#B00B13;
 		--color-j2:SlateBlue;
-
 	}
 
 	input[type=checkbox] {
@@ -357,10 +418,5 @@
 	.seccion2 div{
 		border: 1px solid black;
 	{
-
-
-
-
-
 
 </style>

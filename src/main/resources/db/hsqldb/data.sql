@@ -78,19 +78,21 @@ INSERT INTO visits(id,pet_id,visit_date,description) VALUES (2, 8, '2013-01-02',
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (3, 8, '2013-01-03', 'neutered');
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (4, 7, '2013-01-04', 'spayed');
 
-INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,numero_De_Contaminacion,numero_de_bacterias,numero_de_sarcinas) 
+INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,numero_De_Contaminacion,numero_de_bacterias,numero_de_sarcinas)
 VALUES(1,'David','Dana','davdancab',true,0,20,4);
-INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,numero_De_Contaminacion,numero_de_bacterias,numero_de_sarcinas) 
+INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,numero_De_Contaminacion,numero_de_bacterias,numero_de_sarcinas)
 VALUES(2,'Juan Jesus','Martin','juamarher',false,0,20,4);
-INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,numero_De_Contaminacion,numero_de_bacterias,numero_de_sarcinas) 
+INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,numero_De_Contaminacion,numero_de_bacterias,numero_de_sarcinas)
 VALUES(3,'Manuel','Ortega','manortgar',true,0,20,4);
+INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,numero_De_Contaminacion,numero_de_bacterias,numero_de_sarcinas)
+VALUES(4,'Yeyo','Peyeyo','seraguoro',true,0,20,4);
 
 INSERT INTO lista_amigos(id_jugador1,id_jugador2) VALUES (1,2);
 
 INSERT INTO achievement(id,name,threshold,description,badge_image) VALUES
-	(1, 'Viciado', 10.0, 'Si juegas <THRESHOLD> partidas o más, consideramos que ya estás enganchado', 
+	(1, 'Viciado', 10.0, 'Si juegas <THRESHOLD> partidas o más, consideramos que ya estás enganchado',
 	'https://bit.ly/certifiedGamer'),
-	(2, 'Triunfador', 20.0, 'Si ganas <THRESHOLD> o más partidas es que eres todo un triunfador', 
+	(2, 'Triunfador', 20.0, 'Si ganas <THRESHOLD> o más partidas es que eres todo un triunfador',
 	'https://bit.ly/proGamer');
 
 INSERT INTO matches(id, id_jugador1, id_jugador2, es_privada, inicio_de_partida, fin_de_partida, ganador_de_partida, turn)
@@ -103,5 +105,3 @@ INSERT INTO disco VALUES(4,0,2,0,1,0,1);
 INSERT INTO disco VALUES(5,0,0,0,0,0,1);
 INSERT INTO disco VALUES(6,2,0,0,0,0,1);
 INSERT INTO disco VALUES(7,2,4,0,0,0,1);
-
-	
