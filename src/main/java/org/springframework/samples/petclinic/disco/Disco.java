@@ -61,6 +61,7 @@ public class Disco extends BaseEntity{
 
     /*
     public Disco(Match match) {
+    	super();
 		this.numBact1 = 0;
 		this.numBact2 = 0;
 		this.numSarc1 = 0;
@@ -70,6 +71,10 @@ public class Disco extends BaseEntity{
 	}  
 	*/  
     
+    
+    public Disco() {
+    	super();
+    }
     
     // ----------------------------------------------------------------------------------------------- //
 	
