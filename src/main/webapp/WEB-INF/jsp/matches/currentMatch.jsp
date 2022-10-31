@@ -106,97 +106,6 @@
 </script>
 
 <style type="text/css">
-
-	.circulo {
-		width: 10vw; 
-		height: 20vh; 
-		background-color: #aaa; 
-		border-radius: 50%; 
-		text-align: center;
-		display: flex;
-	}
-  
-	.seccion1{
-		height: min(var(--discos-vw),var(--discos-vh));
-	}
-
-	.seccion1 div{
-		margin:0 auto 0 auto;
-	}
-
-	.jugador1, .jugador2{
-		width: var(--jugadores);
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-		padding-top:100px;
-		padding-bottom: 100px;
-		padding-left: 10px;
-		padding-right: 10px;
-		border-radius: 10px;
-		background-color: var(--color-background-divs);
-	}
-
-	.bacterias, .sarcinas{
-		display: inline-flex;
-    flex-wrap: wrap;
-	}
-  
-	.discos{
-		display: flex;
-		flex-direction: column;
-		border-radius: 10px;
-		background-color: var(--color-background-divs);
-		justify-content: space-between;
-	}
-  
-	.disco {
-		display: flex;
-		align-items: center;
-		grid-column-end: span 2;
-		justify-content: space-evenly;
-		padding: auto;
-		position:relative;
-		color:var(--color-disco);
-	}
-
-	.col23{
-		grid-column-start: 2;
-	}
-	.col45{
-		grid-column-start: 4;
-	}
-
-	.row3{
-		grid-row-start: 3;
-	}
-	.row2{
-		grid-row-start: 2;
-	}
-
-	.bacteria {
-		width: min(calc(var(--discos-vw)/15),calc(var(--discos-vh)/15));
-		height: min(calc(var(--discos-vw)/15),calc(var(--discos-vh)/15));
-		border-radius: 50%;
-		border: none;
-		position: relative;
-		z-index: 4;
-	}
-
-	.sarcina {
-		width: min(calc(var(--discos-vw)/10),calc(var(--discos-vh)/10));
-		height: min(calc(var(--discos-vw)/10),calc(var(--discos-vh)/10));
-		border-radius: 20%;
-		border: none;
-	}
-
-	.disco div{
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: center;
-		word-break:break-all;
-	}
-
 	:root{
 		--discos-vw:40vw;
 		--discos-vh:60vh;
@@ -205,6 +114,7 @@
 		--jugadores:min(calc(100vw - var(--discos-vw))/2, calc(100vh - var(--discos-vh))/2);
 		--color-j1:#B00B13;
 		--color-j2:SlateBlue;
+
 	}
 
 	input[type=checkbox] {
@@ -215,9 +125,8 @@
 	  border: solid 2px purple;
 	  background-color: purple;
 		color: purple;
-		/*opacity: 20%;*/
+		opacity: 20%;
 	}
-
 	label{
 		position: absolute ;
 	  top: 0;
@@ -268,14 +177,55 @@
 		border-radius: 10px;
 		background-color: var(--color-background-divs);
 	}
-	
 
 	.bacterias, .sarcinas{
 		display: inline-flex;
     flex-wrap: wrap;
 	}
 
+	.discos {
+		width: min(var(--discos-vw),var(--discos-vh));
+		display: grid;
+		grid-template-columns: repeat(6, 1fr);
+		grid-template-rows: repeat(3, 1fr);
+		column-gap: min(calc(var(--discos-vw)/50),calc(var(--discos-vh)/50));
+		justify-content: center;
+		padding: 1em;
+		border-radius: 10px;
+		background-color: var(--color-background-divs);
+	}
 
+	.disco {
+		width: min(calc(var(--discos-vw)/3.2),calc(var(--discos-vh)/3.2));
+		height: min(calc(var(--discos-vw)/3.2),calc(var(--discos-vh)/3.2));
+
+		background-color: var(--color-disco);
+		border: 1px solid black;
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		grid-column-end: span 2;
+		justify-content: space-evenly;
+		padding: auto;
+
+		position:relative;
+		color:var(--color-disco);
+
+	}
+
+	.col23{
+		grid-column-start: 2;
+	}
+	.col45{
+		grid-column-start: 4;
+	}
+
+	.row3{
+		grid-row-start: 3;
+	}
+	.row2{
+		grid-row-start: 2;
+	}
 
 	.bacteria {
 		width: min(calc(var(--discos-vw)/15),calc(var(--discos-vh)/15));
@@ -293,12 +243,18 @@
 		border: none;
 	}
 
-	.bs1 .bacteria, .bs1 .sarcina, .jugador1 .bacterias .smallbacteria, .jugador1 .sarcinas .smallsarcina, .circulo .j1 .smallbacteria, .circulo .j1 .smallsarcina{
+	.disco div{
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+
+	.bs1 .bacteria, .bs1 .sarcina, .jugador1 .bacterias .smallbacteria, .jugador1 .sarcinas .smallsarcina{
 		background-color: var(--color-j1);
 		color: var(--color-j1);
 	}
 
-	.bs2 .bacteria, .bs2 .sarcina, .jugador2 .bacterias .smallbacteria, .jugador2 .sarcinas .smallsarcina, .circulo .j2 .smallbacteria, .circulo .j2 .smallsarcina{
+	.bs2 .bacteria, .bs2 .sarcina, .jugador2 .bacterias .smallbacteria, .jugador2 .sarcinas .smallsarcina{
 		background-color: var(--color-j2);
 		color: var(--color-j2);
 	}
