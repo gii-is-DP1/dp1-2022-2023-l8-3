@@ -13,7 +13,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.petclinic.comentario.Comentario;
 import org.springframework.samples.petclinic.disco.Disco;
@@ -27,8 +29,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "partidas")
+@Table(name = "matches")
+@DynamicUpdate
 public class Match extends BaseEntity{
+	private static final int NUMBER_OF_TURNS = 4;
 	private static final int NUMBER_OF_DISKS = 7;
 	private static final Integer PRIMER_JUGADOR = 0;
 	private static final int SEGUNDO_JUGADOR = 1;
@@ -44,7 +48,13 @@ public class Match extends BaseEntity{
 	@Column(name = "es_privada")
 	private Boolean esPrivada;
 	
-	@OneToMany(mappedBy="id")
+	@Column(name = "turn")
+	private Integer turn;
+	
+	@Transient
+	private List<String> turns;
+	
+	@OneToMany(mappedBy="match")
 	private List<Disco> discos;
 	
 	@ManyToOne
@@ -58,16 +68,17 @@ public class Match extends BaseEntity{
 	@ManyToMany
 	private List<Jugador> espectadores;
 	
-	@OneToMany(mappedBy="id")
+	@OneToMany(mappedBy="match")
 	private List<Invitacion> invitaciones;
 	
 	@Column(name = "ganador_de_partida")
 	@Enumerated(EnumType.STRING)
 	private GameWinner ganadorPartida;	
 	
-	@OneToMany(mappedBy="id")
+	@OneToMany(mappedBy="match")
 	private List<Comentario> comentarios;
-	
+
+	// Constructor para cuando se crea una partida desde la aplicación
 	public Match(Boolean esPrivada, Jugador jugadorAnfitrion) {
 		this.inicioPartida = LocalDateTime.now();
 		this.esPrivada = esPrivada;
@@ -76,7 +87,18 @@ public class Match extends BaseEntity{
 		this.invitaciones = new ArrayList<Invitacion>();
 		this.comentarios = new ArrayList<Comentario>();
 		this.ganadorPartida = GameWinner.UNDEFINED;
+		this.turn = 0;
 		createDisks();
+		createTurns();
+	}
+	
+	// Constructor para cuando se crea una partida en el script SQL
+	public Match() {
+		this.espectadores = new ArrayList<Jugador>();
+		this.invitaciones = new ArrayList<Invitacion>();
+		this.comentarios = new ArrayList<Comentario>();
+		createDisks();
+		createTurns();
 	}
 	
 	private void createDisks() {
@@ -84,6 +106,23 @@ public class Match extends BaseEntity{
 		for(int i = 0; i<NUMBER_OF_DISKS; i++) {
 			discos.add(new Disco(this));
 		}
+	}
+	
+	private void createTurns() {
+		turns = new ArrayList<String>();
+		for(int i=0; i<NUMBER_OF_TURNS; i++) {
+			turns.add("PROPAGATION_RED_PLAYER");
+			turns.add("PROPAGATION_BLUE_PLAYER");
+			turns.add("BINARY");
+			turns.add("PROPAGATION_RED_PLAYER");
+			turns.add("PROPAGATION_BLUE_PLAYER");
+			turns.add("BINARY");
+			turns.add("PROPAGATION_RED_PLAYER");
+			turns.add("PROPAGATION_BLUE_PLAYER");
+			turns.add("BINARY");
+			turns.add("POLLUTION");
+		}
+		turns.add("FIN");
 	}
 	
 	// ----------------------------------------------------------------------------------------------- //
@@ -96,7 +135,19 @@ public class Match extends BaseEntity{
 		return discos.get(diskId);
 	}
 	
+	public Integer getTurn() {
+		return turn;
+	}
+	
+	public List<String> getTurns() {
+		return turns;
+	}
+	
 	// ----------------------------------------------------------------------------------------------- //
+	
+	public void nextTurn() {
+		turn++;
+	}
 	
 	private Boolean movingBacteria(Integer playerId, Integer initialDiskId, Integer targetDiskId, Integer numberOfBacteriaDisplaced) {
 		Boolean correctMovement = true;	// TODO: mensaje para que el usuario sepa por qué su movimiento no es correcto
