@@ -1,6 +1,7 @@
 <%@ page session="false" trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 <petclinic:layout pageName="currentMatch">
@@ -9,7 +10,7 @@
 		<h2>Partida en curso</h2>
 	-->
 
-	<div class="tablero">
+	<form:form class="tablero" modelAttribute="match" >
 		<h2>Partida en curso</h2>
 
 		<div class="seccion1">
@@ -38,20 +39,23 @@
 
 				<c:forEach var="i" begin="0" end="6" >
 					<div class="disco ${match.chooseTag(i)}">
-						<input type="checkbox" name="disco" id="disco${i}" value="a disco ${i}">
+						<form:checkbox path="aDisco"  id="disco${i}" value="D${i}"/>
 						<label for="disco${i}" class="pointer">a</label>
 
 						<div class="bs1">
 							<c:forEach var="b1" begin="1" end="${match.discos[i].numBact1}">
 
 								<c:choose>
-										<c:when test="${match.turnoJugador1}">
-											<input type="checkbox" name="bacteria" id="j1bacteria${b1}disco${i}" value="bacteria jug1 de disco ${i}">
+									<c:when test="${match.turnoJugador1}"><!-- Falta poner clase bacteria pointer al label que no esta-->
+										<div>
+											<form:checkbox path="match.bacteriasAmover" id="j1bacteria${b1}disco${i}" value="BJ1-D${i}"/>
 											<label for="j1bacteria${b1}disco${i}" class="bacteria pointer">a</label>
-										</c:when>
-										<c:otherwise>
-											<div class="bacteria"></div>
-										</c:otherwise>
+
+										</div>
+									</c:when>
+									<c:otherwise>
+										<div class="bacteria"></div>
+									</c:otherwise>
 								</c:choose>
 
 							</c:forEach>
@@ -69,8 +73,9 @@
 										<div class="bacteria"></div>
 									</c:when>
 									<c:otherwise>
-										<input type="checkbox" name="bacteria" id="j2bacteria${b2}disco${i}" value="bacteria jug2 de disco ${i}">
-										<label for="j2bacteria${b2}disco${i}" class="bacteria pointer">a</label>
+										<form:checkbox path="match.bacteriasAmover" id="j2bacteria${b1}disco${i}" value="BJ2-D${i}"/>
+										<label for="j2bacteria${b1}disco${i}" class="bacteria pointer">a</label>
+
 									</c:otherwise>
 								</c:choose>
 
@@ -120,21 +125,16 @@
 				informacion
 			</div>
 
-			<form:form modelAttribute="match"
-								 class="form-horizontal">
-					<input type="hidden" name="id" value="${match.id}"/>
-					<input type="hidden" name="movimiento" value="movimiento increiblemente bueno no kap"/>
+			<div class="botones">
+				<input type="submit" value="Siguiente fase"/>
 
-					<div class="form-group">
-							<div class="col-sm-offset-2 col-sm-10">
-									<button class="btn btn-default" type="submit">Siguiente fase</button>
-									<a href="<c:url value="/matches/${match.id}/currentMatch/next" />"> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
-							</div>
-					</div>
-			</form:form>
+<!--
+				<button type="button" name="button">Abandonar partida</button> -->
+
+			</div>
 		</div>
 
-	</div>
+	</form:form>
 
 
 
@@ -155,26 +155,6 @@
 */
 
 //Comprobar
-	function checkers(){
-		const c1 = document.getElementsByName("bacteria");
-		const c2 = document.getElementsByName("disco");
-		const hiddenInput = document.getElementsByName("movimiento")[0];
-
-		let cb = []; //Checked bacterias
-		let cd = []; // Checked discos
-		for (var i = 0; i < c1.length; i++) {
-			if (c1[i].checked) {
-				cb.push(c1[i].value);
-			}
-		}
-		for (var i = 0; i < c2.length; i++) {
-			if (c2[i].checked) {
-				cd.push(c2[i].value);
-			}
-		}
-		hiddenInput.value = "puta";
-
-	}
 	function validate(){
 		const c1 = document.getElementsByName("bacteria");
 		const c2 = document.getElementsByName("disco");
@@ -219,7 +199,7 @@
 	}
 
 	input[type=checkbox] {
-	 display: none;
+	 display: initial;
 	}
 
 	input:checked + label {
@@ -373,7 +353,7 @@
 	}
 	.seccion2 div{
 		border: 1px solid black;
-	{
+	}
 
 
 

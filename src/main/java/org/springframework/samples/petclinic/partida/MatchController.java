@@ -39,11 +39,11 @@ public class MatchController {
 		return result;
 	}
 	
-	@GetMapping(value = "/{id}/currentMatch/next")
-	public ModelAndView next(@PathVariable int id, /*@RequestParam*/ String movimiento) {
+	@PostMapping(value = "/{id}/currentMatch")
+	public ModelAndView next(@PathVariable int id) {
 		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
 		result.addObject("match", matchService.getMatchById(id));
-		System.out.println("Movimiento" + movimiento);
+		System.out.println("Movimiento");
 		return result;
 	}
 	

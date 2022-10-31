@@ -38,12 +38,12 @@ public class Match extends BaseEntity{
 	
 	/*@Column(name = "siguiente_movimiento")
 	private String[] sigMov; //La idea es poner aqui el movimiento de una manera pero no consigo que me funcione, puede que use otra forma al final
-
+*/
 	@Transient
 	private String[] bacteriasAmover;
 	@Transient
 	private String[] aDisco;
-*/
+
 	@Transient
 	private String movimiento;
 	
