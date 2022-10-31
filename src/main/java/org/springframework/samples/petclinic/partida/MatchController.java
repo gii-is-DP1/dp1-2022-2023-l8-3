@@ -25,9 +25,9 @@ public class MatchController {
 	}
 	
 	@GetMapping(value = "/{idMatch}/currentMatch")
-	public ModelAndView showCurrentMatch(@PathVariable int id) {
+	public ModelAndView showCurrentMatch(@PathVariable int idMatch) {
 		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
-		result.addObject("match", matchService.getMatchById(id));
+		result.addObject("match", matchService.getMatchById(idMatch));
 		return result;
 	}
 	
@@ -39,11 +39,19 @@ public class MatchController {
 		return result;
 	}
 	
-	@PostMapping(value = "/{id}/currentMatch")
-	public ModelAndView next(@PathVariable int id) {
+//	@PostMapping(value = "/{idMatch}/currentMatch")
+	@PostMapping(value = "/currentMatch")
+	public ModelAndView next(/*@PathVariable int idMatch,*/ Match match) {
 		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
-		result.addObject("match", matchService.getMatchById(id));
-		System.out.println("Movimiento");
+		result.addObject("match", matchService.getMatchById(1));
+		
+		String[] st = match.getBacteriasAmover();
+		String[] st2 = match.getADisco();
+
+		for(String s: st) System.out.println(s);
+		
+		for(String s: st2) System.out.println(s);
+
 		return result;
 	}
 	

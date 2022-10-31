@@ -36,9 +36,6 @@ public class Match extends BaseEntity{
 	private static final Integer PRIMER_JUGADOR = 0;
 	private static final int SEGUNDO_JUGADOR = 1;
 	
-	/*@Column(name = "siguiente_movimiento")
-	private String[] sigMov; //La idea es poner aqui el movimiento de una manera pero no consigo que me funcione, puede que use otra forma al final
-*/
 	@Transient
 	private String[] bacteriasAmover;
 	@Transient

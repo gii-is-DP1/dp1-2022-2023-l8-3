@@ -4,113 +4,31 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
+
+
 <petclinic:layout pageName="currentMatch">
-<!--
-	<form:form class="tablero" modelAttribute="match" onsubmit="return validate()">
-		<h2>Partida en curso</h2>
-	-->
 
 	<form:form class="tablero" modelAttribute="match" >
 		<h2>Partida en curso</h2>
 
 		<div class="seccion1">
+
 			<div class="jugador1">
-				<h4>${match.jugador1.user.username}</h4>
-
-				<div class="bacterias">
-					<h4>N. bacterias: ${match.jugador2.bacterias}</h4>
-					<c:forEach var="i" begin="1" end="${match.jugador1.bacterias}" >
-						<div class="smallbacteria"></div>
-					</c:forEach>
-				</div>
-
-				<div class="sarcinas">
-					<h4>N. sarcinas: ${match.jugador2.sarcinas}</h4>
-					<c:forEach var="i" begin="1" end="${match.jugador1.sarcinas}" >
-						<div class="smallsarcina"></div>
-					</c:forEach>
-				</div>
-
-				<h4>Contaminacion: ${match.jugador1.numeroDeContaminacion}</h4>
+				<c:set var="jugador" value="${match.jugador1}"/>
+				<petclinic:seccionJugador usuario="${jugador.user.username}" numeroBacterias="${jugador.bacterias}"
+					 numeroSarcinas="${jugador.sarcinas}" contaminacion="${jugador.numeroDeContaminacion}"/>
 			</div>
 
-
-			<div class="discos">
-
+			<div class="discos disable-select">
 				<c:forEach var="i" begin="0" end="6" >
-					<div class="disco ${match.chooseTag(i)}">
-						<form:checkbox path="aDisco"  id="disco${i}" value="D${i}"/>
-						<label for="disco${i}" class="pointer">a</label>
-
-						<div class="bs1">
-							<c:forEach var="b1" begin="1" end="${match.discos[i].numBact1}">
-
-								<c:choose>
-									<c:when test="${match.turnoJugador1}"><!-- Falta poner clase bacteria pointer al label que no esta-->
-										<div>
-											<form:checkbox path="match.bacteriasAmover" id="j1bacteria${b1}disco${i}" value="BJ1-D${i}"/>
-											<label for="j1bacteria${b1}disco${i}" class="bacteria pointer">a</label>
-
-										</div>
-									</c:when>
-									<c:otherwise>
-										<div class="bacteria"></div>
-									</c:otherwise>
-								</c:choose>
-
-							</c:forEach>
-
-							<c:forEach var="s1" begin="1" end="${match.discos[i].numSarc1}">
-								<div class="sarcina"></div>
-							</c:forEach>
-						</div>
-
-						<div class="bs2">
-							<c:forEach var="b2" begin="1" end="${match.discos[i].numBact2}">
-
-								<c:choose>
-									<c:when test="${match.turnoJugador1}">
-										<div class="bacteria"></div>
-									</c:when>
-									<c:otherwise>
-										<form:checkbox path="match.bacteriasAmover" id="j2bacteria${b1}disco${i}" value="BJ2-D${i}"/>
-										<label for="j2bacteria${b1}disco${i}" class="bacteria pointer">a</label>
-
-									</c:otherwise>
-								</c:choose>
-
-							</c:forEach>
-
-							<c:forEach var="s2" begin="1" end="${match.discos[i].numSarc2}">
-								<div class="sarcina"></div>
-							</c:forEach>
-						</div>
-
-					</div>
-
+					<petclinic:disco indexDisco="${i}" clase="disco ${match.chooseTag(i)}"/>
 				</c:forEach>
-
 			</div>
-
 
 			<div class="jugador2">
-				<h4>${match.jugador2.user.username}</h4>
-
-				<div class="bacterias">
-					<h4>N. bacterias: ${match.jugador2.bacterias}</h4>
-					<c:forEach var="i" begin="1" end="${match.jugador2.bacterias}" >
-						<div class="smallbacteria"></div>
-					</c:forEach>
-				</div>
-
-				<div class="sarcinas">
-					<h4>N. sarcinas: ${match.jugador2.sarcinas}</h4>
-					<c:forEach var="i" begin="1" end="${match.jugador2.sarcinas}" >
-						<div class="smallsarcina"></div>
-					</c:forEach>
-				</div>
-
-				<h4>Contaminacion: ${match.jugador2.numeroDeContaminacion}</h4>
+				<c:set var="jugador" value="${match.jugador2}"/>
+				<petclinic:seccionJugador usuario="${jugador.user.username}" numeroBacterias="${jugador.bacterias}"
+					 numeroSarcinas="${jugador.sarcinas}" contaminacion="${jugador.numeroDeContaminacion}"/>
 			</div>
 
 		</div>
@@ -126,12 +44,10 @@
 			</div>
 
 			<div class="botones">
+				<input type="hidden" name="id" value="${match.id}"/>
 				<input type="submit" value="Siguiente fase"/>
-
-<!--
-				<button type="button" name="button">Abandonar partida</button> -->
-
 			</div>
+
 		</div>
 
 	</form:form>
@@ -195,7 +111,6 @@
 		--jugadores:min(calc(100vw - var(--discos-vw))/2, calc(100vh - var(--discos-vh))/2);
 		--color-j1:#B00B13;
 		--color-j2:SlateBlue;
-
 	}
 
 	input[type=checkbox] {
@@ -206,8 +121,9 @@
 	  border: solid 2px purple;
 	  background-color: purple;
 		color: purple;
-		opacity: 20%;
+		/*opacity: 20%;*/
 	}
+
 	label{
 		position: absolute ;
 	  top: 0;
@@ -218,6 +134,14 @@
   	width: 100%;
 		border-radius: 50%;
 	}
+
+	.disable-select {
+	  -webkit-user-select: none;
+	  -moz-user-select: none;
+	  -ms-user-select: none;
+	  user-select: none;
+	}
+
 	.pointer{
 		cursor: pointer;
 	}
