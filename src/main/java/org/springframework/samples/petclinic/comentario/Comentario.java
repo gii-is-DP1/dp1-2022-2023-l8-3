@@ -37,8 +37,8 @@ public class Comentario extends BaseEntity {
 	private Jugador jugador;
 	
 	@ManyToOne
-	@JoinColumn(name = "id_partida")
-	private Match partida;
+	@JoinColumn(name = "match_id")
+	private Match match;
 	
 	//---------------------------------------------------------------------------------------------//
 	
@@ -55,7 +55,7 @@ public class Comentario extends BaseEntity {
 	}
 	
 	public Match getPartida() {
-		return partida;
+		return match;
 	}
 	
 	//---------------------------------------------------------------------------------------------//

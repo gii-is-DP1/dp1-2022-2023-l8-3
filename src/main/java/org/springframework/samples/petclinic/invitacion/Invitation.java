@@ -22,7 +22,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "invitaciones")
-public class Invitation extends BaseEntity{
+public class Invitacion extends BaseEntity{
     
     @Column(name="fechahora")
     @DateTimeFormat(pattern = "yyyy/MM/dd")
@@ -36,7 +36,7 @@ public class Invitation extends BaseEntity{
     
     @ManyToOne
     @JoinColumn(name = "partida_id")
-    private Match partida;
+    private Match match;
     
     @ManyToOne
     @JoinColumn(name = "jugador_id")
