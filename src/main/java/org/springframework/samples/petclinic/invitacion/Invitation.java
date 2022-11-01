@@ -22,7 +22,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "invitaciones")
-public class Invitacion extends BaseEntity{
+public class Invitation extends BaseEntity{
     
     @Column(name="fechahora")
     @DateTimeFormat(pattern = "yyyy/MM/dd")

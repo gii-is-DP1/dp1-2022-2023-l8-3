@@ -15,8 +15,8 @@ import javax.persistence.Table;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.petclinic.comentario.Comentario;
-import org.springframework.samples.petclinic.disco.Disco;
-import org.springframework.samples.petclinic.invitacion.Invitacion;
+import org.springframework.samples.petclinic.disco.Dish;
+import org.springframework.samples.petclinic.invitacion.Invitation;
 import org.springframework.samples.petclinic.jugador.Jugador;
 import org.springframework.samples.petclinic.model.BaseEntity;
 
@@ -43,7 +43,7 @@ public class Match extends BaseEntity{
 	private Boolean esPrivada;
 	
 	// TODO
-	private Disco[] discos;
+	private Dish[] discos;
 	
 	@ManyToOne
 	@JoinColumn(name = "id_jugador1")
@@ -57,7 +57,7 @@ public class Match extends BaseEntity{
 	private List<Jugador> espectadores;
 	
 	@OneToMany(mappedBy="id")
-	private List<Invitacion> invitaciones;
+	private List<Invitation> invitaciones;
 	
 	@Column(name = "ganador_de_partida")
 	@Enumerated(EnumType.STRING)
@@ -68,11 +68,11 @@ public class Match extends BaseEntity{
 	
 	// ----------------------------------------------------------------------------------------------- //
 	
-	public Disco[] getDiscos() {
+	public Dish[] getDiscos() {
 		return discos;
 	}
 	
-	public Disco getDisco(Integer diskId) {
+	public Dish getDisco(Integer diskId) {
 		return discos[diskId];
 	}
 	

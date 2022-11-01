@@ -52,7 +52,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "disco")
-public class Disco extends BaseEntity{
+public class Dish extends BaseEntity{
 
 	@Column(name = "num_bacteria_j1")        
 	private Integer numBact1;
