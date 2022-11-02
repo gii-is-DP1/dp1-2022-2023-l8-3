@@ -36,7 +36,7 @@ public class Invitacion extends BaseEntity{
     
     @ManyToOne
     @JoinColumn(name = "partida_id")
-    private Match partida;
+    private Match match;
     
     @ManyToOne
     @JoinColumn(name = "jugador_id")
