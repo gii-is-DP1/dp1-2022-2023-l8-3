@@ -13,7 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -60,12 +59,6 @@ public class Match extends BaseEntity{
 
 	@Column(name = "es_privada")
 	private Boolean esPrivada;
-	
-	/*
-	@OneToMany
-	@OrderColumn()
-	private Disco[] discos;
-	*/
   
 	@Column(name = "turn")
 	private Integer turn;
@@ -163,6 +156,14 @@ public class Match extends BaseEntity{
 	
 	public List<String> getTurns() {
 		return turns;
+	}
+	
+	public Boolean itIsPropagationPhase() {
+		return getTurns().get(getTurn()).contains("PROPAGATION");
+	}
+	
+	public Boolean itIsFirstPlayerTurn() {
+		return getTurns().get(getTurn()).equals("PROPAGATION_RED_PLAYER");
 	}
 	
 	// ----------------------------------------------------------------------------------------------- //

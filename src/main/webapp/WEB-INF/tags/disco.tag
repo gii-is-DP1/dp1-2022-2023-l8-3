@@ -8,18 +8,17 @@
 <%@ attribute name="indexDisco" required="true" rtexprvalue="true"
               description="Numero del disco" %>
 
-
 <c:set var="esteDisco" value="${match.getDisco(indexDisco)}"/>
 <c:set var="numeroDisco" value="${indexDisco + 1}"/>
 
 <div class="${clase}">
-  <form:checkbox path="aDisco"  id="disco${numeroDisco}" value="D${numeroDisco}"/>
-  <label for="disco${numeroDisco}" class="pointer">a</label>
+	<form:checkbox path="aDisco"  id="disco${numeroDisco}" value="D${numeroDisco}"/>
+	<label for="disco${numeroDisco}" class="pointer">a</label>
 
   <div class="bs1">
     <c:forEach var="b1" begin="1" end="${esteDisco.numBact1}">
 
-      <petclinic:bacterias name="bacteriasAmover" divJugador1="${true}" turnoJugador1="${match.turnoJugador1}"
+      <petclinic:bacterias name="bacteriasAmover" divJugador1="${true}" turnoJugador1="${match.itIsFirstPlayerTurn()}" fasePropagacion="${match.itIsPropagationPhase()}"
         numeroDisco="${numeroDisco}" indexBacteria="${b1}"/>
 
     </c:forEach>
@@ -31,8 +30,8 @@
   <div class="bs2">
     <c:forEach var="b2" begin="1" end="${esteDisco.numBact2}">
 
-      <petclinic:bacterias name="bacteriasAmover" divJugador1="${false}" turnoJugador1="${match.turnoJugador1}"
-        numeroDisco="${numeroDisco}" indexBacteria="${b1}"/>
+      <petclinic:bacterias name="bacteriasAmover" divJugador1="${false}" turnoJugador1="${match.itIsFirstPlayerTurn()}" fasePropagacion="${match.itIsPropagationPhase()}"
+        numeroDisco="${numeroDisco}" indexBacteria="${b2}"/>
 
     </c:forEach>
     <c:forEach var="s2" begin="1" end="${esteDisco.numSarc2}">

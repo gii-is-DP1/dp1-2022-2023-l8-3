@@ -41,50 +41,31 @@ public class MatchController {
 		}
 		return result;
 	}
+	// NOTA: Crear un controlador POST para cuando el usuario pulse "MOVE BACTERIA" y otro para cuando
+	// el usuario pase a la siguiente fase. El POST llamará al método moveBacteria.
+	@PostMapping("/{idMatch}/currentMatch")
+	public RedirectView nextPhase(@PathVariable int idMatch, Match auxMatch) {
+		RedirectView result = new RedirectView();
+		Match match = matchService.getMatchById(idMatch);
+		
+		if(match.getTurns().get(match.getTurn()).equals("FIN")) {
+			result = new RedirectView("/matches/{idMatch}/completedMatch");
+		} else {
+			if(match.getTurns().get(match.getTurn()).startsWith("PROPAGATION")) {
+				result.addStaticAttribute("bacterias", auxMatch.getBacteriasAmover());
+				result.addStaticAttribute("discos", auxMatch.getADisco());
+			}
+			match.nextTurn();
+			matchService.saveMatch(match);
+			result.setUrl("/matches/{idMatch}/currentMatch");
+		}
+		return result;
+	}
 	
 	@GetMapping(value = "/{idMatch}/completedMatch")
 	public ModelAndView completedMatch(@PathVariable int idMatch) {
 		ModelAndView result = new ModelAndView("/matches/completedMatch"); // aún no está hecha la vista
 		result.addObject("match", matchService.getMatchById(idMatch));
-		return result;
-	}
-	
-	@RequestMapping("/{idMatch}/nextPhase")
-	public RedirectView nextPhase(@PathVariable int idMatch) {
-		RedirectView result;
-		Match match = matchService.getMatchById(idMatch);
-		if(match.getTurns().get(match.getTurn()).equals("FIN")) {
-			result = new RedirectView("/matches/{idMatch}/completedMatch");
-		} else {
-			match.nextTurn();
-			matchService.saveMatch(match);
-			result = new RedirectView("/matches/{idMatch}/currentMatch");
-		}
-		return result;
-	}
-	
-  
-	//Temporales
-	@GetMapping(value = "/currentMatch")
-	public ModelAndView showCurrentMatch() {
-		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
-		result.addObject("match", matchService.getMatchById(1));
-		return result;
-	}
-	
-
-	@PostMapping(value = "/currentMatch")
-	public ModelAndView next(Match match) {
-		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
-		result.addObject("match", matchService.getMatchById(1));
-		
-		String[] st = match.getBacteriasAmover();
-		String[] st2 = match.getADisco();
-
-		for(String s: st) System.out.println(s);
-		
-		for(String s: st2) System.out.println(s);
-
 		return result;
 	}
 	
