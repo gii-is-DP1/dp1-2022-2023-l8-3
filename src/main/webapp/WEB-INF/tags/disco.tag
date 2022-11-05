@@ -8,7 +8,6 @@
 <%@ attribute name="indexDisco" required="true" rtexprvalue="true"
               description="Numero del disco" %>
 
-
 <c:set var="esteDisco" value="${match.getDisco(indexDisco)}"/>
 <c:set var="numeroDisco" value="${indexDisco + 1}"/>
 
@@ -32,6 +31,7 @@
     <c:forEach var="b2" begin="1" end="${esteDisco.numBact2}">
       <div class="bacteria"></div>
     </c:forEach>
+    
     <c:forEach var="s2" begin="1" end="${esteDisco.numSarc2}">
       <div class="sarcina"></div>
     </c:forEach>

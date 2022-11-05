@@ -12,6 +12,8 @@
               description="Numero del disco" %>
 <%@ attribute name="turnoJugador1" required="true" rtexprvalue="true" type="java.lang.Boolean"
               description="Indica si es el turno del jugador 1" %>
+<%@ attribute name="fasePropagacion" required="true" rtexprvalue="true" type="java.lang.Boolean"
+              description="Indica si estamos en la fase de propagacion" %>          
 
 <spring:bind path="${name}">
 
@@ -20,14 +22,14 @@
   <c:set var="valueCheckbox" value="${jugador}-D${numeroDisco}-B${indexBacteria}"/>
 
   <c:choose>
-    <c:when test="${turnoJugador1 && jugador == 'J1'}">
+    <c:when test="${fasePropagacion && turnoJugador1 && jugador == 'J1'}">
       <div>
         <form:checkbox path="${name}" id="${idCheckbox}" value="${valueCheckbox}"/>
         <label for="${idCheckbox}" class="bacteria pointer">${indexBacteria}</label>
       </div>
     </c:when>
 
-    <c:when test="${!turnoJugador1 && jugador == 'J2'}">
+    <c:when test="${fasePropagacion && !turnoJugador1 && jugador == 'J2'}">
       <div>
         <form:checkbox path="${name}" id="${idCheckbox}" value="${valueCheckbox}"/>
         <label for="${idCheckbox}" class="bacteria pointer">${indexBacteria}</label>

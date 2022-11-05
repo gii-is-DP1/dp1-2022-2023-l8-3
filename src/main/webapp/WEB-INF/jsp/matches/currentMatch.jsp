@@ -47,8 +47,8 @@
 			</div>
 
 			<div class="botones">
-				<input type="hidden" name="id" value="${match.id}"/>
 				<input type="submit" value="Siguiente fase"/>
+				<a href="/matches/${match.id}/completedMatch"><input type="button" value="Abandonar partida"/></a>
 			</div>
 
 		</div>
