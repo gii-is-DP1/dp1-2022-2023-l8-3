@@ -2,7 +2,13 @@ package org.springframework.samples.petclinic.partida;
 
 
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.statistics.Achievement;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +24,9 @@ import org.springframework.web.servlet.view.RedirectView;
 public class MatchController {
 	
 	private static final String CURRENT_MATCH_VIEW = "/matches/currentMatch";
+	private static final String CREATE_MATCH_VIEW = "/matches/createMatch";
+	private static final String WAIT_MATCH_VIEW = "/matches/waitForMatch";
+
 	private MatchService matchService;
 	
 	@Autowired
@@ -25,8 +34,32 @@ public class MatchController {
 		this.matchService = matchService;
 	}
 	
+//Usar estas dos funciones cuando creeis el crear partida bien
+	@GetMapping(value = "/createMatch")
+	public ModelAndView createNewMatch() {
+		ModelAndView result = new ModelAndView(CREATE_MATCH_VIEW);
+		Match match = new Match();
+		System.out.println("pito "+match.getId());
+		result.addObject("match", match);
+		return result;
+	}
+	@PostMapping(value = "/createMatch")
+	public ModelAndView createMatch(@Valid Match match, BindingResult br ) {
+		ModelAndView result;
+		if(br.hasErrors()) {
+			result = new ModelAndView(CREATE_MATCH_VIEW, br.getModel());
+			result.addObject("match", match);
+		} else {
+//			guardar match
+			result = new ModelAndView(WAIT_MATCH_VIEW, br.getModel());
+			System.out.println(match.getId());
+			result.addObject("match", match);
+		}
+		return result;
+	}
+
 	@GetMapping(value = "/{idMatch}/currentMatch")
-	public ModelAndView showCurrentMatch(@PathVariable int idMatch) {
+	public ModelAndView showCurrentMatch2(@PathVariable int idMatch) {
 		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
 		Match match = matchService.getMatchById(idMatch);
 		result.addObject("match", match);
@@ -39,6 +72,37 @@ public class MatchController {
 		} else {
 			// final del juego
 		}
+
+		return result;
+	}
+
+	
+	@PostMapping(value = "/{idMatch}/currentMatch")
+	public ModelAndView showCurrentMatch(@PathVariable int idMatch, Match newMatch) {
+		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
+		Match match = matchService.getMatchById(idMatch);
+		
+		result.addObject("match", match);
+		if(match.getTurn() == 0 || match.getTurns().get(match.getTurn()).startsWith("PROPAGATION")) {
+			// redireccionar a "/{idMatch}/currentMatch/{idPlayer}/propagationPhase", siendo idPlayer el jugador al que le toque
+		} else if(match.getTurns().get(match.getTurn()).equals("BINARY")) {
+			// redireccionar a "/{idMatch}/currentMatch/binaryPhase"
+		} else if(match.getTurns().get(match.getTurn()).equals("POLLUTION")) {
+			// redireccionar a "/{idMatch}/currentMatch/pollutionPhase"
+		} else {
+			// final del juego
+		}
+		
+		//Movimientos
+		System.out.println("AAAAAA"+newMatch.getDisco1());
+		System.out.println("AAAAAA"+newMatch.getDisco2());
+		System.out.println("AAAAAA"+newMatch.getDisco3());
+		System.out.println("AAAAAA"+newMatch.getDisco4());
+		System.out.println("AAAAAA"+newMatch.getDisco5());
+		System.out.println("AAAAAA"+newMatch.getDisco6());
+		System.out.println("AAAAAA"+newMatch.getDisco7());
+		System.out.println(newMatch.getADisco()[0]);
+
 		return result;
 	}
 	// NOTA: Crear un controlador POST para cuando el usuario pulse "MOVE BACTERIA" y otro para cuando
@@ -62,6 +126,7 @@ public class MatchController {
 		return result;
 	}
 	
+
 	@GetMapping(value = "/{idMatch}/completedMatch")
 	public ModelAndView completedMatch(@PathVariable int idMatch) {
 		ModelAndView result = new ModelAndView("/matches/completedMatch"); // aún no está hecha la vista
@@ -69,4 +134,5 @@ public class MatchController {
 		return result;
 	}
 	
+
 }

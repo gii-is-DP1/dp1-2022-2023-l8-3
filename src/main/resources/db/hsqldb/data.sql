@@ -79,9 +79,9 @@ INSERT INTO visits(id,pet_id,visit_date,description) VALUES (3, 8, '2013-01-03',
 INSERT INTO visits(id,pet_id,visit_date,description) VALUES (4, 7, '2013-01-04', 'spayed');
 
 INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,numero_De_Contaminacion,numero_de_bacterias,numero_de_sarcinas)
-VALUES(1,'David','Dana','davdancab',true,0,20,4);
+VALUES(1,'David','Dana','davdancab',true,0,9,3);
 INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,numero_De_Contaminacion,numero_de_bacterias,numero_de_sarcinas)
-VALUES(2,'Juan Jesus','Martin','juamarher',false,0,20,4);
+VALUES(2,'Juan Jesus','Martin','juamarher',false,0,9,3);
 INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,numero_De_Contaminacion,numero_de_bacterias,numero_de_sarcinas)
 VALUES(3,'Manuel','Ortega','manortgar',true,0,20,4);
 INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,numero_De_Contaminacion,numero_de_bacterias,numero_de_sarcinas)
@@ -96,13 +96,24 @@ INSERT INTO achievement(id,name,threshold,description,badge_image) VALUES
 	'https://bit.ly/proGamer');
 
 
-INSERT INTO matches(id, turno_primer_jugador, id_jugador1, id_jugador2, es_privada, inicio_de_partida, fin_de_partida, ganador_de_partida, turn)
-VALUES(1, true, 1, 2, true, '1999-04-12 10:12:12.55', '1999-04-12 10:12:12.55', 'UNDEFINED', 0);
+INSERT INTO matches(id, id_jugador1, id_jugador2, es_privada, inicio_de_partida, fin_de_partida, ganador_de_partida, turn)
+VALUES(1, 1, 2, true, '1999-04-12 10:12:12.55', '1999-04-12 10:12:12.55', 'UNDEFINED', 5);
 
 INSERT INTO disco VALUES(1,4,0,0,0,1,1);
 INSERT INTO disco VALUES(2,1,3,0,0,0,1);
 INSERT INTO disco VALUES(3,2,1,0,0,0,1);
-INSERT INTO disco VALUES(4,0,2,0,1,0,1);
+INSERT INTO disco VALUES(4,0,3,0,1,0,1);
 INSERT INTO disco VALUES(5,0,0,0,0,0,1);
 INSERT INTO disco VALUES(6,2,0,0,0,0,1);
 INSERT INTO disco VALUES(7,2,4,0,0,0,1);
+
+INSERT INTO matches(id, id_jugador1, id_jugador2, es_privada, inicio_de_partida, fin_de_partida, ganador_de_partida, turn)
+VALUES(2, 3, 4, true, '1999-04-12 10:12:12.55', '1999-04-12 10:12:12.55', 'UNDEFINED', 0);
+
+INSERT INTO disco VALUES(8,1,0,0,0,0,2);
+INSERT INTO disco VALUES(9,0,0,0,0,0,2);
+INSERT INTO disco VALUES(10,0,0,0,0,0,2);
+INSERT INTO disco VALUES(11,0,0,0,0,0,2);
+INSERT INTO disco VALUES(12,0,0,0,0,0,2);
+INSERT INTO disco VALUES(13,0,0,0,0,0,2);
+INSERT INTO disco VALUES(14,0,1,0,0,0,2);
