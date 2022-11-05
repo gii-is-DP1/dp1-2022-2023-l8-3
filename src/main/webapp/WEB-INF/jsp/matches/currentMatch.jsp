@@ -8,7 +8,7 @@
 
 <petclinic:layout pageName="currentMatch">
 
-	<form:form class="tablero" modelAttribute="match" >
+	<form:form class="tablero" modelAttribute="match" onsubmit="return validate()">
 		<h2>Partida en curso</h2>
 
 		<div class="seccion1">
@@ -60,45 +60,117 @@
 </petclinic:layout>
 
 <script type="text/javascript">
-/*
-//No necesario creo
-	const discos = document.getElementsByClassName("disco");
+	const discoLabels = document.getElementsByClassName('discoLabel');
+	const taLabels = document.getElementsByClassName('taLabel');
+	const inputs = document.getElementsByClassName("inputs");
 
-	for (let i = 0; i < discos.length; i++) {
-		discos[i].onclick = (e) => {
-			console.log("a");
-			const input = e.target.querySelector('input');
-			input.checked = !input.checked;
+
+	function toggleCheckbox(element){
+
+		var checkedLabel = element.parentNode;
+
+		for (var i = 0; i < discoLabels.length; i++) {
+			if(element.checked){
+				discoLabels[i].classList.add("noDisplay");
+				var checkedDiskIndex = parseInt(element.id.substring(5));
+				var diskIndex = parseInt(discoLabels[i].firstElementChild.id.substring(5));
+
+				if(isNextTo(checkedDiskIndex, diskIndex)){
+						taLabels[i].classList.remove("noDisplay");
+				}
+
+			}else{
+				discoLabels[i].classList.remove("noDisplay");
+				taLabels[i].classList.add("noDisplay");
+
+				//Eliminamos los valores de cada input
+				for (var j = 0; j < inputs.length; j++) {
+					inputs[j].value="0";
+				}
+
+			}
 		}
+		checkedLabel.classList.remove("noDisplay");
 	}
-*/
+
+	const map = new Map();
+
+	map.set(1, [2,3,4]);
+	map.set(2, [1,4,5]);
+	map.set(3, [1,4,6]);
+	map.set(4, [1,2,3,5,6,7]);
+	map.set(5, [2,4,7]);
+	map.set(6, [3,4,7]);
+	map.set(7, [4,5,6]);
+
+	function isNextTo(i,j){
+		var arr = map.get(i);
+		return arr.includes(j);
+	}
 
 //Comprobar
+	const checkboxes = document.getElementsByClassName("checkbox");
 	function validate(){
-		const c1 = document.getElementsByName("bacteria");
-		const c2 = document.getElementsByName("disco");
+		console.log("Validating submited values");
 
-		let cb = [];
-		let cd = [];
-		for (var i = 0; i < c1.length; i++) {
-			if (c1[i].checked) {
-				cb.push(c1[i].value);
+		var n = 0;
+		var checkedBox = null;
+		for (var i = 0; i < checkboxes.length; i++) {
+			if (checkboxes[i].checked) {
+				n++;
+				checkedBox = checkboxes[i];
 			}
 		}
-		for (var i = 0; i < c2.length; i++) {
-			if (c2[i].checked) {
-				cd.push(c2[i].value);
+
+		//Solo puede haber 1 checkbox checkeado
+		if(n!=1){
+			console.log("Mas de 1 checkbox checkeado");
+			return false;
+		}
+
+		//checkedBox no puede ser null a partir de aqui
+
+		var discoLabels = document.getElementsByClassName('discoLabel');
+		var atLeastAnInputWithValue = false;
+		for (var i = 0; i < discoLabels.length; i++) {//Por cada discoLabel, comprobamos cuales estan al lado del checkbox checkeado
+			var checkedDiskIndex = parseInt(checkedBox.id.substring(5));
+			var diskIndex = parseInt(discoLabels[i].firstElementChild.id.substring(5));
+
+			var input = parseInt(discoLabels[i].parentNode.childNodes[7].firstElementChild.firstElementChild.value);
+			if(isNaN(input)){
+				console.log("Un input: "+ input +" , tiene un valor que no es un numero");
+				return false;
+			}
+
+			if(isNextTo(checkedDiskIndex, diskIndex)){
+				//Validamos el contenido de los inputs de cada disco. Valores validos: [0,4]
+				if(!(input>=0 && input<5)) {
+					console.log("Valor ilegal en un input: "+ input +" ,  a enviar");
+					return false;
+				}else if (input!=0) {
+					atLeastAnInputWithValue = true;
+				}
+
+
+			}else{
+				//No puede haber contenido en estos inputs
+				if(input!=0){
+					console.log("Hay un input: "+ input +" ,  ilegal con contenido");
+					return false;
+				}
 			}
 		}
+
+
+		if (!atLeastAnInputWithValue) {
+				console.log("All values to send were 0. Illegal");
+				return false;
+		}
+
 
 		if(cd.length != 1 || cb.length == 0) return false;
 
-		let disco = cb[0].id.substring(11);
-		for (var i = 1; i < cb.length; i++) {
-			let disco2 = db[i].id.substring(11);
-			if(disco != disco2) return false;
-		}
-
+		return true;
 	}
 
 
@@ -116,6 +188,9 @@
 		--color-j2:SlateBlue;
 
 	}
+	.noDisplay{
+		display:none;
+	}
 
 	input[type=checkbox] {
 	 display: initial;
@@ -127,7 +202,7 @@
 		color: purple;
 		opacity: 20%;
 	}
-	label{
+	.discoLabel{
 		position: absolute ;
 	  top: 0;
 	  bottom: 0;
@@ -137,7 +212,9 @@
   	width: 100%;
 		border-radius: 50%;
 	}
-
+	.taLabel{
+		z-index: 4;
+	}
 	.disable-select {
 	  -webkit-user-select: none;
 	  -moz-user-select: none;
@@ -212,6 +289,9 @@
 		color:var(--color-disco);
 
 	}
+	select{
+		z-index: 4;
+	}
 
 	.col23{
 		grid-column-start: 2;
@@ -233,9 +313,7 @@
 		border-radius: 50%;
 		border: none;
 		position: relative;
-		z-index: 4;
 	}
-
 	.sarcina {
 		width: min(calc(var(--discos-vw)/10),calc(var(--discos-vh)/10));
 		height: min(calc(var(--discos-vw)/10),calc(var(--discos-vh)/10));

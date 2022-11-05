@@ -28,40 +28,43 @@
 					<span>Home</span>
 				</petclinic:menuItem>
 
-				<petclinic:menuItem active="${name eq 'owners'}" url="/owners/find"
-					title="find owners">
-					<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-					<span>Find owners</span>
+				<petclinic:menuItem active="${name eq ''}" url="/matches/createMatch"
+					title="crear partida">
+					<span class="glyphicon glyphicon-certificate" aria-hidden="true"></span>
+					<span>Crear partida</span>
 				</petclinic:menuItem>
 
-				<petclinic:menuItem active="${name eq 'vets'}" url="/vets"
-					title="veterinarians">
-					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-					<span>Veterinarians</span>
+				<petclinic:menuItem active="${name eq ''}" url="/"
+					title="buscar partidas">
+					<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+					<span>Buscar partida</span>
 				</petclinic:menuItem>
-				
-				<petclinic:menuItem active="${name eq 'jugadores'}" url="/jugadores"
-					title="jugadores">
+
+				<petclinic:menuItem active="${name eq ''}" url="/"
+					title="listar partidas">
 					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-					<span>Jugadores</span>
+					<span>Listar partidas</span>
 				</petclinic:menuItem>
-				
-				<petclinic:menuItem active="${name eq 'achievements'}" url="/statistics/achievements/" title="achievements" dropdown="${true}">										
+
+				<petclinic:menuItem active="${name eq 'achievements'}" url="/statistics/achievements/" title="achievements" dropdown="${true}">
 					<ul class="dropdown-menu">
 						<li>
-							<a href="<c:url value="/statistics/achievements/" />">Achievements listing</a>		
+							<a href="<c:url value="/statistics/achievements/" />">Achievements listing</a>
 						</li>
 						<li class="divider"></li>
-						<li>								
-							<a href="<c:url value="/statistics/achievements/" />">My Achievements <span class="glyphicon glyphicon-certificate" aria-hidden="true"></span></a>		
+						<li>
+							<a href="<c:url value="/statistics/achievements/" />">My Achievements <span class="glyphicon glyphicon-certificate" aria-hidden="true"></span></a>
 						</li>
 					</ul>
 				</petclinic:menuItem>
 
+				<petclinic:menuItem active="${name eq ''}" url="/"
+					title="amigos">
+					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+					<span>Amigos</span>
+				</petclinic:menuItem>
+
 			</ul>
-
-
-
 
 			<ul class="nav navbar-nav navbar-right">
 				<sec:authorize access="!isAuthenticated()">
@@ -70,7 +73,7 @@
 				</sec:authorize>
 				<sec:authorize access="isAuthenticated()">
 					<li class="dropdown"><a href="#" class="dropdown-toggle"
-						data-toggle="dropdown"> <span class="glyphicon glyphicon-user"></span> 
+						data-toggle="dropdown"> <span class="glyphicon glyphicon-user"></span>ï¿½
 							<strong><sec:authentication property="name" /></strong> <span
 							class="glyphicon glyphicon-chevron-down"></span>
 					</a>
@@ -96,8 +99,8 @@
 								</div>
 							</li>
 							<li class="divider"></li>
-<!-- 							
-                            <li> 
+<!--
+                            <li>
 								<div class="navbar-login navbar-login-session">
 									<div class="row">
 										<div class="col-lg-12">

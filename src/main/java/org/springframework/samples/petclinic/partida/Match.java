@@ -39,17 +39,29 @@ public class Match extends BaseEntity{
 	private static final Integer PRIMER_JUGADOR = 0;
 	private static final int SEGUNDO_JUGADOR = 1;
 	
+	//Valores representan el numero de bacterias a sumar a discoX
 	@Transient
-	private String[] bacteriasAmover;
+	private Integer disco1;
+	@Transient
+	private String disco2;
+	@Transient
+	private String disco3;
+	@Transient
+	private String disco4;
+	@Transient
+	private String disco5;
+	@Transient
+	private String disco6;
+	@Transient
+	private String disco7;
+	
+	//Representa disco origen de donde viene (tiene que ser array por como esta hecho)
 	@Transient
 	private String[] aDisco;
 
 	@Transient
 	private String movimiento;
-	
-	@Column(name = "turno_primer_jugador")
-	private Boolean turnoJugador1;  
-	
+		
     @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
 	@Column(name = "inicio_de_partida")
 	private LocalDateTime inicioPartida;
@@ -107,7 +119,6 @@ public class Match extends BaseEntity{
 		this.invitaciones = new ArrayList<Invitacion>();
 		this.comentarios = new ArrayList<Comentario>();
 		this.ganadorPartida = GameWinner.UNDEFINED;
-		this.turnoJugador1 = true;
 		this.turn = 0;
 		createDisks();
 		createTurns();
@@ -129,6 +140,7 @@ public class Match extends BaseEntity{
 			discos.add(new Disco(this));
 		}
 	}
+	
 	
 	private void createTurns() {
 		turns = new ArrayList<String>();
@@ -213,6 +225,9 @@ public class Match extends BaseEntity{
 		}
 	}
 	
-	// ----------------------------------------------------------------------------------------------- //
+	public Boolean turnoPrimerJugador() {
+		if(turn==0 || turn==3 || turn==6) return true;
+		return false;
+	}
 	
 }
