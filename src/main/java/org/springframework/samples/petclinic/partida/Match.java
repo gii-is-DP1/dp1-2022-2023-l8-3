@@ -38,6 +38,9 @@ public class Match extends BaseEntity{
 	private static final Integer PRIMER_JUGADOR = 0;
 	private static final int SEGUNDO_JUGADOR = 1;
 	
+	@Transient
+	private String[] bacteriasAmover;
+
 	//Valores representan el numero de bacterias a sumar a discoX
 	@Transient
 	private Integer disco1;
