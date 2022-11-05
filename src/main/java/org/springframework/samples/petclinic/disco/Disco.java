@@ -59,6 +59,7 @@ public class Disco extends BaseEntity{
     @JoinColumn(name="id_match")
     private Match match;
 
+    
     public Disco(Match match) {
     	super();
 		this.numBact1 = 0;
@@ -67,7 +68,8 @@ public class Disco extends BaseEntity{
 		this.numSarc2 = 0;
 		this.numMov = 0;
 		this.match = match;
-	}    
+	}  
+	 
     
     
     public Disco() {
@@ -76,36 +78,32 @@ public class Disco extends BaseEntity{
     
     // ----------------------------------------------------------------------------------------------- //
 	
+    private Integer[] getBacterias() {
+    	return new Integer[] {numBact1, numBact2};
+    }
+    
+    private Integer[] getSarcinas() {
+    	return new Integer[] {numSarc1, numSarc2};
+    }
+    
     public Integer getNumeroDeBacterias(Integer idJugador) {
-    	return (idJugador==0) ? numBact1 : numBact2;
+		return getBacterias()[idJugador];
 	}
     
     public Integer getNumeroDeSarcinas(Integer idJugador) {
-    	return (idJugador==0) ? numSarc1 : numSarc2;
+    	return getSarcinas()[idJugador];
 	}
     
-    public void annadirBacterias(Integer idJugador, Integer adicion) {
-    	if(idJugador==0) {
-    		numBact1 += adicion;
-    	}else {
-    		numBact2 += adicion;
-    	}
+    public void annadirBacterias(Integer idJugador, Integer numeroDeBacterias) {
+		getBacterias()[idJugador] += numeroDeBacterias;
 	}
 	
-	public void eliminarBacterias(Integer idJugador, Integer adicion) {
-    	if(idJugador==0) {
-    		numBact1 -= adicion;
-    	}else {
-    		numBact2 -= adicion;
-    	}
+	public void eliminarBacterias(Integer idJugador, Integer numeroDeBacterias) {
+		getBacterias()[idJugador] -= numeroDeBacterias;
 	}
 	
 	public void annadirSarcina(Integer idJugador) {
-		if(idJugador==0) {
-    		numSarc1 ++;
-    	}else {
-    		numSarc2 ++;
-    	}	
+		getSarcinas()[idJugador] ++;
 	}
 	
 	// ----------------------------------------------------------------------------------------------- //

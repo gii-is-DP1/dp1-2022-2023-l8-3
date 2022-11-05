@@ -1,137 +1,34 @@
 <%@ page session="false" trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
+
+
 <petclinic:layout pageName="currentMatch">
-	
-	<form:form class="tablero" modelAttribute="movimiento">
+
+	<form:form class="tablero" modelAttribute="match" >
 		<h2>Partida en curso</h2>
 
 		<div class="seccion1">
+
 			<div class="jugador1">
-				<h4>${match.jugador1.user.username}</h4>
-
-				<div class="bacterias">
-					<h4>N. bacterias: ${match.jugador2.bacterias}</h4>
-					<c:forEach var="i" begin="1" end="${match.jugador1.bacterias}" >
-						<div class="smallbacteria"></div>
-					</c:forEach>
-				</div>
-
-				<div class="sarcinas">
-					<h4>N. sarcinas: ${match.jugador2.sarcinas}</h4>
-					<c:forEach var="i" begin="1" end="${match.jugador1.sarcinas}" >
-						<div class="smallsarcina"></div>
-					</c:forEach>
-				</div>
-				
-				<h4>Contaminacion: ${match.jugador1.numeroDeContaminacion}</h4>
-				
-			</div>
-			<div class="discos">
-				
-				<div class="disco">
-					<c:forEach var="i" begin="0" end="1" >
-						<div class="circulo">
-							<div class="j1">
-								<c:forEach var="j" begin="1" end="${match.discos[i].numBact1}" >
-									<div class="smallbacteria"></div>
-								</c:forEach>
-							</div>
-							<div class="j1">
-								<c:forEach var="j" begin="1" end="${match.discos[i].numSarc1}" >
-									<div class="smallsarcina"></div>
-								</c:forEach>
-							</div>
-							<div class="j2">
-								<c:forEach var="j" begin="1" end="${match.discos[i].numBact2}" >
-									<div class="smallbacteria"></div>
-								</c:forEach>
-							</div>
-							<div class="j2">
-								<c:forEach var="j" begin="1" end="${match.discos[i].numSarc2}" >
-									<div class="smallsarcina"></div>
-								</c:forEach>
-							</div>												
-						</div>
-					</c:forEach>
-				</div>
-				<div class="disco">
-					<c:forEach var="i" begin="2" end="4" >
-						<div class="circulo">
-							<div class="j1">
-								<c:forEach var="j" begin="1" end="${match.discos[i].numBact1}" >
-									<div class="smallbacteria"></div>
-								</c:forEach>
-							</div>
-							<div class="j1">
-								<c:forEach var="j" begin="1" end="${match.discos[i].numSarc1}" >
-									<div class="smallsarcina"></div>
-								</c:forEach>
-							</div>
-							<div class="j2">
-								<c:forEach var="j" begin="1" end="${match.discos[i].numBact2}" >
-									<div class="smallbacteria"></div>
-								</c:forEach>
-							</div>
-							<div class="j2">
-								<c:forEach var="j" begin="1" end="${match.discos[i].numSarc2}" >
-									<div class="smallsarcina"></div>
-								</c:forEach>
-							</div>										
-						</div>
-					</c:forEach>
-				</div>
-				<div class="disco">
-					<c:forEach var="i" begin="5" end="6" >
-						<div class="circulo">
-							<div class="j1">
-								<c:forEach var="j" begin="1" end="${match.discos[i].numBact1}" >
-									<div class="smallbacteria"></div>
-								</c:forEach>
-							</div>
-							<div class="j1">
-								<c:forEach var="j" begin="1" end="${match.discos[i].numSarc1}" >
-									<div class="smallsarcina"></div>
-								</c:forEach>
-							</div>
-							<div class="j2">
-								<c:forEach var="j" begin="1" end="${match.discos[i].numBact2}" >
-									<div class="smallbacteria"></div>
-								</c:forEach>
-							</div>
-							<div class="j2">
-								<c:forEach var="j" begin="1" end="${match.discos[i].numSarc2}" >
-									<div class="smallsarcina"></div>
-								</c:forEach>
-							</div>												
-						</div>
-					</c:forEach>
-				</div>
-
+				<c:set var="jugador" value="${match.jugador1}"/>
+				<petclinic:seccionJugador usuario="${jugador.user.username}" numeroBacterias="${jugador.bacterias}"
+					 numeroSarcinas="${jugador.sarcinas}" contaminacion="${jugador.numeroDeContaminacion}"/>
 			</div>
 
+			<div class="discos disable-select">
+				<c:forEach var="i" begin="0" end="6" >
+					<petclinic:disco indexDisco="${i}" clase="disco ${match.chooseTag(i)}"/>
+				</c:forEach>
+			</div>
 
 			<div class="jugador2">
-				<h4>${match.jugador2.user.username}</h4>
-
-				<div class="bacterias">
-					<h4>N. bacterias: ${match.jugador2.bacterias}</h4>
-					<c:forEach var="i" begin="1" end="${match.jugador2.bacterias}" >
-						<div class="smallbacteria"></div>
-					</c:forEach>
-				</div>
-
-				<div class="sarcinas">
-					<h4>N. sarcinas: ${match.jugador2.sarcinas}</h4>
-					<c:forEach var="i" begin="1" end="${match.jugador2.sarcinas}" >
-						<div class="smallsarcina"></div>
-					</c:forEach>
-				</div>
-
-				<h4>Contaminacion: ${match.jugador2.numeroDeContaminacion}</h4>
-
+				<c:set var="jugador" value="${match.jugador2}"/>
+				<petclinic:seccionJugador usuario="${jugador.user.username}" numeroBacterias="${jugador.bacterias}"
+					 numeroSarcinas="${jugador.sarcinas}" contaminacion="${jugador.numeroDeContaminacion}"/>
 			</div>
 
 		</div>
@@ -150,9 +47,10 @@
 			</div>
 
 			<div class="botones">
-				<a href="/matches/${match.id}/nextPhase"><input type="submit" value="Siguiente fase"/></a>
-				<a href="/matches/${match.id}/completedMatch"><input type="submit" value="Abandonar partida"/></a>
+				<input type="submit" value="Siguiente fase"/>
+				<a href="/matches/${match.id}/completedMatch"><input type="button" value="Abandonar partida"/></a>
 			</div>
+
 		</div>
 
 	</form:form>
@@ -208,16 +106,57 @@
 </script>
 
 <style type="text/css">
+	:root{
+		--discos-vw:40vw;
+		--discos-vh:60vh;
+		--color-disco:#878787;
+		--color-background-divs:rgba(22, 22, 26,0.2);
+		--jugadores:min(calc(100vw - var(--discos-vw))/2, calc(100vh - var(--discos-vh))/2);
+		--color-j1:#B00B13;
+		--color-j2:SlateBlue;
 
-	.circulo {
-		width: 10vw; 
-		height: 20vh; 
-		background-color: #aaa; 
-		border-radius: 50%; 
+	}
+
+	input[type=checkbox] {
+	 display: initial;
+	}
+
+	input:checked + label {
+	  border: solid 2px purple;
+	  background-color: purple;
+		color: purple;
+		opacity: 20%;
+	}
+	label{
+		position: absolute ;
+	  top: 0;
+	  bottom: 0;
+	  left: 0;
+	  right: 0;
+		height: 100%;
+  	width: 100%;
+		border-radius: 50%;
+	}
+
+	.disable-select {
+	  -webkit-user-select: none;
+	  -moz-user-select: none;
+	  -ms-user-select: none;
+	  user-select: none;
+	}
+
+	.pointer{
+		cursor: pointer;
+	}
+
+	.tablero{
+		display: block;
+	}
+
+	.seccion1, .seccion2{
 		text-align: center;
 		display: flex;
 	}
-  
 	.seccion1{
 		height: min(var(--discos-vw),var(--discos-vh));
 	}
@@ -243,23 +182,35 @@
 		display: inline-flex;
     flex-wrap: wrap;
 	}
-  
-	.discos{
-		display: flex;
-		flex-direction: column;
+
+	.discos {
+		width: min(var(--discos-vw),var(--discos-vh));
+		display: grid;
+		grid-template-columns: repeat(6, 1fr);
+		grid-template-rows: repeat(3, 1fr);
+		column-gap: min(calc(var(--discos-vw)/50),calc(var(--discos-vh)/50));
+		justify-content: center;
+		padding: 1em;
 		border-radius: 10px;
 		background-color: var(--color-background-divs);
-		justify-content: space-between;
 	}
-  
+
 	.disco {
+		width: min(calc(var(--discos-vw)/3.2),calc(var(--discos-vh)/3.2));
+		height: min(calc(var(--discos-vw)/3.2),calc(var(--discos-vh)/3.2));
+
+		background-color: var(--color-disco);
+		border: 1px solid black;
+		border-radius: 50%;
 		display: flex;
 		align-items: center;
 		grid-column-end: span 2;
 		justify-content: space-evenly;
 		padding: auto;
+
 		position:relative;
 		color:var(--color-disco);
+
 	}
 
 	.col23{
@@ -296,102 +247,14 @@
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: center;
-		word-break:break-all;
 	}
 
-	:root{
-		--discos-vw:40vw;
-		--discos-vh:60vh;
-		--color-disco:#878787;
-		--color-background-divs:rgba(22, 22, 26,0.2);
-		--jugadores:min(calc(100vw - var(--discos-vw))/2, calc(100vh - var(--discos-vh))/2);
-		--color-j1:#B00B13;
-		--color-j2:SlateBlue;
-	}
-
-	input[type=checkbox] {
-	 display: none;
-	}
-
-	input:checked + label {
-	  border: solid 2px purple;
-	  background-color: purple;
-		color: purple;
-		opacity: 20%;
-	}
-	label{
-		position: absolute ;
-	  top: 0;
-	  bottom: 0;
-	  left: 0;
-	  right: 0;
-		height: 100%;
-  	width: 100%;
-		border-radius: 50%;
-	}
-	.pointer{
-		cursor: pointer;
-	}
-
-	.tablero{
-		display: block;
-	}
-
-	.seccion1, .seccion2{
-		text-align: center;
-		display: flex;
-	}
-	.seccion1{
-		height: min(var(--discos-vw),var(--discos-vh));
-	}
-
-	.seccion1 div{
-		margin:0 auto 0 auto;
-	}
-
-	.jugador1, .jugador2{
-		width: var(--jugadores);
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-		padding-top:100px;
-		padding-bottom: 100px;
-		padding-left: 10px;
-		padding-right: 10px;
-		border-radius: 10px;
-		background-color: var(--color-background-divs);
-	}
-	
-
-	.bacterias, .sarcinas{
-		display: inline-flex;
-    flex-wrap: wrap;
-	}
-
-
-
-	.bacteria {
-		width: min(calc(var(--discos-vw)/15),calc(var(--discos-vh)/15));
-		height: min(calc(var(--discos-vw)/15),calc(var(--discos-vh)/15));
-		border-radius: 50%;
-		border: none;
-		position: relative;
-		z-index: 4;
-	}
-
-	.sarcina {
-		width: min(calc(var(--discos-vw)/10),calc(var(--discos-vh)/10));
-		height: min(calc(var(--discos-vw)/10),calc(var(--discos-vh)/10));
-		border-radius: 20%;
-		border: none;
-	}
-
-	.bs1 .bacteria, .bs1 .sarcina, .jugador1 .bacterias .smallbacteria, .jugador1 .sarcinas .smallsarcina, .circulo .j1 .smallbacteria, .circulo .j1 .smallsarcina{
+	.bs1 .bacteria, .bs1 .sarcina, .jugador1 .bacterias .smallbacteria, .jugador1 .sarcinas .smallsarcina{
 		background-color: var(--color-j1);
 		color: var(--color-j1);
 	}
 
-	.bs2 .bacteria, .bs2 .sarcina, .jugador2 .bacterias .smallbacteria, .jugador2 .sarcinas .smallsarcina, .circulo .j2 .smallbacteria, .circulo .j2 .smallsarcina{
+	.bs2 .bacteria, .bs2 .sarcina, .jugador2 .bacterias .smallbacteria, .jugador2 .sarcinas .smallsarcina{
 		background-color: var(--color-j2);
 		color: var(--color-j2);
 	}
@@ -417,6 +280,6 @@
 	}
 	.seccion2 div{
 		border: 1px solid black;
-	{
+	}
 
 </style>

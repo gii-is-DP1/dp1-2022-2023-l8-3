@@ -12,7 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -38,12 +37,16 @@ public class Match extends BaseEntity{
 	private static final Integer PRIMER_JUGADOR = 0;
 	private static final int SEGUNDO_JUGADOR = 1;
 	
-	/*@Column(name = "siguiente_movimiento")
-	private String[] sigMov; //La idea es poner aqui el movimiento de una manera pero no consigo que me funcione, puede que use otra forma al final
-	*/
+	@Transient
+	private String[] bacteriasAmover;
+	@Transient
+	private String[] aDisco;
+
+	@Transient
+	private String movimiento;
 	
 	@Column(name = "turno_primer_jugador")
-	private Boolean turnoJugador1;  //Creo que esto es necesario
+	private Boolean turnoJugador1;  
 	
     @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
 	@Column(name = "inicio_de_partida")
@@ -55,7 +58,7 @@ public class Match extends BaseEntity{
 
 	@Column(name = "es_privada")
 	private Boolean esPrivada;
-	
+  
 	@Column(name = "turn")
 	private Integer turn;
 	
@@ -64,7 +67,7 @@ public class Match extends BaseEntity{
 	
 	@OneToMany(mappedBy="match")
 	private List<Disco> discos;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "id_jugador1")
 	private Jugador jugador1;
@@ -86,6 +89,7 @@ public class Match extends BaseEntity{
 	@OneToMany(mappedBy="match")
 	private List<Comentario> comentarios;
 
+
 	// Constructor para cuando se crea una partida desde la aplicación
 	public Match(Boolean esPrivada, Jugador jugadorAnfitrion) {
 		this.inicioPartida = LocalDateTime.now();
@@ -95,6 +99,7 @@ public class Match extends BaseEntity{
 		this.invitaciones = new ArrayList<Invitacion>();
 		this.comentarios = new ArrayList<Comentario>();
 		this.ganadorPartida = GameWinner.UNDEFINED;
+		this.turnoJugador1 = true;
 		this.turn = 0;
 		createDisks();
 		createTurns();
@@ -151,10 +156,29 @@ public class Match extends BaseEntity{
 		return turns;
 	}
 	
+	public Boolean itIsPropagationPhase() {
+		return getTurns().get(getTurn()).contains("PROPAGATION");
+	}
+	
+	public Boolean itIsFirstPlayerTurn() {
+		return getTurns().get(getTurn()).equals("PROPAGATION_RED_PLAYER");
+	}
+	
 	// ----------------------------------------------------------------------------------------------- //
 	
 	public void nextTurn() {
 		turn++;
+	}
+	
+	public String chooseTag(int i) {
+		if(i==0) return "col23";
+		else if(i==1) return "col45";
+		else if(i==2) return "row2";
+		else if(i==3) return "row2";
+		else if(i==4) return "row2";
+		else if(i==5) return "col23 row3";
+		else if(i==6) return "col45 row3";
+		else return "error";
 	}
 	
 	private Boolean movingBacteria(Integer playerId, Integer initialDiskId, Integer targetDiskId, Integer numberOfBacteriaDisplaced) {
