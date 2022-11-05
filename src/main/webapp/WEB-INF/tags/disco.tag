@@ -7,7 +7,6 @@
               description="Clase de div disco" %>
 <%@ attribute name="indexDisco" required="true" rtexprvalue="true"
               description="Numero del disco" %>
-              
 
 <c:set var="esteDisco" value="${match.getDisco(indexDisco)}"/>
 <c:set var="numeroDisco" value="${indexDisco + 1}"/>

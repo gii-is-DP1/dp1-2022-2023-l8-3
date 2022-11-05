@@ -13,7 +13,7 @@
 <%@ attribute name="turnoJugador1" required="true" rtexprvalue="true" type="java.lang.Boolean"
               description="Indica si es el turno del jugador 1" %>
 <%@ attribute name="fasePropagacion" required="true" rtexprvalue="true" type="java.lang.Boolean"
-              description="Indica si estamos en la fase de propagación" %>          
+              description="Indica si estamos en la fase de propagacion" %>          
 
 <spring:bind path="${name}">
 

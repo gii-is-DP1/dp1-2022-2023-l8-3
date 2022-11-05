@@ -4,10 +4,12 @@ package org.springframework.samples.petclinic.partida;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -39,7 +41,7 @@ public class MatchController {
 		}
 		return result;
 	}
-	// NOTA: Crear un controlador POST para cuando el usuario pulse "MOVE BACTERIA" y otro Request para cuando
+	// NOTA: Crear un controlador POST para cuando el usuario pulse "MOVE BACTERIA" y otro para cuando
 	// el usuario pase a la siguiente fase. El POST llamará al método moveBacteria.
 	@PostMapping("/{idMatch}/currentMatch")
 	public RedirectView nextPhase(@PathVariable int idMatch, Match auxMatch) {
