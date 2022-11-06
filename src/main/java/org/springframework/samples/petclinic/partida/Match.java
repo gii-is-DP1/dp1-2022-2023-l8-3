@@ -42,9 +42,6 @@ public class Match extends BaseEntity{
 	
 	private static final Map<Integer, List<Integer>> map = new HashMap<>();
 	
-	
-	@Transient
-	private String[] bacteriasAmover;
 
 	//Valores representan el numero de bacterias a sumar a discoX
 	@Transient
@@ -361,6 +358,17 @@ public class Match extends BaseEntity{
 	}
 	private Integer getIdJugadorTurnoActual(){
 		return turnoPrimerJugador() ? PRIMER_JUGADOR : SEGUNDO_JUGADOR;
+	}
+	
+	public void copyTransientData(Match aux) {
+		this.deDisco = aux.getDeDisco();
+		this.disco1 = aux.getDisco1();
+		this.disco2 = aux.getDisco2();
+		this.disco3 = aux.getDisco3();
+		this.disco4 = aux.getDisco4();
+		this.disco5 = aux.getDisco5();
+		this.disco6 = aux.getDisco6();
+		this.disco7 = aux.getDisco7();
 	}
 	
 }
