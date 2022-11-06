@@ -89,8 +89,10 @@ public class MatchController {
 			if(match.getTurns().get(match.getTurn()).startsWith("PROPAGATION")) {
 				System.out.println("Validando");
 				//Validar movimiento
-				auxMatch.setDiscos(match.getDiscos());
-				Boolean movimientoValido = auxMatch.validateMove();
+//				auxMatch.setDiscos(match.getDiscos());
+//				Boolean movimientoValido = auxMatch.validateMove();
+				match.copyTransientData(auxMatch);
+				Boolean movimientoValido = match.validateMove();
 
 				if(movimientoValido) {
 					//Hacer movimiento (haz metodo auxiliar)
