@@ -45,21 +45,21 @@ public class Match extends BaseEntity{
 	@Transient
 	private Integer disco1;
 	@Transient
-	private String disco2;
+	private Integer disco2;
 	@Transient
-	private String disco3;
+	private Integer disco3;
 	@Transient
-	private String disco4;
+	private Integer disco4;
 	@Transient
-	private String disco5;
+	private Integer disco5;
 	@Transient
-	private String disco6;
+	private Integer disco6;
 	@Transient
-	private String disco7;
+	private Integer disco7;
 	
 	//Representa disco origen de donde viene (tiene que ser array por como esta hecho)
 	@Transient
-	private String[] aDisco;
+	private String[] deDisco;
 
 	@Transient
 	private String movimiento;
@@ -198,26 +198,35 @@ public class Match extends BaseEntity{
 		else return "error";
 	}
 	
-	private Boolean movingBacteria(Integer playerId, Integer initialDiskId, Integer targetDiskId, Integer numberOfBacteriaDisplaced) {
+	public Integer[] getTargetDiskAndNumberOfBacteria() {
+		Integer[] disks = {disco1, disco2, disco3, disco4, disco5, disco6, disco7};
+		Integer i = 0;
+		Integer targetDiskId = -1;
+		Integer numberOfBacteria = 0;
+		while(i < NUMBER_OF_DISKS && targetDiskId <0) {
+			if(disks[i] > 0) {
+				targetDiskId = i;
+				numberOfBacteria = disks[i];
+			}
+			i++;
+		}
+		return new Integer[] {targetDiskId, numberOfBacteria};
+	}
+	
+	public Boolean movingBacteria(Integer playerId, Integer initialDiskId, Integer targetDiskId, Integer numberOfBacteriaDisplaced) {
 		Boolean correctMovement = true;	// TODO: mensaje para que el usuario sepa por qué su movimiento no es correcto
 		
-		if(initialDiskId == targetDiskId-1 || initialDiskId == targetDiskId+1) {
-			if(!(getDisco(targetDiskId).getNumeroDeBacterias(playerId) + numberOfBacteriaDisplaced > 5)) {
-				getDisco(initialDiskId).eliminarBacterias(playerId, numberOfBacteriaDisplaced);
-				getDisco(targetDiskId).annadirBacterias(playerId, numberOfBacteriaDisplaced);
-				if(getDisco(initialDiskId).getNumeroDeBacterias(PRIMER_JUGADOR) == getDisco(initialDiskId).getNumeroDeBacterias(SEGUNDO_JUGADOR) ||
-						getDisco(targetDiskId).getNumeroDeBacterias(PRIMER_JUGADOR) == getDisco(targetDiskId).getNumeroDeBacterias(SEGUNDO_JUGADOR)) {
-					correctMovement = false; // no puede haber el mismo número de bacterias de cada jugador en ningún disco
-				} else {
-					checkToAddSarcina(playerId, targetDiskId);
-				}
+		if(!(getDisco(targetDiskId).getNumeroDeBacterias(playerId) + numberOfBacteriaDisplaced > 5)) {
+			getDisco(initialDiskId).eliminarBacterias(playerId, numberOfBacteriaDisplaced);
+			getDisco(targetDiskId).annadirBacterias(playerId, numberOfBacteriaDisplaced);
+			if(getDisco(initialDiskId).getNumeroDeBacterias(PRIMER_JUGADOR) == getDisco(initialDiskId).getNumeroDeBacterias(SEGUNDO_JUGADOR) ||
+					getDisco(targetDiskId).getNumeroDeBacterias(PRIMER_JUGADOR) == getDisco(targetDiskId).getNumeroDeBacterias(SEGUNDO_JUGADOR)) {
+				correctMovement = false; // no puede haber el mismo número de bacterias de cada jugador en ningún disco
 			} else {
-				correctMovement = false; // no puede haber más de 5 bacterias en un mismo disco
+				checkToAddSarcina(playerId, targetDiskId);
 			}
-		} else if (initialDiskId == targetDiskId) {
-			correctMovement = false; // las bacterias ya están en ese disco
 		} else {
-			correctMovement = false; // el movimiento debe ser a discos adyacentes
+			correctMovement = false; // no puede haber más de 5 bacterias en un mismo disco
 		}
 		return correctMovement;
 	}

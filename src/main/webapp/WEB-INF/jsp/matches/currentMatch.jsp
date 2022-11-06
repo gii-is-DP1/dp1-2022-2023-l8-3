@@ -42,7 +42,7 @@
 			<div class="informacion">
 				<p>
 					Informacion <br/>
-					${match.turns[match.turn]}
+					${match.turns[match.turn]} <br/>
 				</p>
 			</div>
 
@@ -123,7 +123,7 @@
 		}
 
 		//Solo puede haber 1 checkbox checkeado
-		if(n!=1){
+		if(n>1){
 			console.log("Mas de 1 checkbox checkeado");
 			return false;
 		}

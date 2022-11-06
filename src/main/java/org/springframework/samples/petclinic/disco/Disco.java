@@ -95,15 +95,27 @@ public class Disco extends BaseEntity{
 	}
     
     public void annadirBacterias(Integer idJugador, Integer numeroDeBacterias) {
-		getBacterias()[idJugador] += numeroDeBacterias;
+    	if(idJugador == 0) {
+			numBact1 += numeroDeBacterias;
+		} else {
+			numBact2 += numeroDeBacterias;
+		}
 	}
 	
 	public void eliminarBacterias(Integer idJugador, Integer numeroDeBacterias) {
-		getBacterias()[idJugador] -= numeroDeBacterias;
+		if(idJugador == 0) {
+			numBact1 -= numeroDeBacterias;
+		} else {
+			numBact2 -= numeroDeBacterias;
+		}
 	}
 	
 	public void annadirSarcina(Integer idJugador) {
-		getSarcinas()[idJugador] ++;
+		if(idJugador == 0) {
+			numSarc1++;
+		} else {
+			numSarc2++;
+		}
 	}
 	
 	// ----------------------------------------------------------------------------------------------- //

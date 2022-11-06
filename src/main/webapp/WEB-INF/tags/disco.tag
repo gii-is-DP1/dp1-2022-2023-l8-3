@@ -6,15 +6,15 @@
 <%@ attribute name="clase" required="true" rtexprvalue="true"
               description="Clase de div disco" %>
 <%@ attribute name="indexDisco" required="true" rtexprvalue="true"
-              description="Numero del disco" %>
+              description="Numero del disco" %>   
 
 <c:set var="esteDisco" value="${match.getDisco(indexDisco)}"/>
 <c:set var="numeroDisco" value="${indexDisco + 1}"/>
 
 <div class="${clase}">
-
+  
   <label for="disco${numeroDisco}" class="pointer discoLabel">
-    <form:checkbox class="checkbox" path="aDisco"  id="disco${numeroDisco}" value="D${numeroDisco}" onchange="toggleCheckbox(this)"/>a
+    <form:checkbox class="checkbox" path="deDisco"  id="disco${numeroDisco}" value="D${numeroDisco}" onchange="toggleCheckbox(this)"/>a
   </label>
 
   <div class="bs1">

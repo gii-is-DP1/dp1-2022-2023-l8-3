@@ -59,7 +59,7 @@ public class MatchController {
 	}
 
 	@GetMapping(value = "/{idMatch}/currentMatch")
-	public ModelAndView showCurrentMatch2(@PathVariable int idMatch) {
+	public ModelAndView showCurrentMatch(@PathVariable int idMatch) {
 		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
 		Match match = matchService.getMatchById(idMatch);
 		result.addObject("match", match);
@@ -72,39 +72,10 @@ public class MatchController {
 		} else {
 			// final del juego
 		}
-
+		
 		return result;
 	}
 
-	
-	@PostMapping(value = "/{idMatch}/currentMatch")
-	public ModelAndView showCurrentMatch(@PathVariable int idMatch, Match newMatch) {
-		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
-		Match match = matchService.getMatchById(idMatch);
-		
-		result.addObject("match", match);
-		if(match.getTurn() == 0 || match.getTurns().get(match.getTurn()).startsWith("PROPAGATION")) {
-			// redireccionar a "/{idMatch}/currentMatch/{idPlayer}/propagationPhase", siendo idPlayer el jugador al que le toque
-		} else if(match.getTurns().get(match.getTurn()).equals("BINARY")) {
-			// redireccionar a "/{idMatch}/currentMatch/binaryPhase"
-		} else if(match.getTurns().get(match.getTurn()).equals("POLLUTION")) {
-			// redireccionar a "/{idMatch}/currentMatch/pollutionPhase"
-		} else {
-			// final del juego
-		}
-		
-		//Movimientos
-		System.out.println("AAAAAA"+newMatch.getDisco1());
-		System.out.println("AAAAAA"+newMatch.getDisco2());
-		System.out.println("AAAAAA"+newMatch.getDisco3());
-		System.out.println("AAAAAA"+newMatch.getDisco4());
-		System.out.println("AAAAAA"+newMatch.getDisco5());
-		System.out.println("AAAAAA"+newMatch.getDisco6());
-		System.out.println("AAAAAA"+newMatch.getDisco7());
-		System.out.println(newMatch.getADisco()[0]);
-
-		return result;
-	}
 	// NOTA: Crear un controlador POST para cuando el usuario pulse "MOVE BACTERIA" y otro para cuando
 	// el usuario pase a la siguiente fase. El POST llamará al método moveBacteria.
 	@PostMapping("/{idMatch}/currentMatch")
@@ -116,8 +87,15 @@ public class MatchController {
 			result = new RedirectView("/matches/{idMatch}/completedMatch");
 		} else {
 			if(match.getTurns().get(match.getTurn()).startsWith("PROPAGATION")) {
-				result.addStaticAttribute("bacterias", auxMatch.getBacteriasAmover());
-				result.addStaticAttribute("discos", auxMatch.getADisco());
+				// hay que comprobar que se haya realizado algún movimiento
+				Integer targetDiskId = auxMatch.getTargetDiskAndNumberOfBacteria()[0];
+				Integer numberOfBacteria = auxMatch.getTargetDiskAndNumberOfBacteria()[1];
+				Integer initialDiskId = Integer.valueOf(auxMatch.getDeDisco()[0].replace("D", ""))-1;
+				if(match.getTurns().get(match.getTurn()).endsWith("RED_PLAYER")) {
+					match.movingBacteria(0, initialDiskId, targetDiskId, numberOfBacteria);
+				} else if(match.getTurns().get(match.getTurn()).endsWith("BLUE_PLAYER")) {
+					match.movingBacteria(1, initialDiskId, targetDiskId, numberOfBacteria);
+				}
 			}
 			match.nextTurn();
 			matchService.saveMatch(match);
