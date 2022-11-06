@@ -8,6 +8,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.disco.Disco;
 import org.springframework.samples.petclinic.statistics.Achievement;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -38,8 +39,7 @@ public class MatchController {
 	@GetMapping(value = "/createMatch")
 	public ModelAndView createNewMatch() {
 		ModelAndView result = new ModelAndView(CREATE_MATCH_VIEW);
-		Match match = new Match();
-		System.out.println("pito "+match.getId());
+		Match match = new Match(false, null); //Hay que poner el jugador aqui!!!
 		result.addObject("match", match);
 		return result;
 	}
@@ -52,7 +52,6 @@ public class MatchController {
 		} else {
 //			guardar match
 			result = new ModelAndView(WAIT_MATCH_VIEW, br.getModel());
-			System.out.println(match.getId());
 			result.addObject("match", match);
 		}
 		return result;
@@ -83,22 +82,38 @@ public class MatchController {
 		RedirectView result = new RedirectView();
 		Match match = matchService.getMatchById(idMatch);
 		
+		//Hay que programar otras formas de terminar partida
 		if(match.getTurns().get(match.getTurn()).equals("FIN")) {
 			result = new RedirectView("/matches/{idMatch}/completedMatch");
 		} else {
 			if(match.getTurns().get(match.getTurn()).startsWith("PROPAGATION")) {
-				// hay que comprobar que se haya realizado algún movimiento
-				Integer targetDiskId = auxMatch.getTargetDiskAndNumberOfBacteria()[0];
-				Integer numberOfBacteria = auxMatch.getTargetDiskAndNumberOfBacteria()[1];
-				Integer initialDiskId = Integer.valueOf(auxMatch.getDeDisco()[0].replace("D", ""))-1;
-				if(match.getTurns().get(match.getTurn()).endsWith("RED_PLAYER")) {
-					match.movingBacteria(0, initialDiskId, targetDiskId, numberOfBacteria);
-				} else if(match.getTurns().get(match.getTurn()).endsWith("BLUE_PLAYER")) {
-					match.movingBacteria(1, initialDiskId, targetDiskId, numberOfBacteria);
+				System.out.println("Validando");
+				//Validar movimiento
+				auxMatch.setDiscos(match.getDiscos());
+				Boolean movimientoValido = auxMatch.validateMove();
+
+				if(movimientoValido) {
+					//Hacer movimiento (haz metodo auxiliar)
+					Integer targetDiskId = auxMatch.getTargetDiskAndNumberOfBacteria()[0];
+					Integer numberOfBacteria = auxMatch.getTargetDiskAndNumberOfBacteria()[1];
+					Integer initialDiskId = auxMatch.getDeDisco()[0]-1;
+//					if(match.getTurns().get(match.getTurn()).endsWith("RED_PLAYER")) {
+					if(auxMatch.turnoPrimerJugador())
+						match.movingBacteria(1, initialDiskId, targetDiskId, numberOfBacteria);
+//					} else if(match.getTurns().get(match.getTurn()).endsWith("BLUE_PLAYER")) {
+					else {
+						match.movingBacteria(2, initialDiskId, targetDiskId, numberOfBacteria);
+					}
+
+					match.getDiscos().forEach(a->System.out.println(a.getNumBact1()+" "+a.getNumBact2()));
+
+					//Pasa turno
+					match.nextTurn();
+					matchService.saveMatch(match);
 				}
+			}else {
+				System.out.println("Validación falló");
 			}
-			match.nextTurn();
-			matchService.saveMatch(match);
 			result.setUrl("/matches/{idMatch}/currentMatch");
 		}
 		return result;
