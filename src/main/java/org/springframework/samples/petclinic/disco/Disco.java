@@ -87,11 +87,11 @@ public class Disco extends BaseEntity{
     }
     
     public Integer getNumeroDeBacterias(Integer idJugador) {
-		return getBacterias()[idJugador];
+		return getBacterias()[idJugador-1];
 	}
     
     public Integer getNumeroDeSarcinas(Integer idJugador) {
-    	return getSarcinas()[idJugador];
+    	return getSarcinas()[idJugador-1];
 	}
     
     public void annadirBacterias(Integer idJugador, Integer numeroDeBacterias) {
