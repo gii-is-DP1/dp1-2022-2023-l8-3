@@ -44,18 +44,32 @@
 					Informacion <br/>
 					${match.turns[match.turn]} <br/>
 				</p>
+				<p class="error">
+					${error}
+				</p>
+
 			</div>
 
 			<div class="botones">
-				<input type="submit" value="Siguiente fase"/>
-				<a href="/matches/${match.id}/completedMatch"><input type="button" value="Abandonar partida"/></a>
+
+				<c:choose>
+						<c:when test="${match.esPropagacion()}">
+							<input type="submit" value="Siguiente fase"/>
+						</c:when>
+						<c:otherwise>
+							<a class="button" href="<c:url value="/matches/${match.id}/currentMatch" />">Siguiente fase </a>
+						</c:otherwise>
+				</c:choose>
+				<input  class="button" type="button" value="Abandonar partida"/>
 			</div>
 
 		</div>
 
 	</form:form>
 
-
+	<a class="idJugador noDisplay">
+		${match.getIdJugadorTurnoActual()}
+	</a>
 
 </petclinic:layout>
 
@@ -63,6 +77,7 @@
 	const discoLabels = document.getElementsByClassName('discoLabel');
 	const taLabels = document.getElementsByClassName('taLabel');
 	const inputs = document.getElementsByClassName("inputs");
+	const error = document.getElementsByClassName('error')[0];
 
 
 	function toggleCheckbox(element){
@@ -108,11 +123,51 @@
 		return arr.includes(j);
 	}
 
+	function reglasComplejas(checkedDiskIndex, diskIndex){
+		/*Disco dDestino = getDisco(discoDestino-1);
+		Integer enemigo = jugador==PRIMER_JUGADOR ? SEGUNDO_JUGADOR : PRIMER_JUGADOR;
+
+		//Si disco destino tiene sarcina tuya el mov es ilegal
+		if(dDestino.getNumeroDeSarcinas(jugador)!=0){
+			String msg = "Disco destino con sarcina aliada";
+			System.out.println(msg);
+			return msg;
+		}
+		//Si quedan mismo numero de bacterias enemigas que aliadas el mov es ilegal
+		Integer i = dDestino.getNumeroDeBacterias(jugador)+valor;
+		if(i != 0 && i == dDestino.getNumeroDeBacterias(enemigo)){
+			String msg = "Mismo numero de bacterias enemigas que aliadas";
+			System.out.println(msg);
+			return msg;
+		}
+
+		//Si quedan mas de 5 bacterias en disco destino el mov es ilegal
+		if((dDestino.getNumeroDeBacterias(jugador)+valor > 5)) {
+			String msg = "Mas de 5 bacterias en disco destino";
+			System.out.println(msg);
+			return msg;
+		}
+		return "";
+		*/
+		/*
+		jugador = parseInt(document.getElementsByClassName('idJugador')[0].innerText);
+		var elChildren = discoLabels[checkedDiskIndex].parentNode.children;
+		for(var c=0; c<elChildren.length - 1; c++){
+			console.log(elChildren[c].className);
+			var s = 'bs'+jugador;
+			if(elChildren[c].className == s){
+				console.log("PIPO");
+			}
+		}*/
+		console.log("pene");
+		return '';
+	}
+
 //Comprobar
 	const checkboxes = document.getElementsByClassName("checkbox");
+
 	function validate(){
 		console.log("Validating submited values");
-
 		var n = 0;
 		var checkedBox = null;
 		for (var i = 0; i < checkboxes.length; i++) {
@@ -123,8 +178,8 @@
 		}
 
 		//Solo puede haber 1 checkbox checkeado
-		if(n>1){
-			console.log("Mas de 1 checkbox checkeado");
+		if(n!=1){
+			error.innerText = "Mas de 1 checkbox checkeado o ninguno checkeado";
 			return false;
 		}
 
@@ -138,38 +193,39 @@
 
 			var input = parseInt(discoLabels[i].parentNode.childNodes[7].firstElementChild.firstElementChild.value);
 			if(isNaN(input)){
-				console.log("Un input: "+ input +" , tiene un valor que no es un numero");
+				error.innerText = "Un input: "+ input +" , tiene un valor que no es un numero";
 				return false;
 			}
 
 			if(isNextTo(checkedDiskIndex, diskIndex)){
 				//Validamos el contenido de los inputs de cada disco. Valores validos: [0,4]
 				if(!(input>=0 && input<5)) {
-					console.log("Valor ilegal en un input: "+ input +" ,  a enviar");
+					error.innerText = "Valor ilegal en un input: "+ input +" ,  a enviar";
 					return false;
 				}else if (input!=0) {
 					atLeastAnInputWithValue = true;
 				}
 
+				var err = reglasComplejas(checkedDiskIndex, diskIndex);
+				if(err != '') {
+					error.innerText = err;
+					return false;
+				}
 
 			}else{
 				//No puede haber contenido en estos inputs
 				if(input!=0){
-					console.log("Hay un input: "+ input +" ,  ilegal con contenido");
+					error.innerText = "Hay un input: "+ input +" ,  ilegal con contenido";
 					return false;
 				}
 			}
 		}
 
-
 		if (!atLeastAnInputWithValue) {
-				console.log("All values to send were 0. Illegal");
+				error.innerText = "All values to send were 0. Illegal";
+
 				return false;
 		}
-
-
-		if(cd.length != 1 || cb.length == 0) return false;
-
 		return true;
 	}
 
@@ -188,10 +244,33 @@
 		--color-j2:SlateBlue;
 
 	}
+	.button:hover {
+		text-decoration: none;
+		background-color: rgba(25, 25, 30, 0.05);
+		color: green;
+	}
+
+	.button {
+		text-decoration: none;
+		background-color: #EEEEEE;
+		color: #333333;
+		padding: 2px 6px 2px 6px;
+		border-top: 1px solid #CCCCCC;
+		border-right: 1px solid #333333;
+		border-bottom: 1px solid #333333;
+		border-left: 1px solid #CCCCCC;
+		border-radius: 5px;
+		padding: 5px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
 	.noDisplay{
 		display:none;
 	}
-
+	p.error{
+		color: red;
+	}
 	input[type=checkbox] {
 	 display: initial;
 	}

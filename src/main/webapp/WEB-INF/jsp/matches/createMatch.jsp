@@ -43,16 +43,6 @@
 </script>
 
 <style type="text/css">
-	:root{
-		--discos-vw:40vw;
-		--discos-vh:60vh;
-		--color-disco:#878787;
-		--color-background-divs:rgba(22, 22, 26,0.2);
-		--jugadores:min(calc(100vw - var(--discos-vw))/2, calc(100vh - var(--discos-vh))/2);
-		--color-j1:#B00B13;
-		--color-j2:SlateBlue;
-
-	}
 	.botones{
 
 	}
