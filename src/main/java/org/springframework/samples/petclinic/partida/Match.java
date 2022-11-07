@@ -249,35 +249,41 @@ public class Match extends BaseEntity{
 			setDisco7(0);
 		}
 	}
+	
 	//Valida que un movimiento (con datos correctos) sea legal o no
-	private Boolean legalMove(Integer discoOrigen, Integer discoDestino, Integer valor,Integer jugador) {
+	private String legalMove(Integer discoOrigen, Integer discoDestino, Integer valor,Integer jugador) {
 		Disco dDestino = getDisco(discoDestino-1);
 		Integer enemigo = jugador==PRIMER_JUGADOR ? SEGUNDO_JUGADOR : PRIMER_JUGADOR;
 
 		//Si disco destino tiene sarcina tuya el mov es ilegal
 		if(dDestino.getNumeroDeSarcinas(jugador)!=0){ 
-			System.out.println("Disco destino con sarcina aliada");
-			return false;
+			String msg = "Disco destino con sarcina aliada";
+			System.out.println(msg);
+			return msg;
 		}
 		//Si quedan mismo numero de bacterias enemigas que aliadas el mov es ilegal 
 		Integer i = dDestino.getNumeroDeBacterias(jugador)+valor;
 		if(i != 0 && i == dDestino.getNumeroDeBacterias(enemigo)){ 
-			System.out.println("Mismo numero de bacterias enemigas que aliadas");
-			return false;
+			String msg = "Mismo numero de bacterias enemigas que aliadas";
+			System.out.println(msg);
+			return msg;
 		}
 
 		//Si quedan mas de 5 bacterias en disco destino el mov es ilegal
 		if((dDestino.getNumeroDeBacterias(jugador)+valor > 5)) { 
-			System.out.println("Mas de 5 bacterias en disco destino");
-			return false;
+			String msg = "Mas de 5 bacterias en disco destino";
+			System.out.println(msg);
+			return msg;
 		}
-		return true;
+		return "";
 	}
-	public Boolean validateMove() {	
+	
+	//Valida movimiento y devuelve "" si todo correcto o un msg si ha habido un error.
+	public String validateMove() {
 		Integer[] disks = getDiskMoves();
 
 		//Debe haber un unico disco origen
-		if(getDeDisco().length != 1) return false;
+		if(getDeDisco().length != 1) return "Más de un disco origen o ningu";
 
 		Integer jugador = getIdJugadorTurnoActual();
 
@@ -293,12 +299,15 @@ public class Match extends BaseEntity{
 				//Valores permitidos [0,4]
 				if(valor<0 || valor>=5) { 
 					System.out.println("Valor distinto de [0,4]");
-					return false;
+					return "Valor de bacterias no permitido";
 				}
 
 				if(valor == 0) numDiscosOrigenConCero++;
 				//Reglas mas complejas 
-				else if(!legalMove(origen,destino,valor,jugador)) return false;
+				else {
+					String reglasComplejas = legalMove(origen,destino,valor,jugador);
+					if(reglasComplejas.length() != 0) return reglasComplejas;
+				}
 
 				sumaValores+=valor;
 			}
@@ -311,19 +320,22 @@ public class Match extends BaseEntity{
 		//Se permite movimiento=0 (no mover a dicho disco), pero no todos pueden ser 0
 		if(numDiscosOrigen == numDiscosOrigenConCero) { 
 			System.out.println("No hay ningun movimiento indicado");
-			return false;
+			return "No se indicó ningun movimiento";
 		}
 		//Si quedan bacterias negativas en origen el mov es ilegal
 		if((getDisco(origen-1).getNumeroDeBacterias(jugador)-sumaValores)<0) { 
-			System.out.println("Bacterias negativas en origen:"+origen);
-			return false;
+			String msg = "Bacterias negativas en origen:"+origen;
+			System.out.println(msg);
+			return msg;
 		}
-		return true;
+		
+		return "";
 	}
 	
 	public void movingBacteria(Integer playerId, Integer initialDiskId, Integer targetDiskId, 
 			Integer numberOfBacteriaDisplaced) {
-		//TU SIMPLEMENTE HAZ MOVIMIENTO NO VALIDES. No lo hagas asi
+		//TU SIMPLEMENTE HAZ MOVIMIENTO NO VALIDES. Also tienes que modificar sarcinas cuando se necesite
+		
 		/*Boolean correctMovement = true;	// TODO: mensaje para que el usuario sepa por qué su movimiento no es correcto
 		if(!(getDisco(targetDiskId).getNumeroDeBacterias(playerId) + numberOfBacteriaDisplaced > 5)) {
 
@@ -353,10 +365,10 @@ public class Match extends BaseEntity{
 	}
 	
 	public Boolean turnoPrimerJugador() {
-		if(getTurn()==0 || getTurn()==3 || getTurn()==6) return true;
-		return false;
+		return getTurns().get(this.getTurn()).equals("PROPAGATION_RED_PLAYER");
 	}
-	private Integer getIdJugadorTurnoActual(){
+	
+	public Integer getIdJugadorTurnoActual(){
 		return turnoPrimerJugador() ? PRIMER_JUGADOR : SEGUNDO_JUGADOR;
 	}
 	
@@ -371,4 +383,16 @@ public class Match extends BaseEntity{
 		this.disco7 = aux.getDisco7();
 	}
 	
+	public Boolean esPropagacion() {
+		return getTurns().get(this.getTurn()).startsWith("PROPAGATION");
+	}
+	public Boolean esFin() {
+		return getTurns().get(this.getTurn()).equals("FIN");
+	}
+	public Boolean esFaseBinaria() {
+		return getTurns().get(this.getTurn()).equals("BINARY");
+	}
+	public Boolean esFaseContaminacion() {
+		return getTurns().get(this.getTurn()).equals("POLLUTION");
+	}
 }

@@ -39,7 +39,7 @@ public class MatchController {
 	@GetMapping(value = "/createMatch")
 	public ModelAndView createNewMatch() {
 		ModelAndView result = new ModelAndView(CREATE_MATCH_VIEW);
-		Match match = new Match(false, null); //Hay que poner el jugador aqui!!!
+		Match match = new Match(false, null); //Hay que poner el jugador aqui!!! (creo, no entiendo los constructores en spring)
 		result.addObject("match", match);
 		return result;
 	}
@@ -51,73 +51,82 @@ public class MatchController {
 			result.addObject("match", match);
 		} else {
 //			guardar match
+			// EN waitForMatch.jsp se redirige al match con id=1, no al match creado (pq no esta implementado eso)
 			result = new ModelAndView(WAIT_MATCH_VIEW, br.getModel());
 			result.addObject("match", match);
 		}
 		return result;
 	}
 
+	
 	@GetMapping(value = "/{idMatch}/currentMatch")
 	public ModelAndView showCurrentMatch(@PathVariable int idMatch) {
 		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
 		Match match = matchService.getMatchById(idMatch);
 		result.addObject("match", match);
-		if(match.getTurn() == 0 || match.getTurns().get(match.getTurn()).startsWith("PROPAGATION")) {
-			// redireccionar a "/{idMatch}/currentMatch/{idPlayer}/propagationPhase", siendo idPlayer el jugador al que le toque
-		} else if(match.getTurns().get(match.getTurn()).equals("BINARY")) {
-			// redireccionar a "/{idMatch}/currentMatch/binaryPhase"
-		} else if(match.getTurns().get(match.getTurn()).equals("POLLUTION")) {
-			// redireccionar a "/{idMatch}/currentMatch/pollutionPhase"
-		} else {
-			// final del juego
+		
+//		Si es propagacion no se hace nada pq las propagaciones van al PostMapping()
+		
+		if(match.esFaseBinaria()) {
+			System.out.println("FASE BINARIA");
+			match.nextTurn();
+
+		} else if(match.esFaseContaminacion()) {
+			System.out.println("FASE CONTAMINACION");
+
+			match.nextTurn();
+
+		} else if(match.esFin()){ //El fin se controla aqui no en el PostMapping()
+			System.out.println("FIN");
 		}
 		
 		return result;
 	}
+	
 
-	// NOTA: Crear un controlador POST para cuando el usuario pulse "MOVE BACTERIA" y otro para cuando
-	// el usuario pase a la siguiente fase. El POST llamará al método moveBacteria.
 	@PostMapping("/{idMatch}/currentMatch")
-	public RedirectView nextPhase(@PathVariable int idMatch, Match auxMatch) {
-		RedirectView result = new RedirectView();
+	public ModelAndView nextPhase(@PathVariable int idMatch, Match auxMatch) {
+		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
 		Match match = matchService.getMatchById(idMatch);
-		
-		//Hay que programar otras formas de terminar partida
-		if(match.getTurns().get(match.getTurn()).equals("FIN")) {
-			result = new RedirectView("/matches/{idMatch}/completedMatch");
-		} else {
-			if(match.getTurns().get(match.getTurn()).startsWith("PROPAGATION")) {
-				System.out.println("Validando");
-				//Validar movimiento
-//				auxMatch.setDiscos(match.getDiscos());
-//				Boolean movimientoValido = auxMatch.validateMove();
-				match.copyTransientData(auxMatch);
-				Boolean movimientoValido = match.validateMove();
+				
+		if(match.esPropagacion()) {
+			System.out.println("FASE PROPAGACION");
+			System.out.println("Validando");
 
-				if(movimientoValido) {
-					//Hacer movimiento (haz metodo auxiliar)
-					Integer targetDiskId = auxMatch.getTargetDiskAndNumberOfBacteria()[0];
-					Integer numberOfBacteria = auxMatch.getTargetDiskAndNumberOfBacteria()[1];
-					Integer initialDiskId = auxMatch.getDeDisco()[0]-1;
-//					if(match.getTurns().get(match.getTurn()).endsWith("RED_PLAYER")) {
-					if(auxMatch.turnoPrimerJugador())
-						match.movingBacteria(1, initialDiskId, targetDiskId, numberOfBacteria);
-//					} else if(match.getTurns().get(match.getTurn()).endsWith("BLUE_PLAYER")) {
-					else {
-						match.movingBacteria(2, initialDiskId, targetDiskId, numberOfBacteria);
-					}
+			match.copyTransientData(auxMatch);
+			//Si es "" es correcto. Si tiene un mensaje es un msg de error
+			String validacion = "NO";//match.validateMove();
+			result.addObject("error", validacion);
 
-					match.getDiscos().forEach(a->System.out.println(a.getNumBact1()+" "+a.getNumBact2()));
-
-					//Pasa turno
-					match.nextTurn();
-					matchService.saveMatch(match);
+			if(validacion.length()==0) {
+				//Hacer movimiento (haz metodo auxiliar)
+				Integer targetDiskId = auxMatch.getTargetDiskAndNumberOfBacteria()[0];
+				Integer numberOfBacteria = auxMatch.getTargetDiskAndNumberOfBacteria()[1];
+				Integer initialDiskId = auxMatch.getDeDisco()[0]-1;
+				
+				if(auxMatch.turnoPrimerJugador())
+					match.movingBacteria(1, initialDiskId, targetDiskId, numberOfBacteria);
+				else {
+					match.movingBacteria(2, initialDiskId, targetDiskId, numberOfBacteria);
 				}
-			}else {
+
+				match.getDiscos().forEach(a->System.out.println(a.getNumBact1()+" "+a.getNumBact2()));
+
+				//Pasa turno
+				match.nextTurn();
+				matchService.saveMatch(match);
+			}
+			else {
 				System.out.println("Validación falló");
 			}
-			result.setUrl("/matches/{idMatch}/currentMatch");
 		}
+		else {
+			System.out.println("NO ES PROPAGACIÓN PERO HUBO POST");
+		}
+		
+		result.addObject("match", match);
+			
+			
 		return result;
 	}
 	
