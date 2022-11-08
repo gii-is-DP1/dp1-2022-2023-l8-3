@@ -37,7 +37,7 @@ import lombok.Setter;
 public class Match extends BaseEntity{
 	private static final int NUMBER_OF_TURNS = 4;
 	private static final int NUMBER_OF_DISKS = 7;
-	private static final Integer PRIMER_JUGADOR = 1;
+	private static final int PRIMER_JUGADOR = 1;
 	private static final int SEGUNDO_JUGADOR = 2;
 	
 	private static final Map<Integer, List<Integer>> map = new HashMap<>();
@@ -213,19 +213,21 @@ public class Match extends BaseEntity{
 		return res;
 	}
 	
-	public Integer[] getTargetDiskAndNumberOfBacteria() {
+	public List<List<Integer>> getTargetDiskAndNumberOfBacteria() {
 		Integer[] disks = getDiskMoves();
-		Integer i = 0;
-		Integer targetDiskId = -1;
-		Integer numberOfBacteria = 0;
-		while(i < NUMBER_OF_DISKS && targetDiskId <0) {
+		List<List<Integer>> result = new ArrayList<List<Integer>>();
+		List<Integer> targetDisks = new ArrayList<Integer>();
+		List<Integer> numberOfBacteria = new ArrayList<Integer>();
+		
+		for(int i = 0; i < NUMBER_OF_DISKS; i++) {
 			if(disks[i] > 0) {
-				targetDiskId = i;
-				numberOfBacteria = disks[i];
+				targetDisks.add(i+1);
+				numberOfBacteria.add(disks[i]);
 			}
-			i++;
 		}
-		return new Integer[] {targetDiskId, numberOfBacteria};
+		result.add(targetDisks);
+		result.add(numberOfBacteria);
+		return result;
 	}
 	
 	private Boolean diskINextToDiskJ(Integer i,Integer j){
@@ -251,6 +253,7 @@ public class Match extends BaseEntity{
 	}
 	
 	//Valida que un movimiento (con datos correctos) sea legal o no
+	// TODO: te falta tener en cuenta que en el disco origen no haya el mismo número de bacterias de ambos jugadores
 	private String legalMove(Integer discoOrigen, Integer discoDestino, Integer valor,Integer jugador) {
 		Disco dDestino = getDisco(discoDestino-1);
 		Integer enemigo = jugador==PRIMER_JUGADOR ? SEGUNDO_JUGADOR : PRIMER_JUGADOR;
@@ -332,40 +335,22 @@ public class Match extends BaseEntity{
 		return "";
 	}
 	
-	public void movingBacteria(Integer playerId, Integer initialDiskId, Integer targetDiskId, 
-			Integer numberOfBacteriaDisplaced) {
-		//TU SIMPLEMENTE HAZ MOVIMIENTO NO VALIDES. Also tienes que modificar sarcinas cuando se necesite
-		
-		/*Boolean correctMovement = true;	// TODO: mensaje para que el usuario sepa por qué su movimiento no es correcto
-		if(!(getDisco(targetDiskId).getNumeroDeBacterias(playerId) + numberOfBacteriaDisplaced > 5)) {
-
-			getDisco(initialDiskId).eliminarBacterias(playerId, numberOfBacteriaDisplaced);
-			getDisco(targetDiskId).annadirBacterias(playerId, numberOfBacteriaDisplaced);
-
-			if(getDisco(initialDiskId).getNumeroDeBacterias(PRIMER_JUGADOR) == getDisco(initialDiskId).getNumeroDeBacterias(SEGUNDO_JUGADOR) ||
-					getDisco(targetDiskId).getNumeroDeBacterias(PRIMER_JUGADOR) == getDisco(targetDiskId).getNumeroDeBacterias(SEGUNDO_JUGADOR)) {
-				correctMovement = false; // no puede haber el mismo número de bacterias de cada jugador en ningún disco
-			} else {
-				checkToAddSarcina(playerId, targetDiskId);
-			}
-		} else {
-			correctMovement = false; // no puede haber más de 5 bacterias en un mismo disco
-		}
-		return correctMovement;*/
-		
-		System.out.println("haciendo movimiento: Origen: "+initialDiskId+"; Destino: "+
-				targetDiskId+ "Numero de bacterias a mover: "+numberOfBacteriaDisplaced);
+	public void movingBacteria(Integer playerId, Integer initialDiskId, Integer targetDiskId, Integer numberOfBacteriaDisplaced) {
+		getDisco(initialDiskId-1).eliminarBacterias(playerId, numberOfBacteriaDisplaced);
+		getDisco(targetDiskId-1).annadirBacterias(playerId, numberOfBacteriaDisplaced);
+		checkToAddSarcina(playerId+1, targetDiskId);
 	}
 	
 	private void checkToAddSarcina(Integer playerId, Integer diskId) {
-		if(getDisco(diskId).getNumeroDeBacterias(playerId) == 5) {
-			getDisco(diskId).eliminarBacterias(playerId, 5);
-			getDisco(diskId).annadirSarcina(playerId);
+		System.out.println(diskId);
+		if(getDisco(diskId-1).getNumeroDeBacterias(playerId) == 5) {
+			getDisco(diskId-1).eliminarBacterias(playerId, 5);
+			getDisco(diskId-1).annadirSarcina(playerId);
 		}
 	}
 	
 	public Boolean turnoPrimerJugador() {
-		return getTurns().get(this.getTurn()).equals("PROPAGATION_RED_PLAYER");
+		return getTurns().get(getTurn()).equals("PROPAGATION_RED_PLAYER");
 	}
 	
 	public Integer getIdJugadorTurnoActual(){
