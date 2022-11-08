@@ -89,6 +89,7 @@ VALUES(4,'Yeyo','Peyeyo','seraguoro',true,0,20,4);
 
 INSERT INTO lista_amigos(id_jugador1,id_jugador2) VALUES (1,2);
 
+
 INSERT INTO achievement(id,name,threshold,description,badge_image) VALUES
 	(1, 'Viciado', 10.0, 'Si juegas <THRESHOLD> partidas o más, consideramos que ya estás enganchado',
 	'https://bit.ly/certifiedGamer'),
@@ -106,3 +107,10 @@ INSERT INTO disco VALUES(4,0,2,0,1,0,1);
 INSERT INTO disco VALUES(5,0,0,0,0,0,1);
 INSERT INTO disco VALUES(6,2,0,0,0,0,1);
 INSERT INTO disco VALUES(7,2,4,0,0,0,1);
+
+
+INSERT INTO archivement(id, name, threshold, description, badge_image) VALUES (1,'Viciado',10.0,'Si juegas 10.0 partidas o más,
+consideramos que ya estás enganchado.','https://bit.ly/certifiedGamer');
+INSERT INTO archivement(id, name, threshold, description, badge_image) VALUES (2,'Triunfador',20.0,'Si juegas 20.0 partidas o más,
+consideramos que ya eres todo un triunfador.','https://bit.ly/proGamer');
+

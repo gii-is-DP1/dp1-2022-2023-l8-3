@@ -24,5 +24,7 @@ public class Archivement extends NamedEntity{
     @Column(name="badge_image")
     private String badgeImage;
     
-    
+    private String getActualDescription() {
+        return description.replaceAll("<THRESHOLD>", String.valueOf(threshold));
+    }
 }

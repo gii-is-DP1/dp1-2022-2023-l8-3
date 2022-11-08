@@ -46,6 +46,18 @@
 					<span>Jugadores</span>
 				</petclinic:menuItem>
 				
+				<petclinic:menuItem active="${name eq 'archivement'}" url="/stadistics/archivement/" title="Logros" dropdown="${true}">
+					<ul class="dropdown-menu">
+						<li>
+							<a href="<c:url value="/stadistics/archivement/" />">Listado de logros</a>		
+						</li>
+						<li class="divider"></li>
+						<li>								
+							<a href="<c:url value="/stadistics/archivement/" />">Mis Logros <span class="glyphicon glyphicon-asterisk" aria-hidden="true"></span></a>		
+						</li>
+					</ul>
+				</petclinic:menuItem>
+				
 				<petclinic:menuItem active="${name eq 'achievements'}" url="/statistics/achievements/" title="achievements" dropdown="${true}">										
 					<ul class="dropdown-menu">
 						<li>
