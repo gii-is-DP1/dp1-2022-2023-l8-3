@@ -256,6 +256,8 @@ public class Match extends BaseEntity{
 	// TODO: te falta tener en cuenta que en el disco origen no haya el mismo número de bacterias de ambos jugadores
 	private String legalMove(Integer discoOrigen, Integer discoDestino, Integer valor,Integer jugador) {
 		Disco dDestino = getDisco(discoDestino-1);
+		Disco dOrigen = getDisco(discoOrigen-1);
+
 		Integer enemigo = jugador==PRIMER_JUGADOR ? SEGUNDO_JUGADOR : PRIMER_JUGADOR;
 
 		//Si disco destino tiene sarcina tuya el mov es ilegal
@@ -267,10 +269,17 @@ public class Match extends BaseEntity{
 		//Si quedan mismo numero de bacterias enemigas que aliadas el mov es ilegal 
 		Integer i = dDestino.getNumeroDeBacterias(jugador)+valor;
 		if(i != 0 && i == dDestino.getNumeroDeBacterias(enemigo)){ 
-			String msg = "Mismo numero de bacterias enemigas que aliadas";
+			String msg = "Mismo numero de bacterias enemigas que aliadas en disco: "+discoDestino;
 			System.out.println(msg);
 			return msg;
 		}
+		Integer j = dOrigen.getNumeroDeBacterias(jugador)-valor;
+		if(j != 0 && j == dOrigen.getNumeroDeBacterias(enemigo)){ 
+			String msg = "Mismo numero de bacterias enemigas que aliadas en disco: "+discoOrigen;
+			System.out.println(msg);
+			return msg;
+		}
+
 
 		//Si quedan mas de 5 bacterias en disco destino el mov es ilegal
 		if((dDestino.getNumeroDeBacterias(jugador)+valor > 5)) { 

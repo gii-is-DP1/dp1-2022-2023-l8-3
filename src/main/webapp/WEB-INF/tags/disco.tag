@@ -14,7 +14,8 @@
 <div class="${clase}">
 
   <label for="disco${numeroDisco}" class="pointer discoLabel">
-    <form:checkbox class="checkbox" path="deDisco"  id="disco${numeroDisco}" value="${numeroDisco}" onchange="toggleCheckbox(this)"/>a
+    ${numeroDisco}
+    <form:checkbox class="checkbox" path="deDisco"  id="disco${numeroDisco}" value="${numeroDisco}" onchange="toggleCheckbox(this)"/>
   </label>
 
   <div class="bs1">
