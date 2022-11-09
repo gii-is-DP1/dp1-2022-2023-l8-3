@@ -1,3 +1,4 @@
+
 package org.springframework.samples.petclinic.jugador;
 
 import java.util.Collection;
@@ -57,6 +58,17 @@ public class PlayerService {
 	}
 	
 	
+
+	@Transactional(readOnly = true)
+	public Jugador findJugadorByUserName(String userName) throws DataAccessException{
+	    return playerRepo.findByUserName(userName);
+	}
+	
+//	@Transactional(readOnly = true)
+//	public Collection<Owner> findOwnerByLastName(String lastName) throws DataAccessException {
+//		return playerRepo.findByLastName(lastName);
+//	}
+
 	@Transactional
 	public void deletePlayer(Integer id) throws Exception{
 		try {
@@ -76,6 +88,7 @@ public class PlayerService {
 		authService.saveAuthorities(jugador.getUser().getUsername(),"jugador");
 		
 	}
+
 	
 	
 }

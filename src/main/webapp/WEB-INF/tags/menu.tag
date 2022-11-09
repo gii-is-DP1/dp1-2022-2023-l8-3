@@ -44,6 +44,14 @@
 					<span>Buscar partida</span>
 				</petclinic:menuItem>
 
+
+				<petclinic:menuItem active="${name eq ''}" url="/matches/matchesList"
+					title="listar partidas">
+					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+					<span>Listar partidas</span>
+				</petclinic:menuItem>
+
+
 				<petclinic:menuItem active="${name eq 'achievements'}" url="/statistics/achievements/" title="achievements" dropdown="${true}">
 					<ul class="dropdown-menu">
 						<li>
