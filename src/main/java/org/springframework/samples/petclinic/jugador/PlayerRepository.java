@@ -1,5 +1,6 @@
 package org.springframework.samples.petclinic.jugador;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
@@ -17,10 +18,10 @@ public interface PlayerRepository extends CrudRepository<Jugador, Integer>{
 	public Jugador findById(@Param("id") int id);
 	
 
-	@Query("SELECT DISTINCT jugador FROM Jugador jugador WHERE jugador.lastName LIKE :lastName%")
+	@Query("SELECT DISTINCT jugador FROM Jugador jugador WHERE jugador.lastName LIKE :lastName")
 	public Collection<Jugador> findByLastName(@Param("lastName") String lastName);
 	
-	@Query("SELECT DISTINCT jugador FROM Jugador jugador WHERE jugador.user.username LIKE :username%")
+	@Query("SELECT DISTINCT jugador FROM Jugador jugador WHERE jugador.user.username LIKE :username")
     public Jugador findByUserName(@Param("username") String userName);
 
 

@@ -41,11 +41,7 @@ public class PlayerService {
 	public Jugador findJugadorById(int id) throws DataAccessException {
 		return playerRepo.findById(id);
 	}
-	
-	@Transactional(readOnly = true)
-	public Jugador findJugadorByUsername(String username) throws DataAccessException {
-		return playerRepo.findByUsername(username);
-	}
+
 	
 	@Transactional(readOnly = true)
 	public List<Jugador> findAllJugadores() throws DataAccessException {
@@ -64,10 +60,7 @@ public class PlayerService {
 	    return playerRepo.findByUserName(userName);
 	}
 	
-//	@Transactional(readOnly = true)
-//	public Collection<Owner> findOwnerByLastName(String lastName) throws DataAccessException {
-//		return playerRepo.findByLastName(lastName);
-//	}
+
 
 	@Transactional
 	public void deletePlayer(Integer id) throws Exception{
@@ -83,7 +76,7 @@ public class PlayerService {
 	public void saveJugador(Jugador jugador) throws DataAccessException{
 		
 		playerRepo.save(jugador);
-
+		jugador.getUser().setEnabled(true);
 		userRepo.save(jugador.getUser());
 		authService.saveAuthorities(jugador.getUser().getUsername(),"jugador");
 		
