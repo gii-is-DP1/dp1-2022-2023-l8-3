@@ -3,6 +3,7 @@ package org.springframework.samples.petclinic.partida;
 
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -63,23 +64,20 @@ public class MatchController {
 	public ModelAndView showCurrentMatch(@PathVariable int idMatch) {
 		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
 		Match match = matchService.getMatchById(idMatch);
-		result.addObject("match", match);
-		
-//		Si es propagacion no se hace nada pq las propagaciones van al PostMapping()
-		
+				
 		if(match.esFaseBinaria()) {
 			System.out.println("FASE BINARIA");
-			match.nextTurn();
-
+			binaryPhase(match);
 		} else if(match.esFaseContaminacion()) {
 			System.out.println("FASE CONTAMINACION");
-
-			match.nextTurn();
-
-		} else if(match.esFin()){ //El fin se controla aqui no en el PostMapping()
+			pollutionPhase(match);
+		} else if(match.esFin()){
 			System.out.println("FIN");
+			result = new ModelAndView("/matches/completedMatch");
 		}
 		
+		result.addObject("match", match);
+		matchService.saveMatch(match);
 		return result;
 	}
 	
@@ -88,48 +86,57 @@ public class MatchController {
 	public ModelAndView nextPhase(@PathVariable int idMatch, Match auxMatch) {
 		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
 		Match match = matchService.getMatchById(idMatch);
-				
+		
 		if(match.esPropagacion()) {
 			System.out.println("FASE PROPAGACION");
 			System.out.println("Validando");
 
 			match.copyTransientData(auxMatch);
 			//Si es "" es correcto. Si tiene un mensaje es un msg de error
-			String validacion = "NO";//match.validateMove();
+			String validacion = match.validateMove();
 			result.addObject("error", validacion);
 
 			if(validacion.length()==0) {
-				//Hacer movimiento (haz metodo auxiliar)
-				Integer targetDiskId = auxMatch.getTargetDiskAndNumberOfBacteria()[0];
-				Integer numberOfBacteria = auxMatch.getTargetDiskAndNumberOfBacteria()[1];
-				Integer initialDiskId = auxMatch.getDeDisco()[0]-1;
-				
-				if(auxMatch.turnoPrimerJugador())
-					match.movingBacteria(1, initialDiskId, targetDiskId, numberOfBacteria);
-				else {
-					match.movingBacteria(2, initialDiskId, targetDiskId, numberOfBacteria);
+				// Realizar movimiento
+				if(match.turnoPrimerJugador()) {
+					movingBacteria(0, auxMatch, match);
+				} else {
+					movingBacteria(1, auxMatch, match);
 				}
-
-				match.getDiscos().forEach(a->System.out.println(a.getNumBact1()+" "+a.getNumBact2()));
-
 				//Pasa turno
 				match.nextTurn();
 				matchService.saveMatch(match);
-			}
-			else {
+			} else {
 				System.out.println("Validación falló");
 			}
-		}
-		else {
+		} else {
 			System.out.println("NO ES PROPAGACIÓN PERO HUBO POST");
 		}
-		
 		result.addObject("match", match);
-			
-			
 		return result;
 	}
 	
+	// TODO: por algún motivo, falla cuando se añade una sarcina y se mueven bacterias a otro disco en el mismo momento.
+	private void movingBacteria(Integer playerId, Match auxMatch, Match match) {
+		Integer initialDiskId = auxMatch.getDeDisco()[0]; // disco origen
+		List<List<Integer>> targetDisksAndNumberOfBacteria = auxMatch.getTargetDiskAndNumberOfBacteria();
+		List<Integer> targetDisks = targetDisksAndNumberOfBacteria.get(0); // discos destino
+		List<Integer> numberOfBacteria = targetDisksAndNumberOfBacteria.get(1); // número de bacterias desplazadas a cada disco destino
+		
+		for(int i = 0; i < targetDisks.size(); i++) {
+			match.movingBacteria(playerId, initialDiskId, targetDisks.get(i), numberOfBacteria.get(i));
+		}
+	}
+	
+	private void binaryPhase(Match match) {
+		// TODO
+		match.nextTurn();
+	}
+	
+	private void pollutionPhase(Match match) {
+		// TODO
+		match.nextTurn();
+	}
 
 	@GetMapping(value = "/{idMatch}/completedMatch")
 	public ModelAndView completedMatch(@PathVariable int idMatch) {
