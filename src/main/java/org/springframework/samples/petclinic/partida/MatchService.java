@@ -16,6 +16,9 @@ public class MatchService {
 	public MatchService(MatchRepository matchRepository) {
 		this.matchRepository = matchRepository;
 	}
+	public Collection<Match> getMatchWithotP2() throws DataAccessException{
+	    return matchRepository.findMatchesWhitoutP2();
+	}
 	
 	public Collection<Match> getMatches() throws DataAccessException {
 		return matchRepository.findAll();

@@ -35,6 +35,7 @@ public class MatchController {
 	private static final String CURRENT_MATCH_VIEW = "/matches/currentMatch";
 	private static final String CREATE_MATCH_VIEW = "/matches/createMatch";
 	private static final String WAIT_MATCH_VIEW = "/matches/waitForMatch";
+	private static final String LIST_MATCHES = "/matches/matchesList";
 
 	private MatchService matchService;
 	private PlayerService playerService;
@@ -44,6 +45,34 @@ public class MatchController {
 		this.matchService = matchService;
 		this.playerService = playerService;
 	}
+	
+	@GetMapping(value = "/matchesList")
+    public ModelAndView listingMatch() {
+        ModelAndView result = new ModelAndView(LIST_MATCHES);   
+
+        result.addObject("match_list", matchService.getMatchWithotP2());
+        result.addObject("matches", matchService.getMatches());
+        return result;
+    }
+	
+	@PostMapping(value = "/matchesList")
+    public ModelAndView listingMatch(@Valid Match match, BindingResult br, @AuthenticationPrincipal Authentication user) {
+        ModelAndView result;
+        if(br.hasErrors()) {
+            result = new ModelAndView(LIST_MATCHES, br.getModel());
+            result.addObject("match", match);
+        } else {
+            String playerName = user.getName();
+            Jugador player = playerService.findJugadorByUserName(playerName);
+            match.setJugador2(player);
+            this.matchService.saveMatch(match);
+            result = new ModelAndView(WAIT_MATCH_VIEW, br.getModel());
+            result.addObject("match", match);
+            result.addObject("player", player);
+        }
+        return result;
+    }
+	
 	
 //Usar estas dos funciones cuando creeis el crear partida bien
 	@GetMapping(value = "/createMatch")
@@ -56,6 +85,7 @@ public class MatchController {
 		Match match = new Match(false, player); //Hay que poner el jugador aqui!!! (creo, no entiendo los constructores en spring)
 		result.addObject("match", match);
 		result.addObject("player", player);
+		result.addObject("players", playerService.findAllJugadores());
 		return result;
 	}
 	@PostMapping(value = "/createMatch")

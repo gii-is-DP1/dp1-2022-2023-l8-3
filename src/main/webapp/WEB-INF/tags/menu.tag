@@ -40,7 +40,7 @@
 					<span>Buscar partida</span>
 				</petclinic:menuItem>
 
-				<petclinic:menuItem active="${name eq ''}" url="/"
+				<petclinic:menuItem active="${name eq ''}" url="/matches/matchesList"
 					title="listar partidas">
 					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
 					<span>Listar partidas</span>
