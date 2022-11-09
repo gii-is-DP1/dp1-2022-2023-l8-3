@@ -6,15 +6,24 @@
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 
 
-<petclinic:layout pageName="currentMatch">
+<petclinic:layout pageName="createMatch">
 
 	<form:form class="contenido" modelAttribute="match" >
-		<h2>Partida en curso</h2>
+		<h2>Nueva Partida</h2>
 
 		<div class="seccion seccion1">
 			<!--	Esto para cuando se haga
 			<form:checkbox path="esPrivada" id="check"/>-->
-			<label for="check">Partida privada</label>
+			<div>
+				<label for="check" style="color: blue">Partida privada</label>
+			</div>
+			<div>
+				<label for="check" style="color: red">${player}</label>
+			</div>	
+			<div>
+				<label for="check" style="color: green">${match.jugador1}</label>
+				
+			</div>
 		</div>
 
 		<div class=" seccion invitaciones">

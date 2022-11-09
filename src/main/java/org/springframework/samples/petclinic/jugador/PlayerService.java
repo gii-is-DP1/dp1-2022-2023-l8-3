@@ -1,3 +1,4 @@
+
 package org.springframework.samples.petclinic.jugador;
 
 import java.util.Collection;
@@ -39,6 +40,12 @@ public class PlayerService {
 	@Transactional(readOnly = true)
 	public Collection<Jugador> findPlayerByLastName(String lastName) throws DataAccessException {
 		return playerRepo.findByLastName(lastName);
+	}
+	
+	
+	@Transactional(readOnly = true)
+	public Jugador findJugadorByUserName(String userName) throws DataAccessException{
+	    return playerRepo.findByUserName(userName);
 	}
 	
 //	@Transactional(readOnly = true)
