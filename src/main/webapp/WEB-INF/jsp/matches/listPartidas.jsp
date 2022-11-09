@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 
-<petclinic:layout pageName="jugadores">
+<petclinic:layout pageName="partidas">
 
     <h2>Información sobre jugadores</h2>
 

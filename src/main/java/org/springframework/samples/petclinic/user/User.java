@@ -22,13 +22,15 @@ public class User{
 	@Id
 	String username;
 	
+	String email;
+	
 	String password;
 	
 	boolean enabled;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private Set<Authorities> authorities;
-//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-//	//Es una lista ya que puede haber uno o ningun jugador asociado a un user
-//	private List<Jugador> jugador;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+	//Es una lista ya que puede haber uno o ningun jugador asociado a un user
+	private List<Jugador> jugador;
 }
