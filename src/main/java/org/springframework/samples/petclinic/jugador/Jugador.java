@@ -1,24 +1,26 @@
 package org.springframework.samples.petclinic.jugador;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotEmpty;
 
+<<<<<<< HEAD
 import org.springframework.samples.petclinic.comentario.Comentario;
 import org.springframework.samples.petclinic.invitacion.Invitacion;
 import org.springframework.samples.petclinic.statistics.Achievement;
+=======
+import org.springframework.lang.Nullable;
+import org.springframework.samples.petclinic.logro.Logro;
+>>>>>>> davdancab
 import org.springframework.samples.petclinic.model.Person;
 import org.springframework.samples.petclinic.partida.Match;
 import org.springframework.samples.petclinic.user.User;
@@ -32,20 +34,16 @@ import lombok.Setter;
 @Table(name = "jugadores")
 public class Jugador extends Person{
 
-	@Column(name = "estado_Online")
-	@NotEmpty
-	private boolean estadoOnline;
-
-	@Column(name = "numero_de_Contaminacion")
-	@NotEmpty
-	private Integer numeroDeContaminacion;
-
-	@Column(name = "numero_de_bacterias")
-	@NotEmpty
-	private Integer bacterias;
+	@Transient
+	private Boolean estadoOnline;
 	
-	@Column(name = "numero_de_sarcinas")
-	@NotEmpty
+	@Transient
+	private Integer numeroDeContaminacion;
+	
+	@Transient
+	private Integer bacterias;
+
+	@Transient
 	private Integer sarcinas;
 	
 	
@@ -58,11 +56,11 @@ public class Jugador extends Person{
 
 
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "username",referencedColumnName = "username")
 	private User user;
 	
-	@OneToMany
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<Match> invitacionesPartidaRecibidas;
 	
 
@@ -76,11 +74,11 @@ public class Jugador extends Person{
 //	@OneToMany(cascade = CascadeType.ALL, mappedBy="jugador")
 //	private List<Comentario> comentario;
 	
-//	@ManyToMany(cascade = CascadeType.ALL, mappedBy="jugadores")
-//	private List<Logro> logro;
-//	
-//	@ManyToMany(cascade = CascadeType.ALL, mappedBy="espectador")
-//	private List<Partida> partidasComoEspectador;
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "lista_logros", joinColumns = @JoinColumn(name = "id_jugador"),
+	inverseJoinColumns = @JoinColumn(name = "id_logro"))
+	private List<Logro> logros;
+	
 	
 //	@OneToMany(cascade = CascadeType.ALL, mappedBy="jugador")
 //	private List<Invitacion> invitacionesPartidaEnviadas;
