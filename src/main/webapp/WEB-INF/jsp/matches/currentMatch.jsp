@@ -79,7 +79,6 @@
 	const inputs = document.getElementsByClassName("inputs");
 	const error = document.getElementsByClassName('error')[0];
 
-
 	function toggleCheckbox(element){
 
 		var checkedLabel = element.parentNode;
@@ -159,7 +158,6 @@
 				console.log("PIPO");
 			}
 		}*/
-		console.log("pene");
 		return '';
 	}
 
@@ -365,7 +363,6 @@
 		padding: auto;
 
 		position:relative;
-		color:var(--color-disco);
 
 	}
 	select{
