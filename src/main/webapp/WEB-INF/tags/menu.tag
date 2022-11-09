@@ -27,25 +27,27 @@
 					<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
 					<span>Home</span>
 				</petclinic:menuItem>
-
-				<petclinic:menuItem active="${name eq 'owners'}" url="/owners/find"
-					title="find owners">
-					<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-					<span>Find owners</span>
-				</petclinic:menuItem>
-
-				<petclinic:menuItem active="${name eq 'vets'}" url="/vets"
-					title="veterinarians">
-					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-					<span>Veterinarians</span>
-				</petclinic:menuItem>
 				
+				<sec:authorize access="hasAuthority('admin')">
 				<petclinic:menuItem active="${name eq 'jugadores'}" url="/jugadores"
 					title="jugadores">
 					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
 					<span>Jugadores</span>
 				</petclinic:menuItem>
-
+				
+				<petclinic:menuItem active="${name eq 'partidasEnCurso'}" url="/matches"
+					title="partidasEnCurso">
+					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+					<span>Partidas en curso</span>
+				</petclinic:menuItem>
+				
+				<petclinic:menuItem active="${name eq 'partidasJugadas'}" url="/matches"
+					title="partidasJugadas">
+					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+					<span>Partidas jugadas</span>
+				</petclinic:menuItem>
+				</sec:authorize>
+				
 				<petclinic:menuItem active="${name eq 'error'}" url="/oups"
 					title="trigger a RuntimeException to see how it is handled">
 					<span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span>

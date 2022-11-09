@@ -23,14 +23,14 @@ public class EstadoController {
 //			j.setEstadoOnline(true);
 //		}
 		
-		return "/welcome";
+		return "redirect:/";
 	}
 	
 	@GetMapping("/cambiarEstadoOffline")
 	public String ponerOffline() {
 		
 		
-		return "/welcome";
+		return "redirect:/";
 	}
 	
 	

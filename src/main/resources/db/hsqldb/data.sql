@@ -17,12 +17,13 @@ INSERT INTO authorities(id,username,authority) VALUES (9,'josibocon','jugador');
 
 
 
-INSERT INTO jugadores(id, first_name,last_name,username,estado_online) 
-VALUES(1,'David','Dana','davdancab',false);
-INSERT INTO jugadores(id, first_name,last_name,username,estado_online) 
-VALUES(2,'Juan Jesus','Martin','juamarher',false);
-INSERT INTO jugadores(id, first_name,last_name,username,estado_online) 
-VALUES(3,'Manuel','Ortega','manortgar',false);
+INSERT INTO jugadores(id, first_name,last_name,username) 
+VALUES(1,'David','Dana','davdancab');
+INSERT INTO jugadores(id, first_name,last_name,username) 
+VALUES(2,'Juan Jesus','Martin','juamarher');
+INSERT INTO jugadores(id, first_name,last_name,username) 
+VALUES(3,'Manuel','Ortega','manortgar');
 
 INSERT INTO lista_amigos(id_jugador1,id_jugador2) VALUES (1,2);
+INSERT INTO lista_amigos(id_jugador1,id_jugador2) VALUES (2,3);
 

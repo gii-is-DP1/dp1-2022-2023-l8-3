@@ -1,13 +1,11 @@
 package org.springframework.samples.petclinic.jugador;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.samples.petclinic.owner.Owner;
 
 public interface PlayerRepository extends CrudRepository<Jugador, Integer>{
 	
@@ -19,7 +17,7 @@ public interface PlayerRepository extends CrudRepository<Jugador, Integer>{
 	public Jugador findById(@Param("id") int id);
 	
 	@Query("SELECT jugador FROM Jugador jugador WHERE jugador.lastName LIKE :lastName")
-	public Collection<Jugador> findByLastName(@Param("lastName") String lastName);
+	public List<Jugador> findByLastName(@Param("lastName") String lastName);
 	
 	@Query("SELECT jugador FROM Jugador jugador WHERE jugador.user.username =:username")
 	public Jugador findByUsername(@Param("username") String username);

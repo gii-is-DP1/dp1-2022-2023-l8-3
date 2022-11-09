@@ -28,7 +28,7 @@ import lombok.Setter;
 @Table(name = "jugadores")
 public class Jugador extends Person{
 
-	@Column
+	@Transient
 	private Boolean estadoOnline;
 	
 	@Transient
@@ -50,11 +50,11 @@ public class Jugador extends Person{
 
 
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "username",referencedColumnName = "username")
 	private User user;
 	
-	@OneToMany
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<Match> invitacionesPartidaRecibidas;
 	
 
@@ -73,8 +73,6 @@ public class Jugador extends Person{
 	inverseJoinColumns = @JoinColumn(name = "id_logro"))
 	private List<Logro> logros;
 	
-//	@ManyToMany(cascade = CascadeType.ALL, mappedBy="espectador")
-//	private List<Partida> partidasComoEspectador;
 	
 //	@OneToMany(cascade = CascadeType.ALL, mappedBy="jugador")
 //	private List<Invitacion> invitacionesPartidaEnviadas;
