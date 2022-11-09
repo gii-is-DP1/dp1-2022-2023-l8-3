@@ -2,7 +2,6 @@ package org.springframework.samples.petclinic.jugador;
 
 import java.util.List;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -11,16 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotEmpty;
-
-<<<<<<< HEAD
-import org.springframework.samples.petclinic.comentario.Comentario;
-import org.springframework.samples.petclinic.invitacion.Invitacion;
 import org.springframework.samples.petclinic.statistics.Achievement;
-=======
-import org.springframework.lang.Nullable;
-import org.springframework.samples.petclinic.logro.Logro;
->>>>>>> davdancab
 import org.springframework.samples.petclinic.model.Person;
 import org.springframework.samples.petclinic.partida.Match;
 import org.springframework.samples.petclinic.user.User;
@@ -38,13 +28,13 @@ public class Jugador extends Person{
 	private Boolean estadoOnline;
 	
 	@Transient
-	private Integer numeroDeContaminacion;
+	private Integer numeroDeContaminacion=0;
 	
 	@Transient
-	private Integer bacterias;
+	private Integer bacterias=20;
 
 	@Transient
-	private Integer sarcinas;
+	private Integer sarcinas=4;
 	
 	
 	
@@ -63,31 +53,19 @@ public class Jugador extends Person{
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<Match> invitacionesPartidaRecibidas;
 	
-
 	
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.REFRESH)
 	@JoinTable(name = "lista_amigos", joinColumns = @JoinColumn(name = "id_jugador1"),
 	inverseJoinColumns = @JoinColumn(name = "id_jugador2"))
 	private List<Jugador> listaAmigos;
 	
 	
-//	@OneToMany(cascade = CascadeType.ALL, mappedBy="jugador")
-//	private List<Comentario> comentario;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "lista_logros", joinColumns = @JoinColumn(name = "id_jugador"),
 	inverseJoinColumns = @JoinColumn(name = "id_logro"))
-	private List<Logro> logros;
+	private List<Achievement> logros;
 	
-	
-//	@OneToMany(cascade = CascadeType.ALL, mappedBy="jugador")
-//	private List<Invitacion> invitacionesPartidaEnviadas;
-//	
-//	@OneToMany(cascade = CascadeType.ALL, mappedBy="anfitrion")
-//	private List<Partida> partidasSiendoAnfitrion;
-//	
-//	@OneToMany(cascade = CascadeType.ALL, mappedBy="invitado")
-//	private List<Partida> partidasSiendoinvitado;
 	
 	
 	

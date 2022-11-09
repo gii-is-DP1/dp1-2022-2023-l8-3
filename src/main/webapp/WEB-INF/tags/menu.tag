@@ -1,6 +1,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 <!--  >%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%-->
@@ -27,24 +28,20 @@
 					<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
 					<span>Home</span>
 				</petclinic:menuItem>
-<<<<<<< HEAD
-
+				
+				<sec:authorize access="isAuthenticated()">
 				<petclinic:menuItem active="${name eq ''}" url="/matches/createMatch"
 					title="crear partida">
 					<span class="glyphicon glyphicon-certificate" aria-hidden="true"></span>
 					<span>Crear partida</span>
 				</petclinic:menuItem>
-
-				<petclinic:menuItem active="${name eq ''}" url="/"
+				</sec:authorize>
+				
+				<sec:authorize access="hasAuthority('jugador')">
+				<petclinic:menuItem active="${name eq 'buscarPartida'}" url="/"
 					title="buscar partidas">
 					<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
 					<span>Buscar partida</span>
-				</petclinic:menuItem>
-
-				<petclinic:menuItem active="${name eq ''}" url="/"
-					title="listar partidas">
-					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-					<span>Listar partidas</span>
 				</petclinic:menuItem>
 
 				<petclinic:menuItem active="${name eq 'achievements'}" url="/statistics/achievements/" title="achievements" dropdown="${true}">
@@ -58,12 +55,7 @@
 						</li>
 					</ul>
 				</petclinic:menuItem>
-
-				<petclinic:menuItem active="${name eq ''}" url="/"
-					title="amigos">
-					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-					<span>Amigos</span>
-=======
+				</sec:authorize>
 				
 				<sec:authorize access="hasAuthority('admin')">
 				<petclinic:menuItem active="${name eq 'jugadores'}" url="/jugadores"
@@ -72,25 +64,19 @@
 					<span>Jugadores</span>
 				</petclinic:menuItem>
 				
-				<petclinic:menuItem active="${name eq 'partidasEnCurso'}" url="/matches"
-					title="partidasEnCurso">
-					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-					<span>Partidas en curso</span>
-				</petclinic:menuItem>
-				
-				<petclinic:menuItem active="${name eq 'partidasJugadas'}" url="/matches"
-					title="partidasJugadas">
-					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-					<span>Partidas jugadas</span>
+				<petclinic:menuItem active="${name eq 'partidas'}" url="/matches" title="Partidas" dropdown="${true}">
+					<ul class="dropdown-menu">
+						<li>
+							<a href="<c:url value="/matches" />">Partidas en curso</a>
+						</li>
+						<li class="divider"></li>
+						<li>
+							<a href="<c:url value="/matches" />">Partidas jugadas </a>
+						</li>
+					</ul>
 				</petclinic:menuItem>
 				</sec:authorize>
 				
-				<petclinic:menuItem active="${name eq 'error'}" url="/oups"
-					title="trigger a RuntimeException to see how it is handled">
-					<span class="glyphicon glyphicon-warning-sign" aria-hidden="true"></span>
-					<span>Error</span>
->>>>>>> davdancab
-				</petclinic:menuItem>
 
 			</ul>
 
@@ -101,34 +87,25 @@
 				</sec:authorize>
 				<sec:authorize access="isAuthenticated()">
 					<li class="dropdown"><a href="#" class="dropdown-toggle"
-						data-toggle="dropdown"> <span class="glyphicon glyphicon-user"></span>�
+						data-toggle="dropdown"> <span class="glyphicon glyphicon-user"></span>
 							<strong><sec:authentication property="name" /></strong> <span
 							class="glyphicon glyphicon-chevron-down"></span>
 					</a>
 						<ul class="dropdown-menu">
+							<sec:authorize access="hasAuthority('jugador')">
 							<li>
-								<div class="navbar-login">
-									<div class="row">
-										<div class="col-lg-4">
-											<p class="text-center">
-												<span class="glyphicon glyphicon-user icon-size"></span>
-											</p>
-										</div>
-										<div class="col-lg-8">
-											<p class="text-left">
-												<strong><sec:authentication property="name" /></strong>
-											</p>
-											<p class="text-left">
-												<a href="<c:url value="/logout" />"
-													class="btn btn-primary btn-block btn-sm">Logout</a>
-											</p>
-										</div>
-									</div>
-								</div>
+								
+								<spring:url value="jugadores/{jugadorId}" var="perfilUrl">
+        							<spring:param name="jugadorId" value="${jugador.id}"/>
+    							</spring:url>
+								<a href="<c:url value="${fn:escapeXml(perfilUrl)}" />" class="text-center"> Perfil</a>
 							</li>
 							<li class="divider"></li>
-<!--
-                            <li>
+							</sec:authorize>
+							<li> <a href="<c:url value="/logout" />" class="text-center">Logout</a>
+							</li>
+
+ <!--                           <li>
 								<div class="navbar-login navbar-login-session">
 									<div class="row">
 										<div class="col-lg-12">

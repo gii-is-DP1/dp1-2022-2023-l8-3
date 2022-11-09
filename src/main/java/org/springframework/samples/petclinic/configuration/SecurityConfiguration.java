@@ -45,14 +45,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/jugadores/{jugadorId}/delete").hasAnyAuthority("admin")
 				.antMatchers("/jugadores/{jugadorId}/edit").hasAnyAuthority("admin")
 				.antMatchers("/matches/**").hasAnyAuthority("admin","jugador")
-<<<<<<< HEAD
 				.antMatchers("/statistics/achievements/").hasAnyAuthority("jugador","admin")
 				.antMatchers("/statistics/achievements/**").hasAnyAuthority("admin")
-				.antMatchers("/matches/**").hasAnyAuthority("owner","admin","jugador")
-=======
 				.antMatchers("/cambiarEstadoOnline").hasAnyAuthority("admin","jugador")
 				.antMatchers("/cambiarEstadoOffline").permitAll()
->>>>>>> davdancab
 				.antMatchers("/vets/**").authenticated()
 				.anyRequest().denyAll()
 				.and()

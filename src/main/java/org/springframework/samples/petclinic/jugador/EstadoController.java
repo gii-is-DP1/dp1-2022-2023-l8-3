@@ -1,5 +1,9 @@
 package org.springframework.samples.petclinic.jugador;
 
+import java.util.Collection;
+import java.util.Map;
+
+import org.springframework.samples.petclinic.user.Authorities;
 import org.springframework.samples.petclinic.user.User;
 import org.springframework.samples.petclinic.user.UserService;
 import org.springframework.security.core.Authentication;
@@ -18,11 +22,13 @@ public class EstadoController {
 	public String ponerOnline(@AuthenticationPrincipal Authentication auth) {
 //		String loggedUser=auth.getName();
 //		User usuario= userService.findUser(loggedUser).get();
-//		if(usuario.getAuthorities().equals("jugador")) {
-//			Jugador j=playerService.findJugadorByUsername(loggedUser);
-//			j.setEstadoOnline(true);
+//		for(Authorities a:usuario.getAuthorities()) {
+//			if(a.getAuthority().equals("jugador")) {
+//				Jugador j=playerService.findJugadorByUsername(loggedUser);
+//				j.setEstadoOnline(true);
+//				playerService.saveJugador(j);
+//			}
 //		}
-		
 		return "redirect:/";
 	}
 	
