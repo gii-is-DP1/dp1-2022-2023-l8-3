@@ -31,4 +31,8 @@ public class MatchService {
 	public Match getMatchById(Integer id) {
 		return matchRepository.findById(id).get();
 	}
+	
+	public Collection<Match> getMatchesOfAPlayer(Integer id){
+		return matchRepository.findMatchesOfAPlayer(id);
+	}
 }
