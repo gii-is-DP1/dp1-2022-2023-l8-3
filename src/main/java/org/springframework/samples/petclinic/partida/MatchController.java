@@ -32,6 +32,8 @@ import org.springframework.web.servlet.view.RedirectView;
 @RequestMapping("/matches")
 public class MatchController {
 	
+	private static final String MATCH_STATISTICS_VIEW = "/matches/matchStatistics";
+	private static final String COMPLETED_MATCH_VIEW = "/matches/completedMatch";
 	private static final String CURRENT_MATCH_VIEW = "/matches/currentMatch";
 	private static final String CREATE_MATCH_VIEW = "/matches/createMatch";
 	private static final String WAIT_MATCH_VIEW = "/matches/waitForMatch";
@@ -125,7 +127,7 @@ public class MatchController {
 			pollutionPhase(match);
 		} else if(match.esFin()){
 			System.out.println("FIN");
-			result = new ModelAndView("/matches/completedMatch");
+			result = new ModelAndView(COMPLETED_MATCH_VIEW);
 		}
 		
 		result.addObject("match", match);
@@ -192,7 +194,14 @@ public class MatchController {
 
 	@GetMapping(value = "/{idMatch}/completedMatch")
 	public ModelAndView completedMatch(@PathVariable int idMatch) {
-		ModelAndView result = new ModelAndView("/matches/completedMatch"); // aún no está hecha la vista
+		ModelAndView result = new ModelAndView(COMPLETED_MATCH_VIEW); // aún no está hecha la vista
+		result.addObject("match", matchService.getMatchById(idMatch));
+		return result;
+	}
+	
+	@GetMapping("/{idMatch}/statistics")
+	public ModelAndView matchStatistics(@PathVariable int idMatch) {
+		ModelAndView result = new ModelAndView(MATCH_STATISTICS_VIEW); 
 		result.addObject("match", matchService.getMatchById(idMatch));
 		return result;
 	}

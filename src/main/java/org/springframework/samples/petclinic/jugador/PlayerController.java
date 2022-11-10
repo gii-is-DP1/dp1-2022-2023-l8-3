@@ -98,7 +98,6 @@ public class PlayerController {
 
 	@GetMapping(value = "/jugadores/{jugadorId}/matches")
 	public ModelAndView showMatchesOfAPlayer(@PathVariable int jugadorId) {
-		System.out.println("pepe");
 		ModelAndView result = new ModelAndView(LIST_PLAYER_MATCHES);
 		result.addObject("playerMatches", matchService.getMatchesOfAPlayer(jugadorId));
 		return result;
