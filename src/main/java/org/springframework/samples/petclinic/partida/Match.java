@@ -347,14 +347,13 @@ public class Match extends BaseEntity{
 	public void movingBacteria(Integer playerId, Integer initialDiskId, Integer targetDiskId, Integer numberOfBacteriaDisplaced) {
 		getDisco(initialDiskId-1).eliminarBacterias(playerId, numberOfBacteriaDisplaced);
 		getDisco(targetDiskId-1).annadirBacterias(playerId, numberOfBacteriaDisplaced);
-		checkToAddSarcina(playerId+1, targetDiskId);
+		checkToAddSarcina(playerId, targetDiskId-1);
 	}
 	
 	private void checkToAddSarcina(Integer playerId, Integer diskId) {
-		System.out.println(diskId);
-		if(getDisco(diskId-1).getNumeroDeBacterias(playerId) == 5) {
-			getDisco(diskId-1).eliminarBacterias(playerId, 5);
-			getDisco(diskId-1).annadirSarcina(playerId);
+		if(getDisco(diskId).getNumeroDeBacterias(playerId+1) == 5) {
+			getDisco(diskId).eliminarBacterias(playerId, 5);
+			getDisco(diskId).annadirSarcina(playerId);
 		}
 	}
 	
