@@ -38,14 +38,14 @@
 				</sec:authorize>
 				
 				<sec:authorize access="hasAuthority('jugador')">
-				<petclinic:menuItem active="${name eq 'buscarPartida'}" url="/"
+				<petclinic:menuItem active="${name eq 'buscarPartida'}" url="/matches/matchesList"
 					title="buscar partidas">
 					<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
 					<span>Buscar partida</span>
 				</petclinic:menuItem>
 
 
-				<petclinic:menuItem active="${name eq ''}" url="/matches/matchesList"
+				<petclinic:menuItem active="${name eq ''}" url="/jugadores//matches"
 					title="listar partidas">
 					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
 					<span>Listar partidas</span>
@@ -90,8 +90,8 @@
 
 			<ul class="nav navbar-nav navbar-right">
 				<sec:authorize access="!isAuthenticated()">
-					<li><a href="<c:url value="/login" />">Login</a></li>
-					<li><a href="<c:url value="/users/new" />">Register</a></li>
+					<li><a href="<c:url value="/login" />">Inicia sesi&oacute;n</a></li>
+					<li><a href="<c:url value="/users/new" />">Reg&iacute;strate</a></li>
 				</sec:authorize>
 				<sec:authorize access="isAuthenticated()">
 					<li class="dropdown"><a href="#" class="dropdown-toggle"
