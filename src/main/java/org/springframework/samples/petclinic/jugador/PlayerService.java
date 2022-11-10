@@ -44,7 +44,7 @@ public class PlayerService {
 	
 	@Transactional(readOnly = true)
 	public Jugador findJugadorByUsername(String username) throws DataAccessException {
-		return playerRepo.findByUsername(username);
+		return playerRepo.findByUserName(username);
 	}
 	
 	@Transactional(readOnly = true)

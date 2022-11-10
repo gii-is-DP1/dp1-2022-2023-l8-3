@@ -1,5 +1,6 @@
 package org.springframework.samples.petclinic.jugador;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
