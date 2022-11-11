@@ -4,6 +4,11 @@ import java.util.Collection;
 import java.util.Map;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.user.Authorities;
+import org.springframework.samples.petclinic.user.User;
+import org.springframework.samples.petclinic.user.UserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.samples.petclinic.partida.MatchService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,15 +24,20 @@ import org.springframework.web.servlet.ModelAndView;
 public class PlayerController {
 
 	private PlayerService playerService;
-	private MatchService matchService;
+	private UserService userService;
+  private MatchService matchService;
+	
+	@Autowired
+	public PlayerController(PlayerService playerService, UserService userService, MatchService matchService) {
+		this.playerService = playerService;
+		this.userService = userService;
+    this.matchService = matchService;
+   
+  }
 
 	private static final String LIST_PLAYER_MATCHES = "/jugadores/playerMatches";
 
-	@Autowired
-	public PlayerController(PlayerService playerService, MatchService matchService) {
-		this.playerService = playerService;
-		this.matchService = matchService;
-	}
+
 	
 
 	@InitBinder
@@ -36,16 +46,32 @@ public class PlayerController {
 	}
 
 	@GetMapping(value = "/jugadores")
-	public String showAllPlayers(Map<String, Object> model, Jugador jugador) {
+	public String showAllPlayers(Map<String, Object> model) {
 		Collection<Jugador> results = this.playerService.findAllJugadores();
 		model.put("selections", results);
 		return "jugadores/listJugador";
 	}
-
+	
+	@GetMapping(value = "/perfil")
+	public String showPerfil() {
+		Authentication auth=SecurityContextHolder.getContext().getAuthentication();
+		User user=userService.findUser(auth.getName()).get();
+		Integer id=playerService.findJugadorByUserName(user.getUsername()).getId();
+		return "redirect:/jugadores/"+id;
+	}
+  
 	@GetMapping(value = "/jugadores/{jugadorId}")
 	public ModelAndView showPlayer(@PathVariable("jugadorId") int id) {
-		ModelAndView mav = new ModelAndView("jugadores/showJugador");
-		mav.addObject(this.playerService.findJugadorById(id));
+		Authentication auth=SecurityContextHolder.getContext().getAuthentication();
+		User user=userService.findUser(auth.getName()).get();
+		ModelAndView mav=new ModelAndView();
+		for(Authorities authority:user.getAuthorities()) {
+			if(authority.getAuthority().equals("admin") || playerService.findJugadorByUserName(auth.getName()).getId()==id) {
+				mav = new ModelAndView("jugadores/showJugador");
+				mav.addObject(this.playerService.findJugadorById(id));
+			}
+
+		}
 		return mav;
 	}
 
@@ -60,7 +86,7 @@ public class PlayerController {
 	}
 
 	@GetMapping(value = "/jugadores/new")
-	public String initCreationForm(Map<String, Object> model) {
+	public String initCreationForm(Map<String, Object> model,Model model2) {
 		Jugador jugador = new Jugador();
 		model.put("jugador", jugador);
 		return "jugadores/createOrUpdateJugadorForm";
@@ -91,6 +117,7 @@ public class PlayerController {
 			return "jugadores/createOrUpdateJugadorForm";
 		} else {
 			jugador.setId(jugadorId);
+			jugador.getUser().setUsername(playerService.findJugadorById(jugadorId).getUser().getUsername());
 			this.playerService.saveJugador(jugador);
 			return "redirect:/jugadores/{jugadorId}";
 		}

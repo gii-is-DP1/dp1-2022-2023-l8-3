@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.partida;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -32,6 +33,10 @@ public class MatchService {
 		return matchRepository.findById(id).get();
 	}
 	
+	public List<Match> getMatchesInProgressOrFinished(GameWinner gameWinner){
+		return matchRepository.findMatchesInProgressOrFinished(gameWinner);
+
+
 	public Collection<Match> getMatchesOfAPlayer(Integer id){
 		return matchRepository.findMatchesOfAPlayer(id);
 	}

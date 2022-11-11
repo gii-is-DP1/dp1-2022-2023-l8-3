@@ -18,7 +18,7 @@ public class DishServiceTest {
 	@Test
 	public void testCountWithInitialData() {
 		int count = dishService.dishCount();
-		assertEquals(count, 7);
+		assertEquals(14, count);
 	}
 
 }

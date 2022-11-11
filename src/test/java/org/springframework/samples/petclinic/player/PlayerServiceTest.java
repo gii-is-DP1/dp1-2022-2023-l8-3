@@ -18,7 +18,7 @@ public class PlayerServiceTest {
 	@Test
 	public void testCountWithInitialData() {
 		int count = playerService.playerCount();
-		assertEquals(count,3);
+		assertEquals(4, count);;
 	}
 	
 }

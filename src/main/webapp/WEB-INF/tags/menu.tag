@@ -45,13 +45,6 @@
 				</petclinic:menuItem>
 
 
-				<petclinic:menuItem active="${name eq ''}" url="/jugadores//matches"
-					title="listar partidas">
-					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-					<span>Listar partidas</span>
-				</petclinic:menuItem>
-
-
 				<petclinic:menuItem active="${name eq 'achievements'}" url="/statistics/achievements/" title="achievements" dropdown="${true}">
 					<ul class="dropdown-menu">
 						<li>
@@ -75,11 +68,11 @@
 				<petclinic:menuItem active="${name eq 'partidas'}" url="/matches" title="Partidas" dropdown="${true}">
 					<ul class="dropdown-menu">
 						<li>
-							<a href="<c:url value="/matches" />">Partidas en curso</a>
+							<a href="<c:url value="/matches/InProgress" />">Partidas en curso</a>
 						</li>
 						<li class="divider"></li>
 						<li>
-							<a href="<c:url value="/matches" />">Partidas jugadas </a>
+							<a href="<c:url value="/matches/Finished" />">Partidas jugadas </a>
 						</li>
 					</ul>
 				</petclinic:menuItem>
@@ -102,31 +95,14 @@
 						<ul class="dropdown-menu">
 							<sec:authorize access="hasAuthority('jugador')">
 							<li>
-								
-								<spring:url value="jugadores/{jugadorId}" var="perfilUrl">
-        							<spring:param name="jugadorId" value="${jugador.id}"/>
-    							</spring:url>
-								<a href="<c:url value="${fn:escapeXml(perfilUrl)}" />" class="text-center"> Perfil</a>
+									<a href="/perfil" class="text-center"> Perfil</a>
 							</li>
 							<li class="divider"></li>
 							</sec:authorize>
 							<li> <a href="<c:url value="/logout" />" class="text-center">Logout</a>
 							</li>
 
- <!--                           <li>
-								<div class="navbar-login navbar-login-session">
-									<div class="row">
-										<div class="col-lg-12">
-											<p>
-												<a href="#" class="btn btn-primary btn-block">My Profile</a>
-												<a href="#" class="btn btn-danger btn-block">Change
-													Password</a>
-											</p>
-										</div>
-									</div>
-								</div>
-							</li>
--->
+ 
 						</ul></li>
 				</sec:authorize>
 			</ul>

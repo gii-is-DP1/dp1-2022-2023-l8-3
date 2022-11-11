@@ -3,8 +3,10 @@
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -204,6 +206,22 @@ public class MatchController {
 		ModelAndView result = new ModelAndView(MATCH_STATISTICS_VIEW); 
 		result.addObject("match", matchService.getMatchById(idMatch));
 		return result;
+	}
+	
+	@GetMapping(value = "/InProgress")
+	public String showMatchesInProgress(Map<String, Object> model) {
+		List<Match> results = this.matchService.getMatchesInProgressOrFinished(GameWinner.UNDEFINED);
+		model.put("selections", results);
+		return "matches/listMatchesInProgress";
+	}
+	
+	@GetMapping(value = "/Finished")
+	public String showMatchesFinished(Map<String, Object> model,Map<String, Object> model2) {
+		List<Match> results = this.matchService.getMatchesInProgressOrFinished(GameWinner.FIRST_PLAYER);
+		results.addAll(this.matchService.getMatchesInProgressOrFinished(GameWinner.SECOND_PLAYER));
+		model.put("selections", results);
+		model2.put("firstPlayer", GameWinner.FIRST_PLAYER);
+		return "matches/listMatchesFinished";
 	}
 	
 

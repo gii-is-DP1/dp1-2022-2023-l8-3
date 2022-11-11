@@ -12,6 +12,11 @@ import org.springframework.samples.petclinic.user.AuthoritiesService;
 import org.springframework.samples.petclinic.user.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.samples.petclinic.disco.Disco;
+import org.springframework.samples.petclinic.disco.DishRepository;
+import org.springframework.samples.petclinic.partida.Match;
+import org.springframework.samples.petclinic.partida.MatchRepository;
+import org.springframework.samples.petclinic.partida.MatchService;
 import org.springframework.samples.petclinic.user.Authorities;
 import org.springframework.samples.petclinic.user.AuthoritiesRepository;
 
@@ -22,14 +27,16 @@ public class PlayerService {
 	private PlayerRepository playerRepo;
 	private UserRepository userRepo;
 	private AuthoritiesService authService;
-	private AuthoritiesRepository authRepo;
+	private MatchRepository matchRepo;
+	private DishRepository dishRepo;
 	
 	@Autowired
-	public PlayerService(PlayerRepository playerRepository, UserRepository userRepo, AuthoritiesService authService,AuthoritiesRepository authRepo) {
+	public PlayerService(PlayerRepository playerRepository, UserRepository userRepo, AuthoritiesService authService,MatchRepository matchRepo, DishRepository dishRepo) {
 		this.playerRepo = playerRepository;
 		this.authService = authService;
-		this.authRepo = authRepo;
+		this.matchRepo = matchRepo;
 		this.userRepo = userRepo;
+		this.dishRepo = dishRepo;
 	}	
 	
 	@Transactional
@@ -64,16 +71,36 @@ public class PlayerService {
 	    return playerRepo.findByUserName(userName);
 	}
 	
-//	@Transactional(readOnly = true)
-//	public Collection<Owner> findOwnerByLastName(String lastName) throws DataAccessException {
-//		return playerRepo.findByLastName(lastName);
-//	}
+
 
 	@Transactional
 	public void deletePlayer(Integer id) throws Exception{
 		try {
 			playerRepo.findById(id).get().getListaAmigos().clear();
-			playerRepo.deleteById(id);
+			playerRepo.save(playerRepo.findById(id).get());
+			for(Jugador j:playerRepo.findAll()) {
+				for(Integer i=0;i<j.getListaAmigos().size();i++) {
+					if(j.getListaAmigos().get(i)==playerRepo.findById(id).get())
+						j.getListaAmigos().remove(j.getListaAmigos().get(i));
+						playerRepo.save(j);
+				}
+			}
+			
+			for(Match m:matchRepo.findMatchsWithIdPlayer1(id)) {
+				for(Disco d:dishRepo.findDiscosWithMatchId(m.getId())) {
+					dishRepo.delete(d);
+				}
+				matchRepo.delete(m);
+			}
+			for(Match m:matchRepo.findMatchsWithIdPlayer2(id)) {
+				for(Disco d:dishRepo.findDiscosWithMatchId(m.getId())) {
+					dishRepo.delete(d);
+				}
+				matchRepo.delete(m);
+			}
+			
+			playerRepo.delete(playerRepo.findById(id).get());
+			
 		} catch (Exception e) {
 			throw new Exception("Error service delete");
 		}
@@ -83,7 +110,7 @@ public class PlayerService {
 	public void saveJugador(Jugador jugador) throws DataAccessException{
 		
 		playerRepo.save(jugador);
-
+		jugador.getUser().setEnabled(true);
 		userRepo.save(jugador.getUser());
 		authService.saveAuthorities(jugador.getUser().getUsername(),"jugador");
 		

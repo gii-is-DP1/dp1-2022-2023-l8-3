@@ -39,20 +39,28 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/jugadores/{jugadorId}").hasAnyAuthority("admin", "jugador").antMatchers("/jugadores/new")
 				.hasAnyAuthority("admin").antMatchers("/jugadores/{jugadorId}/delete").hasAnyAuthority("admin")
 				.antMatchers("/jugadores/{jugadorId}/edit").hasAnyAuthority("admin")
-				.antMatchers("/jugadores/{jugadorId}/matches").hasAnyAuthority("jugador").antMatchers("/matches/**")
-				.hasAnyAuthority("admin", "jugador").antMatchers("/statistics/achievements/")
-				.hasAnyAuthority("jugador", "admin").antMatchers("/statistics/achievements/**").hasAnyAuthority("admin")
-				.antMatchers("/cambiarEstadoOnline").hasAnyAuthority("admin", "jugador")
-				.antMatchers("/cambiarEstadoOffline").permitAll().antMatchers("/vets/**").authenticated().anyRequest()
-				.denyAll().and().formLogin().successForwardUrl("/cambiarEstadoOnline")
-				/* .loginPage("/login") */
-				.failureUrl("/login-error").and().logout().logoutSuccessUrl("/cambiarEstadoOffline");
-		// Configuración para que funcione la consola de administración
-		// de la BD H2 (deshabilitar las cabeceras de protección contra
-		// ataques de tipo csrf y habilitar los framesets si su contenido
-		// se sirve desde esta misma página.
-		http.csrf().ignoringAntMatchers("/h2-console/**");
-		http.headers().frameOptions().sameOrigin();
+        .antMatchers("/jugadores/{jugadorId}/matches").hasAnyAuthority("jugador")
+				.antMatchers("/matches/**").hasAnyAuthority("admin","jugador")
+				.antMatchers("/statistics/achievements/").hasAnyAuthority("jugador","admin")
+				.antMatchers("/statistics/achievements/**").hasAnyAuthority("admin")
+				.antMatchers("/cambiarEstadoOnline").hasAnyAuthority("admin","jugador")
+				.antMatchers("/cambiarEstadoOffline").permitAll()
+				.antMatchers("/perfil").hasAnyAuthority("jugador")
+				.antMatchers("/vets/**").authenticated()
+				.anyRequest().denyAll()
+				.and()
+				 	.formLogin().defaultSuccessUrl("/cambiarEstadoOnline")
+				 	/*.loginPage("/login")*/
+				 	.failureUrl("/login-error")
+				.and()
+					.logout()
+						.logoutSuccessUrl("/cambiarEstadoOffline"); 
+                // Configuración para que funcione la consola de administración 
+                // de la BD H2 (deshabilitar las cabeceras de protección contra
+                // ataques de tipo csrf y habilitar los framesets si su contenido
+                // se sirve desde esta misma página.
+                http.csrf().ignoringAntMatchers("/h2-console/**");
+                http.headers().frameOptions().sameOrigin();
 	}
 
 	@Override

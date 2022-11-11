@@ -2,6 +2,7 @@ package org.springframework.samples.petclinic.jugador;
 
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -24,7 +25,7 @@ import lombok.Setter;
 @Table(name = "jugadores")
 public class Jugador extends Person{
 
-	@Transient
+	@Column(name="estado_Online")
 	private Boolean estadoOnline;
 	
 	@Transient
@@ -54,7 +55,7 @@ public class Jugador extends Person{
 	private List<Match> invitacionesPartidaRecibidas;
 	
 	
-	@ManyToMany(cascade = CascadeType.REFRESH)
+	@ManyToMany(cascade = CascadeType.REMOVE)
 	@JoinTable(name = "lista_amigos", joinColumns = @JoinColumn(name = "id_jugador1"),
 	inverseJoinColumns = @JoinColumn(name = "id_jugador2"))
 	private List<Jugador> listaAmigos;
