@@ -81,7 +81,7 @@ public class PlayerController {
 	
 	
 	@GetMapping(value = "/jugadores/new")
-	public String initCreationForm(Map<String, Object> model) {
+	public String initCreationForm(Map<String, Object> model,Model model2) {
 		Jugador jugador = new Jugador();
 		model.put("jugador", jugador);
 		return "jugadores/createOrUpdateJugadorForm";
@@ -116,6 +116,7 @@ public class PlayerController {
 		}
 		else {
 			jugador.setId(jugadorId);
+			jugador.getUser().setUsername(playerService.findJugadorById(jugadorId).getUser().getUsername());
 			this.playerService.saveJugador(jugador);
 			return "redirect:/jugadores/{jugadorId}";
 		}
