@@ -8,8 +8,10 @@
 
 <petclinic:layout pageName="jugadorForm">
     <h2>
+
         <c:choose>
       		<c:when test="${jugador['new']}">Nuevo </c:when></c:choose> Jugador
+
     </h2>
     <form:form modelAttribute="jugador" class="form-horizontal" id="add-owner-form">
         <div class="form-group has-feedback">
@@ -21,13 +23,13 @@
             <petclinic:inputField label="Nombre" name="firstName"/>
             <petclinic:inputField label="Apellido" name="lastName"/>
             <petclinic:inputField label="Email" name="user.email"/>
-            <petclinic:inputField label="Contraseña" name="user.password"/>
+            <petclinic:inputField label="ContraseÃ±a" name="user.password"/>
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <c:choose>
                     <c:when test="${jugador['new']}">
-                        <button class="btn btn-default" type="submit">Añadir jugador</button>
+                        <button class="btn btn-default" type="submit">AÃ±adir jugador</button>
                     </c:when>
                     <c:otherwise>
                         <button class="btn btn-default" type="submit">Actualizar Jugador</button>

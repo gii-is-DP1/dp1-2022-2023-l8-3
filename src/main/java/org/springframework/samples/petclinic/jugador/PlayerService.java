@@ -48,7 +48,11 @@ public class PlayerService {
 	public Jugador findJugadorById(int id) throws DataAccessException {
 		return playerRepo.findById(id);
 	}
-
+	
+	@Transactional(readOnly = true)
+	public Jugador findJugadorByUsername(String username) throws DataAccessException {
+		return playerRepo.findByUserName(username);
+	}
 	
 	@Transactional(readOnly = true)
 	public List<Jugador> findAllJugadores() throws DataAccessException {

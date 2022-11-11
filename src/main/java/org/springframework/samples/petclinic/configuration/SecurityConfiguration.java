@@ -29,21 +29,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	DataSource dataSource;
-	
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
-				.antMatchers("/resources/**","/webjars/**","/h2-console/**").permitAll()
-				.antMatchers(HttpMethod.GET, "/","/oups").permitAll()
-				.antMatchers("/users/new").permitAll()
-				.antMatchers("/session/**").permitAll()
-				.antMatchers("/admin/**").hasAnyAuthority("admin")
-				.antMatchers("/owners/**").hasAnyAuthority("admin")
-				.antMatchers("/jugadores").hasAnyAuthority("admin")
-				.antMatchers("/jugadores/{jugadorId}").hasAnyAuthority("admin","jugador")
-				.antMatchers("/jugadores/new").hasAnyAuthority("admin")
-				.antMatchers("/jugadores/{jugadorId}/delete").hasAnyAuthority("admin")
+		http.authorizeRequests().antMatchers("/resources/**", "/webjars/**", "/h2-console/**").permitAll()
+				.antMatchers(HttpMethod.GET, "/", "/oups").permitAll().antMatchers("/users/new").permitAll()
+				.antMatchers("/session/**").permitAll().antMatchers("/admin/**").hasAnyAuthority("admin")
+				.antMatchers("/owners/**").hasAnyAuthority("admin").antMatchers("/jugadores").hasAnyAuthority("admin")
+				.antMatchers("/jugadores/{jugadorId}").hasAnyAuthority("admin", "jugador").antMatchers("/jugadores/new")
+				.hasAnyAuthority("admin").antMatchers("/jugadores/{jugadorId}/delete").hasAnyAuthority("admin")
 				.antMatchers("/jugadores/{jugadorId}/edit").hasAnyAuthority("admin")
+        .antMatchers("/jugadores/{jugadorId}/matches").hasAnyAuthority("jugador")
 				.antMatchers("/matches/**").hasAnyAuthority("admin","jugador")
 				.antMatchers("/statistics/achievements/").hasAnyAuthority("jugador","admin")
 				.antMatchers("/statistics/achievements/**").hasAnyAuthority("admin")
@@ -69,25 +65,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.jdbcAuthentication()
-	      .dataSource(dataSource)
-	      .usersByUsernameQuery(
-	       "select username,password,enabled "
-	        + "from users "
-	        + "where username = ?")
-	      .authoritiesByUsernameQuery(
-	       "select username, authority "
-	        + "from authorities "
-	        + "where username = ?")	      	      
-	      .passwordEncoder(passwordEncoder());	
+		auth.jdbcAuthentication().dataSource(dataSource)
+				.usersByUsernameQuery("select username,password,enabled " + "from users " + "where username = ?")
+				.authoritiesByUsernameQuery("select username, authority " + "from authorities " + "where username = ?")
+				.passwordEncoder(passwordEncoder());
 	}
-	
+
 	@Bean
-	public PasswordEncoder passwordEncoder() {	    
-		PasswordEncoder encoder =  NoOpPasswordEncoder.getInstance();
-	    return encoder;
+	public PasswordEncoder passwordEncoder() {
+		PasswordEncoder encoder = NoOpPasswordEncoder.getInstance();
+		return encoder;
 	}
-	
+
 }
-
-
