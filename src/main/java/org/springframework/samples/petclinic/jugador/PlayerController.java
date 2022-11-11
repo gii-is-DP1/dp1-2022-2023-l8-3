@@ -4,6 +4,11 @@ import java.util.Collection;
 import java.util.Map;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.user.Authorities;
+import org.springframework.samples.petclinic.user.User;
+import org.springframework.samples.petclinic.user.UserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,10 +23,12 @@ import org.springframework.web.servlet.ModelAndView;
 public class PlayerController {
 	
 	private PlayerService playerService;
+	private UserService userService;
 	
 	@Autowired
-	public PlayerController(PlayerService playerService) {
+	public PlayerController(PlayerService playerService, UserService userService) {
 		this.playerService = playerService;
+		this.userService = userService;
 	}
 
 	@InitBinder
@@ -31,16 +38,32 @@ public class PlayerController {
 	
 	
 	@GetMapping(value = "/jugadores")
-	public String showAllPlayers(Map<String, Object> model,Jugador jugador) {
+	public String showAllPlayers(Map<String, Object> model) {
 		Collection<Jugador> results = this.playerService.findAllJugadores();
 		model.put("selections", results);
 		return "jugadores/listJugador";
 	}
 	
+	@GetMapping(value = "/perfil")
+	public String showPerfil() {
+		Authentication auth=SecurityContextHolder.getContext().getAuthentication();
+		User user=userService.findUser(auth.getName()).get();
+		Integer id=playerService.findJugadorByUserName(user.getUsername()).getId();
+		return "redirect:/jugadores/"+id;
+	}
+	
 	@GetMapping(value = "/jugadores/{jugadorId}")
 	public ModelAndView showPlayer(@PathVariable("jugadorId") int id) {
-		ModelAndView mav = new ModelAndView("jugadores/showJugador");
-		mav.addObject(this.playerService.findJugadorById(id));
+		Authentication auth=SecurityContextHolder.getContext().getAuthentication();
+		User user=userService.findUser(auth.getName()).get();
+		ModelAndView mav=new ModelAndView();
+		for(Authorities authority:user.getAuthorities()) {
+			if(authority.getAuthority().equals("admin") || playerService.findJugadorByUserName(auth.getName()).getId()==id) {
+				mav = new ModelAndView("jugadores/showJugador");
+				mav.addObject(this.playerService.findJugadorById(id));
+			}
+
+		}
 		return mav;
 	}
 	

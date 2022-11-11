@@ -95,11 +95,7 @@
 						<ul class="dropdown-menu">
 							<sec:authorize access="hasAuthority('jugador')">
 							<li>
-								
-								<spring:url value="jugadores/{jugadorId}" var="perfilUrl">
-        							<spring:param name="jugadorId" value="${jugador.id}"/>
-    							</spring:url>
-								<a href="<c:url value="${fn:escapeXml(perfilUrl)}" />" class="text-center"> Perfil</a>
+									<a href="/perfil" class="text-center"> Perfil</a>
 							</li>
 							<li class="divider"></li>
 							</sec:authorize>

@@ -49,10 +49,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/statistics/achievements/**").hasAnyAuthority("admin")
 				.antMatchers("/cambiarEstadoOnline").hasAnyAuthority("admin","jugador")
 				.antMatchers("/cambiarEstadoOffline").permitAll()
+				.antMatchers("/perfil").hasAnyAuthority("jugador")
 				.antMatchers("/vets/**").authenticated()
 				.anyRequest().denyAll()
 				.and()
-				 	.formLogin().successForwardUrl("/cambiarEstadoOnline")
+				 	.formLogin().defaultSuccessUrl("/cambiarEstadoOnline")
 				 	/*.loginPage("/login")*/
 				 	.failureUrl("/login-error")
 				.and()
