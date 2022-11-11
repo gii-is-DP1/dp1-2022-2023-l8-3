@@ -35,7 +35,7 @@ public class MatchService {
 	
 	public List<Match> getMatchesInProgressOrFinished(GameWinner gameWinner){
 		return matchRepository.findMatchesInProgressOrFinished(gameWinner);
-
+	}
 
 	public Collection<Match> getMatchesOfAPlayer(Integer id){
 		return matchRepository.findMatchesOfAPlayer(id);
