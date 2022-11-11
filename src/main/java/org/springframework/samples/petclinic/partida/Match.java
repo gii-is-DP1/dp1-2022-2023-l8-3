@@ -254,11 +254,8 @@ public class Match extends BaseEntity{
 	
 	//Valida que un movimiento (con datos correctos) sea legal o no
 	// TODO: te falta tener en cuenta que en el disco origen no haya el mismo número de bacterias de ambos jugadores
-	private String legalMove(Integer discoOrigen, Integer discoDestino, Integer valor,Integer jugador) {
+	private String legalMove(Integer discoDestino, Integer valor,Integer jugador, Integer enemigo) {
 		Disco dDestino = getDisco(discoDestino-1);
-		Disco dOrigen = getDisco(discoOrigen-1);
-
-		Integer enemigo = jugador==PRIMER_JUGADOR ? SEGUNDO_JUGADOR : PRIMER_JUGADOR;
 
 		//Si disco destino tiene sarcina tuya el mov es ilegal
 		if(dDestino.getNumeroDeSarcinas(jugador)!=0){ 
@@ -270,12 +267,6 @@ public class Match extends BaseEntity{
 		Integer i = dDestino.getNumeroDeBacterias(jugador)+valor;
 		if(i != 0 && i == dDestino.getNumeroDeBacterias(enemigo)){ 
 			String msg = "Mismo numero de bacterias enemigas que aliadas en disco: "+discoDestino;
-			System.out.println(msg);
-			return msg;
-		}
-		Integer j = dOrigen.getNumeroDeBacterias(jugador)-valor;
-		if(j != 0 && j == dOrigen.getNumeroDeBacterias(enemigo)){ 
-			String msg = "Mismo numero de bacterias enemigas que aliadas en disco: "+discoOrigen;
 			System.out.println(msg);
 			return msg;
 		}
@@ -298,6 +289,7 @@ public class Match extends BaseEntity{
 		if(getDeDisco().length != 1) return "Más de un disco origen o ningu";
 
 		Integer jugador = getIdJugadorTurnoActual();
+		Integer enemigo = jugador==PRIMER_JUGADOR ? SEGUNDO_JUGADOR : PRIMER_JUGADOR;
 
 		Integer origen =  getDeDisco()[0];
 		Integer numDiscosOrigen = 0; //Numero de discos a donde hay movimiento posible
@@ -317,7 +309,7 @@ public class Match extends BaseEntity{
 				if(valor == 0) numDiscosOrigenConCero++;
 				//Reglas mas complejas 
 				else {
-					String reglasComplejas = legalMove(origen,destino,valor,jugador);
+					String reglasComplejas = legalMove(destino,valor,jugador,enemigo);
 					if(reglasComplejas.length() != 0) return reglasComplejas;
 				}
 
@@ -334,9 +326,20 @@ public class Match extends BaseEntity{
 			System.out.println("No hay ningun movimiento indicado");
 			return "No se indicó ningun movimiento";
 		}
+		Disco dOrigen = getDisco(origen-1);
+
 		//Si quedan bacterias negativas en origen el mov es ilegal
-		if((getDisco(origen-1).getNumeroDeBacterias(jugador)-sumaValores)<0) { 
+		if((dOrigen.getNumeroDeBacterias(jugador)-sumaValores)<0) { 
 			String msg = "Bacterias negativas en origen:"+origen;
+			System.out.println(msg);
+			return msg;
+		}
+		
+		//Si mismo n de bacterias enemigas y aliadas en origen es ilegal
+		Integer bacteriasAlidasOrigen = dOrigen.getNumeroDeBacterias(jugador)-sumaValores;
+		if(bacteriasAlidasOrigen != 0 &&
+				bacteriasAlidasOrigen == dOrigen.getNumeroDeBacterias(enemigo)){ 
+			String msg = "Mismo numero de bacterias enemigas que aliadas en disco: "+origen;
 			System.out.println(msg);
 			return msg;
 		}
