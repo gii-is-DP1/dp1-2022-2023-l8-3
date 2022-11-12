@@ -60,7 +60,7 @@
 							<a class="button" href="<c:url value="/matches/${match.id}/currentMatch" />">Siguiente fase </a>
 						</c:otherwise>
 				</c:choose>
-				<input  class="button" type="button" value="Abandonar partida"/>
+				<a class="button" href="<c:url value="/matches/${match.id}/statistics" />">Abandonar partida </a>
 			</div>
 
 		</div>
