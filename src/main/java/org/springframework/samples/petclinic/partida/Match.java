@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -391,4 +390,29 @@ public class Match extends BaseEntity{
 	public Boolean esFaseContaminacion() {
 		return getTurns().get(this.getTurn()).equals("POLLUTION");
 	}
+	
+	public Integer totalMoves() {
+		Integer result = 0;
+		for(int i = 0; i < discos.size(); i++) {
+			result += discos.get(i).getNumMov();
+		}
+		return result;
+	}
+	
+	// Devuelve el disco con más movimientos y cuántos movimientos se han realizado a él
+	public Integer[] dishWithMoreMovements() {
+		Integer[] result = new Integer[] {0, 0};
+		for (int i = 0; i < discos.size(); i++) {
+			if(discos.get(i).getNumMov() > result[1]) {
+				result[0] = i;
+				result[1] = discos.get(i).getNumMov();
+			}
+		}
+		return result;
+	}
+	
+	public Integer durationInMinutes() {
+		return finPartida.getMinute()-inicioPartida.getMinute();
+	}
+	
 }
