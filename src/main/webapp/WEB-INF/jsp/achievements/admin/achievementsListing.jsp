@@ -13,6 +13,8 @@
             <th>Name</th>
             <th>Description</th>
             <th>Difficulty</th>
+            <th></th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -27,9 +29,19 @@
                 <td>       
                     <c:out value="${achievement.difficulty} "/>
                 </td>
+                <td>
+                	<a href="<c:url value="/statistics/achievements/admin/${achievement.id}/edit" />"> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+                </td>
+                <td>
+                	<a href="<c:url value="/statistics/achievements/admin/${achievement.id}/delete" />"> <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+                </td>
+
+
             </tr>
         </c:forEach>
         </tbody>
     </table>
     
+	<a class="btn btn-default" href="/statistics/achievements/admin/new">Create new achievement</a>
+
 </petclinic:layout>
