@@ -52,7 +52,7 @@
 						</li>
 						<li class="divider"></li>
 						<li>
-							<a href="<c:url value="/statistics/achievements/" />">My Achievements <span class="glyphicon glyphicon-certificate" aria-hidden="true"></span></a>
+							<a href="<c:url value="/statistics/achievements/currentPlayer" />">My Achievements <span class="glyphicon glyphicon-certificate" aria-hidden="true"></span></a>
 						</li>
 					</ul>
 				</petclinic:menuItem>
@@ -75,6 +75,11 @@
 							<a href="<c:url value="/matches/Finished" />">Partidas jugadas </a>
 						</li>
 					</ul>
+				</petclinic:menuItem>
+				
+				<petclinic:menuItem active="${name eq 'achievements'}" url="/statistics/achievements/admin"	title="achievements">
+					<span class="glyphicon glyphicon-certificate" aria-hidden="true"></span>
+					<span>Achievements</span>
 				</petclinic:menuItem>
 				</sec:authorize>
 				

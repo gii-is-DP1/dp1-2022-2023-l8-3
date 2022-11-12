@@ -29,11 +29,9 @@ VALUES(3,'Manuel','Ortega','manortgar');
 INSERT INTO lista_amigos(id_jugador1,id_jugador2) VALUES (1,2);
 INSERT INTO lista_amigos(id_jugador1,id_jugador2) VALUES (2,3);
 
-INSERT INTO achievement(id,name,threshold,description,badge_image) VALUES
-	(1, 'Viciado', 10.0, 'Si juegas <THRESHOLD> partidas o más, consideramos que ya estás enganchado',
-	'https://bit.ly/certifiedGamer'),
-	(2, 'Triunfador', 20.0, 'Si ganas <THRESHOLD> o más partidas es que eres todo un triunfador',
-	'https://bit.ly/proGamer');
+INSERT INTO achievements(id,name,metrics,threshold,description,visibility,difficulty) VALUES
+	(1, 'Viciado', 'JUGAR_PARTIDAS', 10.0, 'Si juegas <THRESHOLD> partidas o más, consideramos que ya estás enganchado', 'PUBLICADO', 'BRONCE'),
+	(2, 'Triunfador', 'GANAR_PARTIDAS', 20.0, 'Si ganas <THRESHOLD> o más partidas es que eres todo un triunfador', 'PUBLICADO', 'PLATA');
 
 
 INSERT INTO matches(id, id_jugador1, id_jugador2, es_privada, inicio_de_partida, fin_de_partida, ganador_de_partida, turn)

@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.statistics;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -31,5 +32,9 @@ public class AchievementService {
 	
 	public Achievement getAchievementById(Integer id) {
 		return achievementRepository.findById(id).get();
+	}
+	
+	public List<Achievement> getAchievementsOfAPlayer(Integer id) {
+		return achievementRepository.findAchievementsOfAPlayer(id);
 	}
 }
