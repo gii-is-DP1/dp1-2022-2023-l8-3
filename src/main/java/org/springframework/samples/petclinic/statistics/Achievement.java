@@ -47,6 +47,15 @@ public class Achievement extends NamedEntity {
 	@ManyToMany
 	private List<Jugador> players;
 	
+	public Achievement() {
+		
+	}
+	
+	public Achievement(String name, String description) {
+		this.name = name;
+		this.description = description;
+	}
+	
 	public String getActualDescription() {
 		return description.replaceAll("<THRESHOLD>", String.valueOf(threshold));
 	}

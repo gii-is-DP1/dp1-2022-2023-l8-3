@@ -11,7 +11,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.Email;
 
 import org.springframework.samples.petclinic.jugador.Jugador;
-import org.springframework.samples.petclinic.model.BaseEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -37,4 +36,13 @@ public class User{
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	//Es una lista ya que puede haber uno o ningun jugador asociado a un user
 	private List<Jugador> jugador;
+	
+	public User() {
+		
+	}
+	
+	public User(String username) {
+		this.username = username;
+	}
+	
 }

@@ -43,7 +43,7 @@ public class MatchController {
     public ModelAndView listingMatch() {
         ModelAndView result = new ModelAndView(LIST_MATCHES);   
 
-        result.addObject("match_list", matchService.getMatchWithotP2());
+        result.addObject("match_list", matchService.getMatchWithoutPlayer2());
         result.addObject("matches", matchService.getMatches());
         return result;
     }
@@ -56,7 +56,7 @@ public class MatchController {
             result.addObject("match", match);
         } else {
             String playerName = user.getName();
-            Jugador player = playerService.findJugadorByUserName(playerName);
+            Jugador player = playerService.findPlayerByUsername(playerName);
             match.setJugador2(player);
             this.matchService.saveMatch(match);
             result = new ModelAndView(WAIT_MATCH_VIEW, br.getModel());
@@ -74,7 +74,7 @@ public class MatchController {
 		String playerName = user.getName();
 		System.out.println(playerName + "pepepe");
 		System.out.println("pepe");
-		Jugador player = playerService.findJugadorByUserName(playerName);
+		Jugador player = playerService.findPlayerByUsername(playerName);
 		Match match = new Match(false, player); //Hay que poner el jugador aqui!!! (creo, no entiendo los constructores en spring)
 		result.addObject("match", match);
 		result.addObject("player", player);
@@ -89,7 +89,7 @@ public class MatchController {
 			result.addObject("match", match);
 		} else {
 		    String playerName = user.getName();
-	        Jugador player = playerService.findJugadorByUserName(playerName);
+	        Jugador player = playerService.findPlayerByUsername(playerName);
 	        Match match2 = new Match(false, player);//Hay que poner el jugador aqui!!! (creo, no entiendo los constructores en spring)
 	        Jugador jugador2 = playerService.findJugadorById(1);
 	        match2.setJugador2(jugador2);
@@ -189,15 +189,15 @@ public class MatchController {
 	
 	@GetMapping(value = "/InProgress")
 	public String showMatchesInProgress(Map<String, Object> model) {
-		List<Match> results = this.matchService.getMatchesInProgressOrFinished(GameWinner.UNDEFINED);
+		List<Match> results = this.matchService.getMatchesByGameWinner(GameWinner.UNDEFINED);
 		model.put("selections", results);
 		return "matches/listMatchesInProgress";
 	}
 	
 	@GetMapping(value = "/Finished")
 	public String showMatchesFinished(Map<String, Object> model,Map<String, Object> model2) {
-		List<Match> results = this.matchService.getMatchesInProgressOrFinished(GameWinner.FIRST_PLAYER);
-		results.addAll(this.matchService.getMatchesInProgressOrFinished(GameWinner.SECOND_PLAYER));
+		List<Match> results = this.matchService.getMatchesByGameWinner(GameWinner.FIRST_PLAYER);
+		results.addAll(this.matchService.getMatchesByGameWinner(GameWinner.SECOND_PLAYER));
 		model.put("selections", results);
 		model2.put("firstPlayer", GameWinner.FIRST_PLAYER);
 		return "matches/listMatchesFinished";

@@ -2,9 +2,7 @@
 package org.springframework.samples.petclinic.jugador;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -16,9 +14,6 @@ import org.springframework.samples.petclinic.disco.Disco;
 import org.springframework.samples.petclinic.disco.DishRepository;
 import org.springframework.samples.petclinic.partida.Match;
 import org.springframework.samples.petclinic.partida.MatchRepository;
-import org.springframework.samples.petclinic.partida.MatchService;
-import org.springframework.samples.petclinic.user.Authorities;
-import org.springframework.samples.petclinic.user.AuthoritiesRepository;
 
 @Service
 public class PlayerService {
@@ -50,11 +45,6 @@ public class PlayerService {
 	}
 	
 	@Transactional(readOnly = true)
-	public Jugador findJugadorByUsername(String username) throws DataAccessException {
-		return playerRepo.findByUserName(username);
-	}
-	
-	@Transactional(readOnly = true)
 	public List<Jugador> findAllJugadores() throws DataAccessException {
 		return playerRepo.findAll();
 	}
@@ -64,17 +54,15 @@ public class PlayerService {
 		return playerRepo.findByLastName(lastName);
 	}
 	
-	
-
 	@Transactional(readOnly = true)
-	public Jugador findJugadorByUserName(String userName) throws DataAccessException{
-	    return playerRepo.findByUserName(userName);
+	public Jugador findPlayerByUsername(String username) throws DataAccessException{
+	    return playerRepo.findByUserName(username);
 	}
-	
-
 
 	@Transactional
 	public void deletePlayer(Integer id) throws Exception{
+		// TODO: no veo conveniente que se borren todas las partidas en las que haya participado, se perdería la estadística
+		// Mejor, ponemos a null el atributo jugador1 o jugador2
 		try {
 			playerRepo.findById(id).get().getListaAmigos().clear();
 			playerRepo.save(playerRepo.findById(id).get());
@@ -100,7 +88,7 @@ public class PlayerService {
 			}
 			
 			playerRepo.delete(playerRepo.findById(id).get());
-			
+						
 		} catch (Exception e) {
 			throw new Exception("Error service delete");
 		}
@@ -108,12 +96,11 @@ public class PlayerService {
 	
 	@Transactional
 	public void saveJugador(Jugador jugador) throws DataAccessException{
-		
 		playerRepo.save(jugador);
+		System.out.println("PEPE");
 		jugador.getUser().setEnabled(true);
 		userRepo.save(jugador.getUser());
 		authService.saveAuthorities(jugador.getUser().getUsername(),"jugador");
-		
 	}
 
 	

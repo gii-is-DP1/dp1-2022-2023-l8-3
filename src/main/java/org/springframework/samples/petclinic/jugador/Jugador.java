@@ -1,5 +1,6 @@
 package org.springframework.samples.petclinic.jugador;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -67,8 +68,17 @@ public class Jugador extends Person{
 	inverseJoinColumns = @JoinColumn(name = "id_logro"))
 	private List<Achievement> logros;
 	
+	public Jugador() {
+		
+	}
 	
-	
-	
+	public Jugador(String firstName, String lastName, User user) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.user = user;
+		this.invitacionesPartidaRecibidas = new ArrayList<Match>();
+		this.listaAmigos = new ArrayList<Jugador>();
+		this.logros = new ArrayList<Achievement>();
+	}
 		
 }
