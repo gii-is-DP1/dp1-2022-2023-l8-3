@@ -56,7 +56,7 @@ public class PlayerController {
 	public String showPerfil() {
 		Authentication auth=SecurityContextHolder.getContext().getAuthentication();
 		User user=userService.findUser(auth.getName()).get();
-		Integer id=playerService.findJugadorByUserName(user.getUsername()).getId();
+		Integer id=playerService.findPlayerByUsername(user.getUsername()).getId();
 		return "redirect:/jugadores/"+id;
 	}
   
@@ -66,7 +66,7 @@ public class PlayerController {
 		User user=userService.findUser(auth.getName()).get();
 		ModelAndView mav=new ModelAndView();
 		for(Authorities authority:user.getAuthorities()) {
-			if(authority.getAuthority().equals("admin") || playerService.findJugadorByUserName(auth.getName()).getId()==id) {
+			if(authority.getAuthority().equals("admin") || playerService.findPlayerByUsername(auth.getName()).getId()==id) {
 				mav = new ModelAndView("jugadores/showJugador");
 				mav.addObject(this.playerService.findJugadorById(id));
 			}

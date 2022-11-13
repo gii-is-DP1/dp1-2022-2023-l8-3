@@ -17,7 +17,7 @@ public class MatchService {
 	public MatchService(MatchRepository matchRepository) {
 		this.matchRepository = matchRepository;
 	}
-	public Collection<Match> getMatchWithotP2() throws DataAccessException{
+	public Collection<Match> getMatchWithoutPlayer2() throws DataAccessException{
 	    return matchRepository.findMatchesWhitoutP2();
 	}
 	
@@ -33,8 +33,8 @@ public class MatchService {
 		return matchRepository.findById(id).get();
 	}
 	
-	public List<Match> getMatchesInProgressOrFinished(GameWinner gameWinner){
-		return matchRepository.findMatchesInProgressOrFinished(gameWinner);
+	public List<Match> getMatchesByGameWinner(GameWinner gameWinner){
+		return matchRepository.findMatchesByGameWinner(gameWinner);
 	}
 
 	public Collection<Match> getMatchesOfAPlayer(Integer id){

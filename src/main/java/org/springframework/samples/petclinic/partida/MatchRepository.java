@@ -19,7 +19,7 @@ public interface MatchRepository extends CrudRepository<Match, Integer> {
 	public Collection<Match> findMatchesWhitoutP2() throws DataAccessException;
 	
 	@Query("SELECT match FROM Match match WHERE match.ganadorPartida =:gameWinner")
-	public List<Match> findMatchesInProgressOrFinished(@Param("gameWinner") GameWinner gameWinner) throws DataAccessException;
+	public List<Match> findMatchesByGameWinner(@Param("gameWinner") GameWinner gameWinner) throws DataAccessException;
 	
 	@Query("SELECT match FROM Match match WHERE match.jugador1.id =:id")
 	public List<Match> findMatchsWithIdPlayer1(@Param("id") Integer id) throws DataAccessException;
