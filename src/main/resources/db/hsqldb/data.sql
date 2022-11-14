@@ -16,15 +16,20 @@ INSERT INTO users(username,password,email,enabled) VALUES ('josibocon','josiboco
 INSERT INTO authorities(id,username,authority) VALUES (9,'josibocon','jugador');
 
 
-
-INSERT INTO jugadores(id, first_name,last_name,username)
-VALUES(4,'Yeyo','Peyeyo','seraguoro');
 INSERT INTO jugadores(id, first_name,last_name,username) 
 VALUES(1,'David','Dana','davdancab');
 INSERT INTO jugadores(id, first_name,last_name,username) 
 VALUES(2,'Juan Jesus','Martin','juamarher');
 INSERT INTO jugadores(id, first_name,last_name,username) 
 VALUES(3,'Manuel','Ortega','manortgar');
+INSERT INTO jugadores(id, first_name,last_name,username)
+VALUES(4,'Yeyo','Peyeyo','seraguoro');
+INSERT INTO jugadores(id, first_name,last_name,username)
+VALUES(5,'Francisco Jesús','Montero','framonmar');
+INSERT INTO jugadores(id, first_name,last_name,username)
+VALUES(6,'José Miguel','Iborra','josibocon');
+
+
 
 INSERT INTO lista_amigos(id_jugador1,id_jugador2) VALUES (1,2);
 INSERT INTO lista_amigos(id_jugador1,id_jugador2) VALUES (2,3);
