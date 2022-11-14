@@ -8,60 +8,62 @@
 
 <petclinic:layout pageName="createMatch">
 
-	<form:form class="contenido" modelAttribute="match">
-		<h2>Nueva Partida</h2>
 
-		<div class="seccion seccion1">
-			<!--	Esto para cuando se haga
-			<form:checkbox path="esPrivada" id="check"/>-->
-			<div>
-				<label for="check" style="color: blue">Partida privada</label>
-			</div>
-			<div>
-				<label for="check" style="color: red">${player}</label>
-			</div>
-			<div>
-				<label for="check" style="color: green">${match}</label>
+	<h2>Nueva Partida</h2>
 
-			</div>
+	<div class="seccion seccion1">
+
+		<div>
+			<label for="check" style="color: blue">Partida privada</label>
 		</div>
 
-		<div class=" seccion invitaciones">
-			<div class="scroll">
-				<h4>Invitaciones</h4>
-				<table style="width: 100%">
-					<thead>
-						<th>Amigo</th>
-						<th>EstadoOnline</th>
-						<th></th>
+	</div>
 
-					</thead>
-					<tbody>
+	<div class=" seccion invitaciones">
+		<div class="scroll">
+			<h4>Invitaciones</h4>
+			<table style="width: 100%">
+				<thead>
+					<th>Amigo</th>
+					<th>EstadoOnline</th>
+					<th></th>
 
-						<c:forEach items="${players}" var="player">
-							<tr>
-								<td><c:out value="${player.user.username}" /></td>
-								<td><c:out value="${player.estadoOnline}" /></td>
-								<td><a class="btn btn-warning"
-									href="<c:url value="#" />">INVITAR AMIGO</a></td>
-							</tr>
-						</c:forEach>
-					</tbody>
-				</table>
-			</div>
+				</thead>
+				<tbody>
 
+					<c:forEach items="${players}" var="player">
+						<tr>
+							<td><c:out value="${player.user.username}" /></td>
+							<td><c:out value="${player.estadoOnline}" /></td>
+							<td><a class="btn btn-warning" href="<c:url value="#" />">INVITAR
+									AMIGO</a></td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
 		</div>
+
+	</div>
+	<form:form method="post">
+		<input value="nombrePartida" name="nombre">
+		<select name="tipoPartida">
+			<option value="false">Publica</option>
+			<option value="true" selected>Privada</option>
+	
+		</select>
 
 		<div class="seccion botones">
 			<a class="button" href="#"
 				onclick="javascript:window.history.back(-1);return false;">Volver
-				atras</a> <input type="hidden" name="idMatch" value="${match.id}" /> <input
-				class="button" type="submit" value="Crear partida" />
+				atras</a> <input class="button" type="submit" value="Crear partida" />
 		</div>
 
-
-
 	</form:form>
+
+
+
+
+
 
 
 

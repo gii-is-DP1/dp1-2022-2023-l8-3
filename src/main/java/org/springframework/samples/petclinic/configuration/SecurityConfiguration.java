@@ -27,8 +27,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	DataSource dataSource;
+    @Autowired
+    DataSource dataSource;
+
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -64,18 +65,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 http.headers().frameOptions().sameOrigin();
 	}
 
-	@Override
-	public void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.jdbcAuthentication().dataSource(dataSource)
-				.usersByUsernameQuery("select username,password,enabled " + "from users " + "where username = ?")
-				.authoritiesByUsernameQuery("select username, authority " + "from authorities " + "where username = ?")
-				.passwordEncoder(passwordEncoder());
-	}
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.jdbcAuthentication().dataSource(dataSource)
+                .usersByUsernameQuery("select username,password,enabled " + "from users " + "where username = ?")
+                .authoritiesByUsernameQuery("select username, authority " + "from authorities " + "where username = ?")
+                .passwordEncoder(passwordEncoder());
+    }
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		PasswordEncoder encoder = NoOpPasswordEncoder.getInstance();
-		return encoder;
-	}
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        PasswordEncoder encoder = NoOpPasswordEncoder.getInstance();
+        return encoder;
+    }
 
 }
