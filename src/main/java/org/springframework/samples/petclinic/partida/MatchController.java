@@ -1,37 +1,30 @@
-package org.springframework.samples.petclinic.partida;
+ package org.springframework.samples.petclinic.partida;
 
 
-
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.samples.petclinic.disco.Disco;
 import org.springframework.samples.petclinic.jugador.Jugador;
 import org.springframework.samples.petclinic.jugador.PlayerService;
-import org.springframework.samples.petclinic.statistics.Achievement;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
 
 @Controller
 @RequestMapping("/matches")
 public class MatchController {
 	
+	private static final String MATCH_STATISTICS_VIEW = "/matches/matchStatistics";
 	private static final String CURRENT_MATCH_VIEW = "/matches/currentMatch";
 	private static final String CREATE_MATCH_VIEW = "/matches/createMatch";
 	private static final String WAIT_MATCH_VIEW = "/matches/waitForMatch";
@@ -50,7 +43,7 @@ public class MatchController {
     public ModelAndView listingMatch() {
         ModelAndView result = new ModelAndView(LIST_MATCHES);   
 
-        result.addObject("match_list", matchService.getMatchWithotP2());
+        result.addObject("match_list", matchService.getMatchWithoutPlayer2());
         result.addObject("matches", matchService.getMatches());
         return result;
     }
@@ -63,7 +56,7 @@ public class MatchController {
             result.addObject("match", match);
         } else {
             String playerName = user.getName();
-            Jugador player = playerService.findJugadorByUserName(playerName);
+            Jugador player = playerService.findPlayerByUsername(playerName);
             match.setJugador2(player);
             this.matchService.saveMatch(match);
             result = new ModelAndView(WAIT_MATCH_VIEW, br.getModel());
@@ -78,8 +71,15 @@ public class MatchController {
 	@GetMapping(value = "/createMatch")
 	public ModelAndView createNewMatch(@AuthenticationPrincipal Authentication user) {
 		ModelAndView result = new ModelAndView(CREATE_MATCH_VIEW);
-	 //Hay que poner el jugador aqui!!! (creo, no entiendo los constructores en spring)
-		
+
+		String playerName = user.getName();
+		System.out.println(playerName + "pepepe");
+		System.out.println("pepe");
+		Jugador player = playerService.findPlayerByUsername(playerName);
+		Match match = new Match(false, player); //Hay que poner el jugador aqui!!! (creo, no entiendo los constructores en spring)
+		result.addObject("match", match);
+		result.addObject("player", player);
+
 		result.addObject("players", playerService.findAllJugadores());
 		return result;
 	}
@@ -99,6 +99,7 @@ public class MatchController {
 			result = new ModelAndView(WAIT_MATCH_VIEW);
 			result.addObject("match", match);
 		
+
 		return result;
 	}
 
@@ -116,7 +117,7 @@ public class MatchController {
 			pollutionPhase(match);
 		} else if(match.esFin()){
 			System.out.println("FIN");
-			result = new ModelAndView("/matches/completedMatch");
+			result = new ModelAndView(MATCH_STATISTICS_VIEW);
 		}
 		
 		result.addObject("match", match);
@@ -180,12 +181,28 @@ public class MatchController {
 		// TODO
 		match.nextTurn();
 	}
-
-	@GetMapping(value = "/{idMatch}/completedMatch")
-	public ModelAndView completedMatch(@PathVariable int idMatch) {
-		ModelAndView result = new ModelAndView("/matches/completedMatch"); // aún no está hecha la vista
+	
+	@GetMapping("/{idMatch}/statistics")
+	public ModelAndView matchStatistics(@PathVariable int idMatch) {
+		ModelAndView result = new ModelAndView(MATCH_STATISTICS_VIEW); 
 		result.addObject("match", matchService.getMatchById(idMatch));
 		return result;
+	}
+	
+	@GetMapping(value = "/InProgress")
+	public String showMatchesInProgress(Map<String, Object> model) {
+		List<Match> results = this.matchService.getMatchesByGameWinner(GameWinner.UNDEFINED);
+		model.put("selections", results);
+		return "matches/listMatchesInProgress";
+	}
+	
+	@GetMapping(value = "/Finished")
+	public String showMatchesFinished(Map<String, Object> model,Map<String, Object> model2) {
+		List<Match> results = this.matchService.getMatchesByGameWinner(GameWinner.FIRST_PLAYER);
+		results.addAll(this.matchService.getMatchesByGameWinner(GameWinner.SECOND_PLAYER));
+		model.put("selections", results);
+		model2.put("firstPlayer", GameWinner.FIRST_PLAYER);
+		return "matches/listMatchesFinished";
 	}
 	
 

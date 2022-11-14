@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.partida;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -20,7 +21,7 @@ public class MatchService {
 		this.matchRepository = matchRepository;
 		this.diskService = diskService;
 	}
-	public Collection<Match> getMatchWithotP2() throws DataAccessException{
+	public Collection<Match> getMatchWithoutPlayer2() throws DataAccessException{
 	    return matchRepository.findMatchesWhitoutP2();
 	}
 	
@@ -39,6 +40,10 @@ public class MatchService {
 		return matchRepository.findById(id).get();
 	}
 	
+	public List<Match> getMatchesByGameWinner(GameWinner gameWinner){
+		return matchRepository.findMatchesByGameWinner(gameWinner);
+	}
+
 	public Collection<Match> getMatchesOfAPlayer(Integer id){
 		return matchRepository.findMatchesOfAPlayer(id);
 	}

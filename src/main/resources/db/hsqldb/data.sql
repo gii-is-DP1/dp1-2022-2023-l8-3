@@ -29,11 +29,9 @@ VALUES(3,'Manuel','Ortega','manortgar');
 INSERT INTO lista_amigos(id_jugador1,id_jugador2) VALUES (1,2);
 INSERT INTO lista_amigos(id_jugador1,id_jugador2) VALUES (2,3);
 
-INSERT INTO achievement(id,name,threshold,description,badge_image) VALUES
-	(1, 'Viciado', 10.0, 'Si juegas <THRESHOLD> partidas o más, consideramos que ya estás enganchado',
-	'https://bit.ly/certifiedGamer'),
-	(2, 'Triunfador', 20.0, 'Si ganas <THRESHOLD> o más partidas es que eres todo un triunfador',
-	'https://bit.ly/proGamer');
+INSERT INTO achievements(id,name,metrics,threshold,description,visibility,difficulty) VALUES
+	(1, 'Viciado', 'JUGAR_PARTIDAS', 10.0, 'Si juegas <THRESHOLD> partidas o más, consideramos que ya estás enganchado', 'PUBLICADO', 'BRONCE'),
+	(2, 'Triunfador', 'GANAR_PARTIDAS', 20.0, 'Si ganas <THRESHOLD> o más partidas es que eres todo un triunfador', 'PUBLICADO', 'PLATA');
 
 
 INSERT INTO matches(id, id_jugador1, id_jugador2, es_privada, inicio_de_partida, fin_de_partida, ganador_de_partida, turn)
@@ -52,6 +50,9 @@ VALUES(2, 3, 4, true, '1999-04-12 10:12:12.55', '1999-04-12 10:12:12.55', 'UNDEF
 
 INSERT INTO matches(id, id_jugador1, id_jugador2, es_privada, inicio_de_partida, fin_de_partida, ganador_de_partida, turn)
 VALUES(20, 3, null, false, '1999-04-12 10:12:12.55', '1999-04-12 10:12:12.55', 'UNDEFINED', 0);
+
+INSERT INTO matches(id, id_jugador1, id_jugador2, es_privada, inicio_de_partida, fin_de_partida, ganador_de_partida, turn)
+VALUES(21, 1, 2, false, '2000-05-17 15:12:07.55', '2000-05-17 15:20:16.43', 'FIRST_PLAYER', 0);
 
 INSERT INTO disco VALUES(8,1,0,0,0,0,2);
 INSERT INTO disco VALUES(9,0,0,0,0,0,2);

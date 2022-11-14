@@ -14,7 +14,7 @@
     </jsp:attribute>
     <jsp:body>
         <h2>
-            <c:if test="${achievement['new']}">New </c:if> Pet
+            <c:if test="${achievement['new']}">New </c:if> Achievement
         </h2>
         <form:form modelAttribute="achievement"
                    class="form-horizontal">
@@ -22,8 +22,10 @@
             <div class="form-group has-feedback">                
                 <petclinic:inputField label="Name" name="name"/>
                 <petclinic:inputField label="Description" name="description"/>
-                <petclinic:inputField label="Badge" name="badgeImage"/>
+        		<petclinic:selectField name="metrics" label="Metrics" names="${metrics}" size="4"/>
                 <petclinic:inputField label="Threshold" name="threshold"/>
+                <petclinic:selectField name="difficulty" label="Difficulty" names="${difficulty}" size="3"/>
+                <!-- Falta que los logros puedan crearse en borrador -->                
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">

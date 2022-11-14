@@ -3,6 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
 <petclinic:layout pageName="jugadorDetails">
 
@@ -45,11 +46,21 @@
         <spring:param name="jugadorId" value="${jugador.id}"/>
     </spring:url>
     <a href="${fn:escapeXml(editUrl)}" class="btn btn-default">Editar jugador</a>
-
     
+    <sec:authorize access="hasAuthority('jugador')">
+    <a href="" class="btn btn-default">Historial de partidas</a>
+    
+    <spring:url value="" var="amigosUrl">
+        <spring:param name="jugadorId" value="${jugador.id}"/>
+    </spring:url>
+    <a href="${fn:escapeXml(amigosUrl)}" class="btn btn-default">Lista de amigos</a>
+    </sec:authorize>
+
+    <sec:authorize access="hasAuthority('admin')">
     <spring:url value="{jugadorId}/delete" var="DeleteUrl">
         <spring:param name="jugadorId" value="${jugador.id}"/>
     </spring:url>
     <a href="${fn:escapeXml(DeleteUrl)}" class="btn btn-default">Borrar jugador</a>
+    </sec:authorize>
     
 </petclinic:layout>

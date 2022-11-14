@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -255,11 +254,8 @@ public class Match extends NamedEntity{
 	
 	//Valida que un movimiento (con datos correctos) sea legal o no
 	// TODO: te falta tener en cuenta que en el disco origen no haya el mismo número de bacterias de ambos jugadores
-	private String legalMove(Integer discoOrigen, Integer discoDestino, Integer valor,Integer jugador) {
+	private String legalMove(Integer discoDestino, Integer valor,Integer jugador, Integer enemigo) {
 		Disco dDestino = getDisco(discoDestino-1);
-		Disco dOrigen = getDisco(discoOrigen-1);
-
-		Integer enemigo = jugador==PRIMER_JUGADOR ? SEGUNDO_JUGADOR : PRIMER_JUGADOR;
 
 		//Si disco destino tiene sarcina tuya el mov es ilegal
 		if(dDestino.getNumeroDeSarcinas(jugador)!=0){ 
@@ -271,12 +267,6 @@ public class Match extends NamedEntity{
 		Integer i = dDestino.getNumeroDeBacterias(jugador)+valor;
 		if(i != 0 && i == dDestino.getNumeroDeBacterias(enemigo)){ 
 			String msg = "Mismo numero de bacterias enemigas que aliadas en disco: "+discoDestino;
-			System.out.println(msg);
-			return msg;
-		}
-		Integer j = dOrigen.getNumeroDeBacterias(jugador)-valor;
-		if(j != 0 && j == dOrigen.getNumeroDeBacterias(enemigo)){ 
-			String msg = "Mismo numero de bacterias enemigas que aliadas en disco: "+discoOrigen;
 			System.out.println(msg);
 			return msg;
 		}
@@ -299,10 +289,11 @@ public class Match extends NamedEntity{
 		if(getDeDisco().length != 1) return "Más de un disco origen o ningu";
 
 		Integer jugador = getIdJugadorTurnoActual();
+		Integer enemigo = jugador==PRIMER_JUGADOR ? SEGUNDO_JUGADOR : PRIMER_JUGADOR;
 
 		Integer origen =  getDeDisco()[0];
-		Integer numDiscosOrigen = 0; //Numero de discos a donde hay movimiento posible
-		Integer numDiscosOrigenConCero = 0;//Numero de discos a donde hay movimiento posible con mov=0 (no es movimiento)
+//		Integer numDiscosOrigen = 0; //Numero de discos a donde hay movimiento posible
+//		Integer numDiscosOrigenConCero = 0;//Numero de discos a donde hay movimiento posible con mov=0 (no es movimiento)
 		Integer sumaValores = 0;//Numero total de bacterias a quitar de origen
 
 		for(int destino=1; destino <= NUMBER_OF_DISKS; destino++) {
@@ -315,10 +306,11 @@ public class Match extends NamedEntity{
 					return "Valor de bacterias no permitido";
 				}
 
-				if(valor == 0) numDiscosOrigenConCero++;
-				//Reglas mas complejas 
-				else {
-					String reglasComplejas = legalMove(origen,destino,valor,jugador);
+				if(valor != 0) { /*numDiscosOrigenConCero++;
+				else {*/
+					//Reglas mas complejas 
+
+					String reglasComplejas = legalMove(destino,valor,jugador,enemigo);
 					if(reglasComplejas.length() != 0) return reglasComplejas;
 				}
 
@@ -331,13 +323,25 @@ public class Match extends NamedEntity{
 		}
 
 		//Se permite movimiento=0 (no mover a dicho disco), pero no todos pueden ser 0
-		if(numDiscosOrigen == numDiscosOrigenConCero) { 
+		//Si todos los movimientos enviados son 0, ilegal
+		if(sumaValores == 0) { 
 			System.out.println("No hay ningun movimiento indicado");
 			return "No se indicó ningun movimiento";
 		}
+		Disco dOrigen = getDisco(origen-1);
+
 		//Si quedan bacterias negativas en origen el mov es ilegal
-		if((getDisco(origen-1).getNumeroDeBacterias(jugador)-sumaValores)<0) { 
+		if((dOrigen.getNumeroDeBacterias(jugador)-sumaValores)<0) { 
 			String msg = "Bacterias negativas en origen:"+origen;
+			System.out.println(msg);
+			return msg;
+		}
+		
+		//Si mismo n de bacterias enemigas y aliadas en origen es ilegal
+		Integer bacteriasAlidasOrigen = dOrigen.getNumeroDeBacterias(jugador)-sumaValores;
+		if(bacteriasAlidasOrigen != 0 &&
+				bacteriasAlidasOrigen == dOrigen.getNumeroDeBacterias(enemigo)){ 
+			String msg = "Mismo numero de bacterias enemigas que aliadas en disco: "+origen;
 			System.out.println(msg);
 			return msg;
 		}
@@ -348,14 +352,13 @@ public class Match extends NamedEntity{
 	public void movingBacteria(Integer playerId, Integer initialDiskId, Integer targetDiskId, Integer numberOfBacteriaDisplaced) {
 		getDisco(initialDiskId-1).eliminarBacterias(playerId, numberOfBacteriaDisplaced);
 		getDisco(targetDiskId-1).annadirBacterias(playerId, numberOfBacteriaDisplaced);
-		checkToAddSarcina(playerId+1, targetDiskId);
+		checkToAddSarcina(playerId, targetDiskId-1);
 	}
 	
 	private void checkToAddSarcina(Integer playerId, Integer diskId) {
-		System.out.println(diskId);
-		if(getDisco(diskId-1).getNumeroDeBacterias(playerId) == 5) {
-			getDisco(diskId-1).eliminarBacterias(playerId, 5);
-			getDisco(diskId-1).annadirSarcina(playerId);
+		if(getDisco(diskId).getNumeroDeBacterias(playerId+1) == 5) {
+			getDisco(diskId).eliminarBacterias(playerId, 5);
+			getDisco(diskId).annadirSarcina(playerId);
 		}
 	}
 	
@@ -390,4 +393,29 @@ public class Match extends NamedEntity{
 	public Boolean esFaseContaminacion() {
 		return getTurns().get(this.getTurn()).equals("POLLUTION");
 	}
+	
+	public Integer totalMoves() {
+		Integer result = 0;
+		for(int i = 0; i < discos.size(); i++) {
+			result += discos.get(i).getNumMov();
+		}
+		return result;
+	}
+	
+	// Devuelve el disco con más movimientos y cuántos movimientos se han realizado a él
+	public Integer[] dishWithMoreMovements() {
+		Integer[] result = new Integer[] {0, 0};
+		for (int i = 0; i < discos.size(); i++) {
+			if(discos.get(i).getNumMov() > result[1]) {
+				result[0] = i;
+				result[1] = discos.get(i).getNumMov();
+			}
+		}
+		return result;
+	}
+	
+	public Integer durationInMinutes() {
+		return finPartida.getMinute()-inicioPartida.getMinute();
+	}
+	
 }

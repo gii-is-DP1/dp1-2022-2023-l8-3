@@ -38,17 +38,10 @@
 				</sec:authorize>
 				
 				<sec:authorize access="hasAuthority('jugador')">
-				<petclinic:menuItem active="${name eq 'buscarPartida'}" url="/"
+				<petclinic:menuItem active="${name eq 'buscarPartida'}" url="/matches/matchesList"
 					title="buscar partidas">
 					<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
 					<span>Buscar partida</span>
-				</petclinic:menuItem>
-
-
-				<petclinic:menuItem active="${name eq ''}" url="/matches/matchesList"
-					title="listar partidas">
-					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-					<span>Listar partidas</span>
 				</petclinic:menuItem>
 
 
@@ -59,7 +52,7 @@
 						</li>
 						<li class="divider"></li>
 						<li>
-							<a href="<c:url value="/statistics/achievements/" />">My Achievements <span class="glyphicon glyphicon-certificate" aria-hidden="true"></span></a>
+							<a href="<c:url value="/statistics/achievements/currentPlayer" />">My Achievements <span class="glyphicon glyphicon-certificate" aria-hidden="true"></span></a>
 						</li>
 					</ul>
 				</petclinic:menuItem>
@@ -75,13 +68,18 @@
 				<petclinic:menuItem active="${name eq 'partidas'}" url="/matches" title="Partidas" dropdown="${true}">
 					<ul class="dropdown-menu">
 						<li>
-							<a href="<c:url value="/matches" />">Partidas en curso</a>
+							<a href="<c:url value="/matches/InProgress" />">Partidas en curso</a>
 						</li>
 						<li class="divider"></li>
 						<li>
-							<a href="<c:url value="/matches" />">Partidas jugadas </a>
+							<a href="<c:url value="/matches/Finished" />">Partidas jugadas </a>
 						</li>
 					</ul>
+				</petclinic:menuItem>
+				
+				<petclinic:menuItem active="${name eq 'achievements'}" url="/statistics/achievements/admin"	title="achievements">
+					<span class="glyphicon glyphicon-certificate" aria-hidden="true"></span>
+					<span>Achievements</span>
 				</petclinic:menuItem>
 				</sec:authorize>
 				
@@ -90,8 +88,8 @@
 
 			<ul class="nav navbar-nav navbar-right">
 				<sec:authorize access="!isAuthenticated()">
-					<li><a href="<c:url value="/login" />">Login</a></li>
-					<li><a href="<c:url value="/users/new" />">Register</a></li>
+					<li><a href="<c:url value="/login" />">Inicia sesi&oacute;n</a></li>
+					<li><a href="<c:url value="/users/new" />">Reg&iacute;strate</a></li>
 				</sec:authorize>
 				<sec:authorize access="isAuthenticated()">
 					<li class="dropdown"><a href="#" class="dropdown-toggle"
@@ -102,31 +100,14 @@
 						<ul class="dropdown-menu">
 							<sec:authorize access="hasAuthority('jugador')">
 							<li>
-								
-								<spring:url value="jugadores/{jugadorId}" var="perfilUrl">
-        							<spring:param name="jugadorId" value="${jugador.id}"/>
-    							</spring:url>
-								<a href="<c:url value="${fn:escapeXml(perfilUrl)}" />" class="text-center"> Perfil</a>
+									<a href="/perfil" class="text-center"> Perfil</a>
 							</li>
 							<li class="divider"></li>
 							</sec:authorize>
 							<li> <a href="<c:url value="/logout" />" class="text-center">Logout</a>
 							</li>
 
- <!--                           <li>
-								<div class="navbar-login navbar-login-session">
-									<div class="row">
-										<div class="col-lg-12">
-											<p>
-												<a href="#" class="btn btn-primary btn-block">My Profile</a>
-												<a href="#" class="btn btn-danger btn-block">Change
-													Password</a>
-											</p>
-										</div>
-									</div>
-								</div>
-							</li>
--->
+ 
 						</ul></li>
 				</sec:authorize>
 			</ul>
