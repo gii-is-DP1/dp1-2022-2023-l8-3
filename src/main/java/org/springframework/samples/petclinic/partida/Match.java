@@ -25,6 +25,7 @@ import org.springframework.samples.petclinic.disco.Disco;
 import org.springframework.samples.petclinic.invitacion.Invitacion;
 import org.springframework.samples.petclinic.jugador.Jugador;
 import org.springframework.samples.petclinic.model.BaseEntity;
+import org.springframework.samples.petclinic.model.NamedEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -34,7 +35,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "matches")
 @DynamicUpdate
-public class Match extends BaseEntity{
+public class Match extends NamedEntity{
 	private static final int NUMBER_OF_TURNS = 4;
 	private static final int NUMBER_OF_DISKS = 7;
 	private static final int PRIMER_JUGADOR = 1;

@@ -3,6 +3,7 @@ package org.springframework.samples.petclinic.disco;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.statistics.Achievement;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,4 +20,9 @@ public class DishService {
 	public int dishCount() {
 		return (int) dishRepo.count();
 	}
+	
+	@Transactional
+	public void saveDisk(Disco disk) {
+        dishRepo.save(disk);
+    }
 }
