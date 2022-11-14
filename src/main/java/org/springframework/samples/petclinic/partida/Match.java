@@ -291,8 +291,8 @@ public class Match extends BaseEntity{
 		Integer enemigo = jugador==PRIMER_JUGADOR ? SEGUNDO_JUGADOR : PRIMER_JUGADOR;
 
 		Integer origen =  getDeDisco()[0];
-		Integer numDiscosOrigen = 0; //Numero de discos a donde hay movimiento posible
-		Integer numDiscosOrigenConCero = 0;//Numero de discos a donde hay movimiento posible con mov=0 (no es movimiento)
+//		Integer numDiscosOrigen = 0; //Numero de discos a donde hay movimiento posible
+//		Integer numDiscosOrigenConCero = 0;//Numero de discos a donde hay movimiento posible con mov=0 (no es movimiento)
 		Integer sumaValores = 0;//Numero total de bacterias a quitar de origen
 
 		for(int destino=1; destino <= NUMBER_OF_DISKS; destino++) {
@@ -305,9 +305,10 @@ public class Match extends BaseEntity{
 					return "Valor de bacterias no permitido";
 				}
 
-				if(valor == 0) numDiscosOrigenConCero++;
-				//Reglas mas complejas 
-				else {
+				if(valor != 0) { /*numDiscosOrigenConCero++;
+				else {*/
+					//Reglas mas complejas 
+
 					String reglasComplejas = legalMove(destino,valor,jugador,enemigo);
 					if(reglasComplejas.length() != 0) return reglasComplejas;
 				}
@@ -321,7 +322,8 @@ public class Match extends BaseEntity{
 		}
 
 		//Se permite movimiento=0 (no mover a dicho disco), pero no todos pueden ser 0
-		if(numDiscosOrigen == numDiscosOrigenConCero) { 
+		//Si todos los movimientos enviados son 0, ilegal
+		if(sumaValores == 0) { 
 			System.out.println("No hay ningun movimiento indicado");
 			return "No se indicó ningun movimiento";
 		}
