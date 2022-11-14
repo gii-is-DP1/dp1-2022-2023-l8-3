@@ -64,7 +64,6 @@ public class PlayerServiceTest {
 		assertNotNull(playerService.findJugadorById(id));
 	}
 	
-	// TODO: Test falla
 	@Test
 	public void testDeletePlayer() {
 		User user = new User("maria33");

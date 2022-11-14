@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 
@@ -43,7 +44,7 @@ public class MatchController {
     public ModelAndView listingMatch() {
         ModelAndView result = new ModelAndView(LIST_MATCHES);   
 
-        result.addObject("match_list", matchService.getMatchWithoutPlayer2());
+        result.addObject("match_list", matchService.getMatchesWithoutPlayer2());
         result.addObject("matches", matchService.getMatches());
         return result;
     }
@@ -88,7 +89,7 @@ public class MatchController {
 		ModelAndView result;
 
 		    String playerName = user.getName();
-	        Jugador player = playerService.findJugadorByUserName(playerName);
+	        Jugador player = playerService.findPlayerByUsername(playerName);
 	        Match match = new Match(false, player);
 	        match.setName(nombre);
 	        match.setEsPrivada(tipoPartida);

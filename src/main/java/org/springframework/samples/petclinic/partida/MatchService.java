@@ -21,8 +21,8 @@ public class MatchService {
 		this.matchRepository = matchRepository;
 		this.diskService = diskService;
 	}
-	public Collection<Match> getMatchWithoutPlayer2() throws DataAccessException{
-	    return matchRepository.findMatchesWhitoutP2();
+	public Collection<Match> getMatchesWithoutPlayer2() throws DataAccessException{
+	    return matchRepository.findMatchesWhitoutPlayer2();
 	}
 	
 	public Collection<Match> getMatches() throws DataAccessException {
