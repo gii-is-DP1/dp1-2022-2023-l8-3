@@ -23,13 +23,13 @@
             <petclinic:inputField label="Nombre" name="firstName"/>
             <petclinic:inputField label="Apellido" name="lastName"/>
             <petclinic:inputField label="Email" name="user.email"/>
-            <petclinic:inputField label="ContraseÃ±a" name="user.password"/>
+            <petclinic:inputField label="Contraseña" name="user.password"/>
         </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <c:choose>
                     <c:when test="${jugador['new']}">
-                        <button class="btn btn-default" type="submit">AÃ±adir jugador</button>
+                        <button class="btn btn-default" type="submit">Añadir jugador</button>
                     </c:when>
                     <c:otherwise>
                         <button class="btn btn-default" type="submit">Actualizar Jugador</button>
