@@ -30,7 +30,7 @@ public class MatchServiceTests {
 	
 	@Test
 	public void testMatchWithoutPlayer2() {
-		List<Match> matches = (List<Match>) matchService.getMatchWithoutPlayer2();
+		List<Match> matches = (List<Match>) matchService.getMatchesWithoutPlayer2();
 		for (Match match : matches) {
 			assertNull(match.getJugador2());
 		}
