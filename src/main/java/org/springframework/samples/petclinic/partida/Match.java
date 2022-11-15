@@ -417,7 +417,6 @@ public class Match extends NamedEntity{
 	}
 	
 	public long getMatchTime() {
-		System.out.println(inicioPartida.until(LocalDateTime.now(), ChronoUnit.MINUTES)+"pepe");
 		return inicioPartida.until(LocalDateTime.now(), ChronoUnit.MINUTES);
 	}
 	

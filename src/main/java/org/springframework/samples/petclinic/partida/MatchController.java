@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 
 @Controller
@@ -75,8 +76,6 @@ public class MatchController {
 		ModelAndView result = new ModelAndView(CREATE_MATCH_VIEW);
 
 		String playerName = user.getName();
-		System.out.println(playerName + "pepepe");
-		System.out.println("pepe");
 		Jugador player = playerService.findPlayerByUsername(playerName);
 		Match match = new Match(false, player); //Hay que poner el jugador aqui!!! (creo, no entiendo los constructores en spring)
 		result.addObject("match", match);
@@ -184,12 +183,20 @@ public class MatchController {
 		match.nextTurn();
 	}
 	
-	@GetMapping("/{idMatch}/statistics")
-	public ModelAndView matchHasEnded(@PathVariable int idMatch) {
+	@RequestMapping("/{idMatch}/completedMatch")
+	public RedirectView completedMatch(@PathVariable int idMatch) {
+		RedirectView result = new RedirectView();
 		Match match = matchService.getMatchById(idMatch);
 		match.setFinPartida(LocalDateTime.now());
+		matchService.saveMatch(match);
+		result.setUrl("/matches/{idMatch}/statistics");
+		return result;
+	}
+	
+	@GetMapping("/{idMatch}/statistics")
+	public ModelAndView matchStatistics(@PathVariable int idMatch) {
 		ModelAndView result = new ModelAndView(MATCH_STATISTICS_VIEW); 
-		result.addObject("match", match);
+		result.addObject("match", matchService.getMatchById(idMatch));
 		return result;
 	}
 	

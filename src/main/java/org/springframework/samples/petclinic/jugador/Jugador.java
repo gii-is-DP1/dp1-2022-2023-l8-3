@@ -64,8 +64,8 @@ public class Jugador extends Person{
 	
 	
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "lista_logros", joinColumns = @JoinColumn(name = "id_jugador"),
-	inverseJoinColumns = @JoinColumn(name = "id_logro"))
+	@JoinTable(name = "achievements_players", joinColumns = @JoinColumn(name = "players_id"),
+	inverseJoinColumns = @JoinColumn(name = "achievement_id"))
 	private List<Achievement> logros;
 	
 	public Jugador() {
