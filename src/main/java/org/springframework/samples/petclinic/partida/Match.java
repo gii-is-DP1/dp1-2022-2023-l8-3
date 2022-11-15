@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.partida;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +24,6 @@ import org.springframework.samples.petclinic.comentario.Comentario;
 import org.springframework.samples.petclinic.disco.Disco;
 import org.springframework.samples.petclinic.invitacion.Invitacion;
 import org.springframework.samples.petclinic.jugador.Jugador;
-import org.springframework.samples.petclinic.model.BaseEntity;
 import org.springframework.samples.petclinic.model.NamedEntity;
 
 import lombok.Getter;
@@ -191,8 +191,6 @@ public class Match extends NamedEntity{
 	public Boolean itIsFirstPlayerTurn() {
 		return getTurns().get(getTurn()).equals("PROPAGATION_RED_PLAYER");
 	}
-	
-	// ----------------------------------------------------------------------------------------------- //
 	
 	public void nextTurn() {
 		turn++;
@@ -414,8 +412,13 @@ public class Match extends NamedEntity{
 		return result;
 	}
 	
-	public Integer durationInMinutes() {
-		return finPartida.getMinute()-inicioPartida.getMinute();
+	public long durationInMinutes() {
+		return inicioPartida.until(finPartida, ChronoUnit.MINUTES);
+	}
+	
+	public long getMatchTime() {
+		System.out.println(inicioPartida.until(LocalDateTime.now(), ChronoUnit.MINUTES)+"pepe");
+		return inicioPartida.until(LocalDateTime.now(), ChronoUnit.MINUTES);
 	}
 	
 }

@@ -60,7 +60,15 @@
 							<a class="button" href="<c:url value="/matches/${match.id}/currentMatch" />">Siguiente fase </a>
 						</c:otherwise>
 				</c:choose>
-				<a class="button" href="<c:url value="/matches/${match.id}/statistics" />">Abandonar partida </a>
+				<c:choose>
+						<c:when test="${match.getMatchTime()>=2}">
+							<a class="button" href="<c:url value="/matches/${match.id}/statistics" />">Abandonar partida </a>
+						</c:when>
+						<c:otherwise>
+							<a class="button" href="<c:url value="#" />">Abandonar partida </a>
+						</c:otherwise>
+				</c:choose>
+				
 			</div>
 
 		</div>
@@ -174,7 +182,7 @@
 				checkedBox = checkboxes[i];
 			}
 		}
-
+		
 		//Solo puede haber 1 checkbox checkeado
 		if(n!=1){
 			error.innerText = "Mas de 1 checkbox checkeado o ninguno checkeado";

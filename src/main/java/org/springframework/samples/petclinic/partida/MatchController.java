@@ -1,6 +1,7 @@
  package org.springframework.samples.petclinic.partida;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -184,9 +185,11 @@ public class MatchController {
 	}
 	
 	@GetMapping("/{idMatch}/statistics")
-	public ModelAndView matchStatistics(@PathVariable int idMatch) {
+	public ModelAndView matchHasEnded(@PathVariable int idMatch) {
+		Match match = matchService.getMatchById(idMatch);
+		match.setFinPartida(LocalDateTime.now());
 		ModelAndView result = new ModelAndView(MATCH_STATISTICS_VIEW); 
-		result.addObject("match", matchService.getMatchById(idMatch));
+		result.addObject("match", match);
 		return result;
 	}
 	
