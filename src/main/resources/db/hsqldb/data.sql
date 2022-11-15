@@ -66,3 +66,8 @@ INSERT INTO disco VALUES(11,0,0,0,0,0,2);
 INSERT INTO disco VALUES(12,0,0,0,0,0,2);
 INSERT INTO disco VALUES(13,0,0,0,0,0,2);
 INSERT INTO disco VALUES(14,0,1,0,0,0,2);
+
+INSERT INTO achievements_players VALUES (1,1);
+INSERT INTO achievements_players VALUES (1,5);
+INSERT INTO achievements_players VALUES (2,5);
+

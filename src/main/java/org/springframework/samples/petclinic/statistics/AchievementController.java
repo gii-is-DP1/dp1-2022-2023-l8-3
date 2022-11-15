@@ -7,10 +7,11 @@ import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.jugador.PlayerService;
+import org.springframework.samples.petclinic.user.User;
 import org.springframework.samples.petclinic.user.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,11 +29,13 @@ public class AchievementController {
 	private static final String ACHIEVEMENTS_FORM = "/achievements/createOrUpdateAchievementForm";
 	private AchievementService achievementService;
 	private UserService userService;
+	private PlayerService playerService;
 	
 	@Autowired
-	public AchievementController(AchievementService achievementService, UserService userService) {
+	public AchievementController(AchievementService achievementService, UserService userService, PlayerService playerService) {
 		this.achievementService = achievementService;
 		this.userService = userService;
+		this.playerService = playerService;
 	}
 	
 	@GetMapping(value = "/")
@@ -44,13 +47,11 @@ public class AchievementController {
 	
 	@GetMapping(value = "/currentPlayer")
 	public ModelAndView showCurrentPlayerAchievements() {
-		// TODO: Usuario debería tener id. Revisar la construcción de usuario y jugador.
-		//Authentication  auth = SecurityContextHolder.getContext().getAuthentication();
-		//User currentUser=(User)auth.getPrincipal();
-		//Integer id = userService.findUser(currentUser.getUsername()).get().getId();
-		Integer id = 1; // para probar
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUser(auth.getName()).get();
+		String username = user.getUsername();
 		ModelAndView result = new ModelAndView(ACHIEVEMENTS_LISTING_VIEW);
-		result.addObject("achievements", achievementService.getAchievementsOfAPlayer(id));
+		result.addObject("achievements", playerService.findPlayerByUsername(username).getLogros());
 		return result;
 	}
 	
