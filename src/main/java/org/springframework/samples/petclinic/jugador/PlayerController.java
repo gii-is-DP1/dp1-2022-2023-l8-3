@@ -25,20 +25,16 @@ public class PlayerController {
 
 	private PlayerService playerService;
 	private UserService userService;
-  private MatchService matchService;
-	
+	private MatchService matchService;
+
 	@Autowired
 	public PlayerController(PlayerService playerService, UserService userService, MatchService matchService) {
 		this.playerService = playerService;
 		this.userService = userService;
-    this.matchService = matchService;
-   
-  }
+		this.matchService = matchService;
 
-	private static final String LIST_PLAYER_MATCHES = "/jugadores/playerMatches";
+	}
 
-
-	
 
 	@InitBinder
 	public void setAllowedFields(WebDataBinder dataBinder) {
@@ -51,22 +47,23 @@ public class PlayerController {
 		model.put("selections", results);
 		return "jugadores/listJugador";
 	}
-	
+
 	@GetMapping(value = "/perfil")
 	public String showPerfil() {
-		Authentication auth=SecurityContextHolder.getContext().getAuthentication();
-		User user=userService.findUser(auth.getName()).get();
-		Integer id=playerService.findPlayerByUsername(user.getUsername()).getId();
-		return "redirect:/jugadores/"+id;
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUser(auth.getName()).get();
+		Integer id = playerService.findPlayerByUsername(user.getUsername()).getId();
+		return "redirect:/jugadores/" + id;
 	}
-  
+
 	@GetMapping(value = "/jugadores/{jugadorId}")
 	public ModelAndView showPlayer(@PathVariable("jugadorId") int id) {
-		Authentication auth=SecurityContextHolder.getContext().getAuthentication();
-		User user=userService.findUser(auth.getName()).get();
-		ModelAndView mav=new ModelAndView();
-		for(Authorities authority:user.getAuthorities()) {
-			if(authority.getAuthority().equals("admin") || playerService.findPlayerByUsername(auth.getName()).getId()==id) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUser(auth.getName()).get();
+		ModelAndView mav = new ModelAndView();
+		for (Authorities authority : user.getAuthorities()) {
+			if (authority.getAuthority().equals("admin")
+					|| playerService.findPlayerByUsername(auth.getName()).getId() == id) {
 				mav = new ModelAndView("jugadores/showJugador");
 				mav.addObject(this.playerService.findJugadorById(id));
 			}
@@ -86,7 +83,7 @@ public class PlayerController {
 	}
 
 	@GetMapping(value = "/jugadores/new")
-	public String initCreationForm(Map<String, Object> model,Model model2) {
+	public String initCreationForm(Map<String, Object> model, Model model2) {
 		Jugador jugador = new Jugador();
 		model.put("jugador", jugador);
 		return "jugadores/createOrUpdateJugadorForm";
@@ -107,12 +104,13 @@ public class PlayerController {
 	public ModelAndView initUpdateOwnerForm(@PathVariable("jugadorId") int jugadorId, Model model) {
 //		Jugador jugador = this.playerService.findJugadorById(jugadorId);
 //		model.addAttribute(jugador);
-		
-		Authentication auth=SecurityContextHolder.getContext().getAuthentication();
-		User user=userService.findUser(auth.getName()).get();
-		ModelAndView mav=new ModelAndView();
-		for(Authorities authority:user.getAuthorities()) {
-			if(authority.getAuthority().equals("admin") || playerService.findPlayerByUsername(auth.getName()).getId()==jugadorId) {
+
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUser(auth.getName()).get();
+		ModelAndView mav = new ModelAndView();
+		for (Authorities authority : user.getAuthorities()) {
+			if (authority.getAuthority().equals("admin")
+					|| playerService.findPlayerByUsername(auth.getName()).getId() == jugadorId) {
 				mav = new ModelAndView("jugadores/createOrUpdateJugadorForm");
 				mav.addObject(this.playerService.findJugadorById(jugadorId));
 			}
@@ -133,11 +131,21 @@ public class PlayerController {
 		}
 	}
 
-	@GetMapping(value = "/jugadores/{jugadorId}/matches")
-	public ModelAndView showMatchesOfAPlayer(@PathVariable int jugadorId) {
-		ModelAndView result = new ModelAndView(LIST_PLAYER_MATCHES);
-		result.addObject("playerMatches", matchService.getMatchesOfAPlayer(jugadorId));
+	@GetMapping(value = "/jugadores/{jugadorId}/playerMatches")
+	public ModelAndView showMatchesOfAPlayer(@PathVariable("jugadorId") int jugadorId) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUser(auth.getName()).get();
+		ModelAndView result = new ModelAndView();
+
+		for (Authorities authority : user.getAuthorities()) {
+			if (authority.getAuthority().equals("jugador")
+					|| playerService.findPlayerByUsername(auth.getName()).getId() == jugadorId) {
+
+				result = new ModelAndView("/jugadores/playerMatches");
+				result.addObject("playerMatches", matchService.getMatchesOfAPlayer(jugadorId));
+			}
+		}
 		return result;
 	}
-
+	
 }
