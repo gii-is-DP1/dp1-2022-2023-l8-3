@@ -104,10 +104,20 @@ public class PlayerController {
 	}
 
 	@GetMapping(value = "/jugadores/{jugadorId}/edit")
-	public String initUpdateOwnerForm(@PathVariable("jugadorId") int jugadorId, Model model) {
-		Jugador jugador = this.playerService.findJugadorById(jugadorId);
-		model.addAttribute(jugador);
-		return "jugadores/createOrUpdateJugadorForm";
+	public ModelAndView initUpdateOwnerForm(@PathVariable("jugadorId") int jugadorId, Model model) {
+//		Jugador jugador = this.playerService.findJugadorById(jugadorId);
+//		model.addAttribute(jugador);
+		
+		Authentication auth=SecurityContextHolder.getContext().getAuthentication();
+		User user=userService.findUser(auth.getName()).get();
+		ModelAndView mav=new ModelAndView();
+		for(Authorities authority:user.getAuthorities()) {
+			if(authority.getAuthority().equals("admin") || playerService.findPlayerByUsername(auth.getName()).getId()==jugadorId) {
+				mav = new ModelAndView("jugadores/createOrUpdateJugadorForm");
+				mav.addObject(this.playerService.findJugadorById(jugadorId));
+			}
+		}
+		return mav;
 	}
 
 	@PostMapping(value = "/jugadores/{jugadorId}/edit")
