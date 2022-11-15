@@ -8,11 +8,11 @@
 
 <petclinic:layout pageName="currentMatch">
 
-	<h2>Esperando a 2ยบ jugador</h2>
-	<h2>${match.id}</h2>
+	<h2>Esperando a 2บ jugador</h2>
+	<h2>${match.name}</h2>
 
 	<div>
-		<label for="check" style="color: blue">Partida privada</label>
+		<label for="check" style="color: blue">${match.esPrivada}</label>
 	</div>
 	<div>
 		<label for="check" style="color: red">${player}</label>
@@ -22,7 +22,7 @@
 
 	</div>
 
-	<a class="button" href="<c:url value="/matches/${match.id}/currentMatch" />"></a>
+	<a class="btn btn-primary btn-lg btn-block" href="<c:url value="/matches/${match.id}/currentMatch" />">ENTRAR EN LA PARTIDA</a>
 	
 
 

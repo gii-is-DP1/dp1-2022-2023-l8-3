@@ -53,11 +53,10 @@ INSERT INTO disco VALUES(7,2,4,0,0,0,1);
 INSERT INTO matches(id, id_jugador1, id_jugador2, es_privada, inicio_de_partida, fin_de_partida, ganador_de_partida, turn)
 VALUES(2, 3, 4, true, '1999-04-12 10:12:12.55', '1999-04-12 10:12:12.55', 'UNDEFINED', 0);
 
-INSERT INTO matches(id, id_jugador1, id_jugador2, es_privada, inicio_de_partida, fin_de_partida, ganador_de_partida, turn)
-VALUES(20, 3, null, false, '1999-04-12 10:12:12.55', '1999-04-12 10:12:12.55', 'UNDEFINED', 0);
+
 
 INSERT INTO matches(id, id_jugador1, id_jugador2, es_privada, inicio_de_partida, fin_de_partida, ganador_de_partida, turn)
-VALUES(21, 1, 2, false, '2000-05-17 15:12:07.55', '2000-05-17 15:20:16.43', 'FIRST_PLAYER', 0);
+VALUES(3, 1, 2, false, '2000-05-17 15:12:07.55', '2000-05-17 15:20:16.43', 'FIRST_PLAYER', 0);
 
 INSERT INTO disco VALUES(8,1,0,0,0,0,2);
 INSERT INTO disco VALUES(9,0,0,0,0,0,2);

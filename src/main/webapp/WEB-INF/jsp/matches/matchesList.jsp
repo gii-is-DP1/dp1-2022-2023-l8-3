@@ -15,6 +15,7 @@
 		<thead>
 			<tr>
 				<th>Anfitrion</th>
+				<th>Nombre Partida</th>
 				<th>Fecha Inicio</th>
 				<th></th>
 			</tr>
@@ -24,6 +25,7 @@
 			<c:forEach items="${match_list}" var="match">
 				<tr>
 					<td><c:out value="${match.jugador1.user.username}" /></td>
+					<td><c:out value="${match.name}" /></td>
 					<td><c:out value="${match.inicioPartida}" /></td>
 					<td><a class="btn btn-success"
 						href="<c:url value="/matches/${match.id}/currentMatch" />">UNIRME

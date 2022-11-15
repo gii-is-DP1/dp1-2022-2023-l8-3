@@ -50,7 +50,7 @@ public class MatchController {
     }
 	
 	@PostMapping(value = "/matchesList")
-    public ModelAndView listingMatch(@Valid Match match, BindingResult br, @AuthenticationPrincipal Authentication user) {
+    public ModelAndView listingMatch(Match match, BindingResult br, @AuthenticationPrincipal Authentication user) {
         ModelAndView result;
         if(br.hasErrors()) {
             result = new ModelAndView(LIST_MATCHES, br.getModel());
@@ -72,15 +72,6 @@ public class MatchController {
 	@GetMapping(value = "/createMatch")
 	public ModelAndView createNewMatch(@AuthenticationPrincipal Authentication user) {
 		ModelAndView result = new ModelAndView(CREATE_MATCH_VIEW);
-
-		String playerName = user.getName();
-		System.out.println(playerName + "pepepe");
-		System.out.println("pepe");
-		Jugador player = playerService.findPlayerByUsername(playerName);
-		Match match = new Match(false, player); //Hay que poner el jugador aqui!!! (creo, no entiendo los constructores en spring)
-		result.addObject("match", match);
-		result.addObject("player", player);
-
 		result.addObject("players", playerService.findAllJugadores());
 		return result;
 	}
@@ -93,9 +84,9 @@ public class MatchController {
 	        Match match = new Match(false, player);
 	        match.setName(nombre);
 	        match.setEsPrivada(tipoPartida);
-	        Jugador jugador2 = playerService.findJugadorById(1);
+	        //Jugador jugador2 = playerService.findJugadorById(1);
 	        match.setJugador1(player);
-	        match.setJugador2(jugador2);
+	        //match.setJugador2(jugador2);
 		    this.matchService.saveMatch(match);
 			result = new ModelAndView(WAIT_MATCH_VIEW);
 			result.addObject("match", match);

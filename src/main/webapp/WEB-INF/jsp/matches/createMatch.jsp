@@ -9,23 +9,23 @@
 <petclinic:layout pageName="createMatch">
 
 
-	<h2>Nueva Partida</h2>
+	<h2 style="text-align: center">Nueva Partida</h2>
 
 	<div class="seccion seccion1">
 
 		<div>
-			<label for="check" style="color: blue">Partida privada</label>
+			<label for="check" style="color: blue">ELIGE UN NOMBRE PARA TU PARTIDA, SELECCIONA SU PRIVACIDAD Y A JUGAR!!</label>
 		</div>
 
 	</div>
 
 	<div class=" seccion invitaciones">
 		<div class="scroll">
-			<h4>Invitaciones</h4>
+			<p style="font:fantasy; font-style:inherit ; font-size: x-large; text-align: center; justify-content: center; align-items: center;">INVITACIONES</p>
 			<table style="width: 100%">
 				<thead>
-					<th>Amigo</th>
-					<th>EstadoOnline</th>
+					<th style="text-align: center">AMIGO</th>
+					<th style="text-align: center">ESTADO ONLINE</th>
 					<th></th>
 
 				</thead>
@@ -45,19 +45,20 @@
 
 	</div>
 	<form:form method="post">
-		<input value="nombrePartida" name="nombre">
-		<select name="tipoPartida">
-			<option value="false">Publica</option>
-			<option value="true" selected>Privada</option>
-	
-		</select>
+		<div class="form-group">
+			<input class="form-control" value="nombrePartida" name="nombre">
+			<select name="tipoPartida" class="form-control">
+				<option value="false">Publica</option>
+				<option value="true" selected>Privada</option>
 
-		<div class="seccion botones">
-			<a class="button" href="#"
-				onclick="javascript:window.history.back(-1);return false;">Volver
-				atras</a> <input class="button" type="submit" value="Crear partida" />
+			</select>
+
+			<div class="seccion botones">
+				<a class="button" href="#"
+					onclick="javascript:window.history.back(-1);return false;">Volver
+					atras</a> <input class="button" type="submit" value="Crear partida" />
+			</div>
 		</div>
-
 	</form:form>
 
 
