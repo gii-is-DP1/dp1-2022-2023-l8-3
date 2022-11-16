@@ -1,8 +1,8 @@
-<%@ page session="false" trimDirectiveWhitespaces="true" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
+<%@ page session="false" trimDirectiveWhitespaces="true"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags"%>
 
 <petclinic:layout pageName="matches finished">
 	
@@ -16,7 +16,7 @@
             <th style="width: 150px;">Creador de la partida</th>
             <th style="width: 200px;">Invitado</th>
             <th style="width: 200px;">Ganador</th>
-            <th style="width: 200px;">Estadísticas de la partida</th>
+            <th style="width: 200px;">Estad&iacute;sticas de la partida</th>
             
         </tr>
         </thead>
@@ -25,8 +25,7 @@
         		<c:when test="${sinPartidas}"> <div class="alert alert-info">En este momento no hay partidas que ya hayan sido jugada</div></c:when>
         		<c:otherwise>
 			        <c:forEach items="${selections}" var="partida">
-			            <tr>
-			                
+			            <tr>  
 			                <td>
 			                    <spring:url value="/jugadores/{jugadorId}" var="EnlaceUrl">
 		        					<spring:param name="jugadorId" value="${partida.jugador1.id}"/>
@@ -49,7 +48,7 @@
 			                	<spring:url value="/matches/{idMatch}/statistics" var="estadisticasUrl">
 									<spring:param name="idMatch" value="${partida.id}" />
 								</spring:url>
-								<a href="${fn:escapeXml(estadisticasUrl)}">Estadísticas</a>
+								<a href="${fn:escapeXml(estadisticasUrl)}">Estad&iacute;sticas</a>
 			                </td>
 			        	</tr>
 			  		</c:forEach>
@@ -57,6 +56,5 @@
 			</c:choose>
         </tbody>
     </table>
-   
 
 </petclinic:layout>
