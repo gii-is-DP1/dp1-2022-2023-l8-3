@@ -7,7 +7,9 @@ import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.jugador.Jugador;
 import org.springframework.samples.petclinic.jugador.PlayerService;
+import org.springframework.samples.petclinic.partida.MatchService;
 import org.springframework.samples.petclinic.user.User;
 import org.springframework.samples.petclinic.user.UserService;
 import org.springframework.security.core.Authentication;
@@ -30,12 +32,14 @@ public class AchievementController {
 	private AchievementService achievementService;
 	private UserService userService;
 	private PlayerService playerService;
+	private MatchService matchService;
 	
 	@Autowired
-	public AchievementController(AchievementService achievementService, UserService userService, PlayerService playerService) {
+	public AchievementController(AchievementService achievementService, UserService userService, PlayerService playerService, MatchService matchService) {
 		this.achievementService = achievementService;
 		this.userService = userService;
 		this.playerService = playerService;
+		this.matchService = matchService;
 	}
 	
 	@GetMapping(value = "/")
@@ -47,11 +51,20 @@ public class AchievementController {
 	
 	@GetMapping(value = "/currentPlayer")
 	public ModelAndView showCurrentPlayerAchievements() {
+		ModelAndView result;
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUser(auth.getName()).get();
 		String username = user.getUsername();
-		ModelAndView result = new ModelAndView(ACHIEVEMENTS_LISTING_VIEW);
-		result.addObject("achievements", playerService.findPlayerByUsername(username).getLogros());
+		Jugador player = playerService.findPlayerByUsername(username);
+		
+		if(matchService.getMatchesOfAPlayer(player.getId()).size()==0) {
+			result = new ModelAndView("welcome");
+			result.addObject("message", "Para desbloquear los logros debes jugar una partida");
+		} else {
+			result = new ModelAndView(ACHIEVEMENTS_LISTING_VIEW);
+			result.addObject("achievements", playerService.findPlayerByUsername(username).getLogros());
+		}
+		
 		return result;
 	}
 	
