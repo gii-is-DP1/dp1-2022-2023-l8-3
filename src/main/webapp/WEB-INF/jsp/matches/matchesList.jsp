@@ -7,10 +7,9 @@
 
 <petclinic:layout pageName="matchesList">
 	<h2>Partidas</h2>
-	
-	
 
-</select>
+
+
 	<table id="matchesList" class="table table-striped">
 		<thead>
 			<tr>
@@ -21,18 +20,22 @@
 			</tr>
 		</thead>
 		<tbody>
+			<form:form method="post">
+				<c:forEach items="${match_list}" var="match">
 
-			<c:forEach items="${match_list}" var="match">
-				<tr>
-					<td><c:out value="${match.jugador1.user.username}" /></td>
-					<td><c:out value="${match.name}" /></td>
-					<td><c:out value="${match.inicioPartida}" /></td>
-					<td><a class="btn btn-success"
-						href="<c:url value="/matches/${match.id}/currentMatch" />">UNIRME
-							COMO JUGADOR</a></td>
-				</tr>
-			</c:forEach>
+					<tr>
+						<td><c:out value="${match.jugador1.user.username}" /></td>
+						<td><c:out value="${match.name}" /></td>
+						<td><c:out value="${match.inicioPartida}" /></td>
+						<td><input type="submit" value="UNIRME"
+							class="btn btn-success"
+							onclick="location.href = '/matches/${match.id}/currentMatch'" /></input></td>
+					</tr>
+				</c:forEach>
+			</form:form>
+
 		</tbody>
+
 	</table>
 
 	<h2>Partidas como espectador</h2>
@@ -55,7 +58,7 @@
 
 					<td><c:out value="${matches.inicioPartida}" /></td>
 					<td><a class="btn btn-danger"
-						href="<c:url value="/matches/${match.id}/currentMatch" />">ENTRAR</a></td>
+						href="<c:url value="/matches/${matches.id}/currentMatch" />">ENTRAR</a></td>
 				</tr>
 			</c:forEach>
 		</tbody>
