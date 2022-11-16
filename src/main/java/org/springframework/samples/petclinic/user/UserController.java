@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class UserController {
 
-	private static final String VIEW_PLAYER_CREATE_OR_UPDATE_FORM = "jugadores/createOrUpdateJugadorForm";
+	private static final String USER_CREATE_FORM = "users/createUserForm";
 
 	private final PlayerService playerService;
 
@@ -56,13 +56,13 @@ public class UserController {
 	public String initCreationForm(Map<String, Object> model) {
 		Jugador jugador = new Jugador();
 		model.put("jugador", jugador);
-		return VIEW_PLAYER_CREATE_OR_UPDATE_FORM;
+		return USER_CREATE_FORM;
 	}
 
 	@PostMapping(value = "/users/new")
 	public String processCreationForm(@Valid Jugador jugador, BindingResult result) {
 		if (result.hasErrors()) {
-			return VIEW_PLAYER_CREATE_OR_UPDATE_FORM;
+			return USER_CREATE_FORM;
 		} else {
 			// creating player, user, and authority
 			this.playerService.saveJugador(jugador);

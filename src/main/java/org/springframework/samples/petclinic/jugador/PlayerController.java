@@ -9,6 +9,8 @@ import org.springframework.samples.petclinic.user.User;
 import org.springframework.samples.petclinic.user.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.samples.petclinic.partida.GameWinner;
+import org.springframework.samples.petclinic.partida.Match;
 import org.springframework.samples.petclinic.partida.MatchService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,7 +36,6 @@ public class PlayerController {
 		this.matchService = matchService;
 
 	}
-
 
 	@InitBinder
 	public void setAllowedFields(WebDataBinder dataBinder) {
@@ -138,8 +139,8 @@ public class PlayerController {
 		User user = userService.findUser(auth.getName()).get();
 		String username = user.getUsername();
 		Jugador player = playerService.findPlayerByUsername(username);
-		
-		if(matchService.getMatchesOfAPlayer(player.getId()).size() == 0) {
+
+		if (matchService.getMatchesOfAPlayer(player.getId()).size() == 0) {
 			result = new ModelAndView("welcome");
 			result.addObject("message", "Aún no has disputado ninguna partida");
 		} else {
@@ -148,12 +149,14 @@ public class PlayerController {
 						|| playerService.findPlayerByUsername(auth.getName()).getId() == jugadorId) {
 
 					result = new ModelAndView("/jugadores/playerMatches");
-					result.addObject("playerMatches", matchService.getMatchesOfAPlayer(jugadorId));
+					Collection<Match> m = matchService.getMatchesOfAPlayer(jugadorId);
+					m.removeAll(matchService.getMatchesByGameWinner(GameWinner.UNDEFINED));
+					result.addObject("playerMatches", m);
 				}
 			}
 		}
 
 		return result;
 	}
-	
+
 }
