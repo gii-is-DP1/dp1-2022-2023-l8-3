@@ -29,6 +29,7 @@ public class Jugador extends Person{
 	@Column(name="estado_Online")
 	private Boolean estadoOnline;
 	
+	// TODO: no pueden ser transient, deben almacenarse en la base de datos
 	@Transient
 	private Integer numeroDeContaminacion=0;
 	
@@ -79,6 +80,22 @@ public class Jugador extends Person{
 		this.invitacionesPartidaRecibidas = new ArrayList<Match>();
 		this.listaAmigos = new ArrayList<Jugador>();
 		this.logros = new ArrayList<Achievement>();
+	}
+	
+	public void addBacteria(Integer numberOfBacteria) {
+		bacterias += numberOfBacteria;
+	}
+	
+	public void decreaseBacteria() {
+		bacterias--;
+	}
+	
+	public void decreaseSarcinas() {
+		sarcinas--;
+	}
+	
+	public void increseContaminationNumber() {
+		numeroDeContaminacion++;
 	}
 		
 }
