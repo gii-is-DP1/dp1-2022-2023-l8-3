@@ -26,7 +26,7 @@ public interface MatchRepository extends CrudRepository<Match, Integer> {
 	@Query("SELECT match FROM Match match WHERE match.jugador2.id =:id")
 	public List<Match> findMatchsWithIdPlayer2(@Param("id") Integer id) throws DataAccessException;
 
-	@Query("SELECT m FROM Match m WHERE m.jugador1.id = :idJugador")
+	@Query("SELECT m FROM Match m WHERE m.jugador1.id = :idJugador OR m.jugador2.id = :idJugador")
 	public Collection<Match> findMatchesOfAPlayer(Integer idJugador);
 
 	
