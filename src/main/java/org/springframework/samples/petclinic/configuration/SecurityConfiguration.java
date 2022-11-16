@@ -41,7 +41,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/jugadores/new").hasAnyAuthority("admin")
 				.antMatchers("/jugadores/{jugadorId}/delete").hasAnyAuthority("admin")
 				.antMatchers("/jugadores/{jugadorId}/edit").hasAnyAuthority("admin","jugador")
-				.antMatchers("/jugadores/{jugadorId}/matches").hasAnyAuthority("jugador")
+				.antMatchers("/jugadores/{jugadorId}/playerMatches").hasAnyAuthority("jugador")
 				.antMatchers("/matches/**").hasAnyAuthority("admin","jugador")
 				.antMatchers("/statistics/achievements/").hasAnyAuthority("jugador","admin")
 				.antMatchers("/statistics/achievements/currentPlayer").hasAnyAuthority("jugador")

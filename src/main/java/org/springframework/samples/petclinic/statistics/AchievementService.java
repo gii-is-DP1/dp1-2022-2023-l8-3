@@ -33,8 +33,5 @@ public class AchievementService {
 	public Achievement getAchievementById(Integer id) {
 		return achievementRepository.findById(id).get();
 	}
-	
-	public List<Achievement> getAchievementsOfAPlayer(Integer id) {
-		return achievementRepository.findAchievementsOfAPlayer(id);
-	}
+
 }

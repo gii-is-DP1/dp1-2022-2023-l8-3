@@ -97,7 +97,6 @@ public class PlayerService {
 	@Transactional
 	public void saveJugador(Jugador jugador) throws DataAccessException{
 		playerRepo.save(jugador);
-		System.out.println("PEPE");
 		jugador.getUser().setEnabled(true);
 		userRepo.save(jugador.getUser());
 		authService.saveAuthorities(jugador.getUser().getUsername(),"jugador");

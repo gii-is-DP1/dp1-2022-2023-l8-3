@@ -1,6 +1,7 @@
  package org.springframework.samples.petclinic.partida;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 
 @Controller
@@ -172,6 +174,16 @@ public class MatchController {
 	private void pollutionPhase(Match match) {
 		// TODO
 		match.nextTurn();
+	}
+	
+	@RequestMapping("/{idMatch}/completedMatch")
+	public RedirectView completedMatch(@PathVariable int idMatch) {
+		RedirectView result = new RedirectView();
+		Match match = matchService.getMatchById(idMatch);
+		match.setFinPartida(LocalDateTime.now());
+		matchService.saveMatch(match);
+		result.setUrl("/matches/{idMatch}/statistics");
+		return result;
 	}
 	
 	@GetMapping("/{idMatch}/statistics")
