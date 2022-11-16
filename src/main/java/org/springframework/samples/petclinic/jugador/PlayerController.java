@@ -133,18 +133,26 @@ public class PlayerController {
 
 	@GetMapping(value = "/jugadores/{jugadorId}/playerMatches")
 	public ModelAndView showMatchesOfAPlayer(@PathVariable("jugadorId") int jugadorId) {
+		ModelAndView result = new ModelAndView();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUser(auth.getName()).get();
-		ModelAndView result = new ModelAndView();
+		String username = user.getUsername();
+		Jugador player = playerService.findPlayerByUsername(username);
+		
+		if(matchService.getMatchesOfAPlayer(player.getId()).size() == 0) {
+			result = new ModelAndView("welcome");
+			result.addObject("message", "Aún no has disputado ninguna partida");
+		} else {
+			for (Authorities authority : user.getAuthorities()) {
+				if (authority.getAuthority().equals("jugador")
+						|| playerService.findPlayerByUsername(auth.getName()).getId() == jugadorId) {
 
-		for (Authorities authority : user.getAuthorities()) {
-			if (authority.getAuthority().equals("jugador")
-					|| playerService.findPlayerByUsername(auth.getName()).getId() == jugadorId) {
-
-				result = new ModelAndView("/jugadores/playerMatches");
-				result.addObject("playerMatches", matchService.getMatchesOfAPlayer(jugadorId));
+					result = new ModelAndView("/jugadores/playerMatches");
+					result.addObject("playerMatches", matchService.getMatchesOfAPlayer(jugadorId));
+				}
 			}
 		}
+
 		return result;
 	}
 	
