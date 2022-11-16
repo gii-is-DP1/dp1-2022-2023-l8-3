@@ -21,25 +21,30 @@
         </tr>
         </thead>
         <tbody>
-	        <c:forEach items="${selections}" var="partida">
-	            <tr>
-	                
-	                <td>
-	                    <spring:url value="/jugadores/{jugadorId}" var="EnlaceUrl">
-        					<spring:param name="jugadorId" value="${partida.jugador1.id}"/>
-    					</spring:url>
-    					<a href="${fn:escapeXml(EnlaceUrl)}"><c:out value="${partida.jugador1.user.username}"/></a>
-	                </td>
-	                <td>
-	                    <spring:url value="/jugadores/{jugadorId}" var="EnlaceUrl">
-        					<spring:param name="jugadorId" value="${partida.jugador2.id}"/>
-    					</spring:url>
-    					<a href="${fn:escapeXml(EnlaceUrl)}"><c:out value="${partida.jugador2.user.username}"/></a>
-	                </td>
-	                <td><c:out value="${partida.jugador1.numeroDeContaminacion}"/></td>
-	                <td><c:out value="${partida.jugador2.numeroDeContaminacion}"/></td>
-	        	</tr>
-	  		</c:forEach>
+        	<c:choose>
+        		<c:when test="${sinPartidas}"> <div class="alert alert-info">En este momento no hay partidas en juego</div></c:when>
+        		<c:otherwise>
+			        <c:forEach items="${selections}" var="partida">
+			            <tr>
+			                
+			                <td>
+			                    <spring:url value="/jugadores/{jugadorId}" var="EnlaceUrl">
+		        					<spring:param name="jugadorId" value="${partida.jugador1.id}"/>
+		    					</spring:url>
+		    					<a href="${fn:escapeXml(EnlaceUrl)}"><c:out value="${partida.jugador1.user.username}"/></a>
+			                </td>
+			                <td>
+			                    <spring:url value="/jugadores/{jugadorId}" var="EnlaceUrl">
+		        					<spring:param name="jugadorId" value="${partida.jugador2.id}"/>
+		    					</spring:url>
+		    					<a href="${fn:escapeXml(EnlaceUrl)}"><c:out value="${partida.jugador2.user.username}"/></a>
+			                </td>
+			                <td><c:out value="${partida.jugador1.numeroDeContaminacion}"/></td>
+			                <td><c:out value="${partida.jugador2.numeroDeContaminacion}"/></td>
+			        	</tr>
+			  		</c:forEach>
+			  	</c:otherwise>
+			</c:choose>
         </tbody>
     </table>
    

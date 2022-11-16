@@ -78,13 +78,15 @@ public class PlayerService {
 				for(Disco d:dishRepo.findDiscosWithMatchId(m.getId())) {
 					dishRepo.delete(d);
 				}
-				matchRepo.delete(m);
+				m.setJugador1(null);
+				matchRepo.save(m);
 			}
 			for(Match m:matchRepo.findMatchsWithIdPlayer2(id)) {
 				for(Disco d:dishRepo.findDiscosWithMatchId(m.getId())) {
 					dishRepo.delete(d);
 				}
-				matchRepo.delete(m);
+				m.setJugador2(null);
+				matchRepo.save(m);
 			}
 			
 			playerRepo.delete(playerRepo.findById(id).get());

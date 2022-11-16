@@ -21,30 +21,40 @@
         </tr>
         </thead>
         <tbody>
-	        <c:forEach items="${selections}" var="partida">
-	            <tr>
-	                
-	                <td>
-	                    <spring:url value="/jugadores/{jugadorId}" var="EnlaceUrl">
-        					<spring:param name="jugadorId" value="${partida.jugador1.id}"/>
-    					</spring:url>
-    					<a href="${fn:escapeXml(EnlaceUrl)}"><c:out value="${partida.jugador1.user.username}"/></a>
-	                </td>
-	                <td>
-	                    <spring:url value="/jugadores/{jugadorId}" var="EnlaceUrl">
-        					<spring:param name="jugadorId" value="${partida.jugador2.id}"/>
-    					</spring:url>
-    					<a href="${fn:escapeXml(EnlaceUrl)}"><c:out value="${partida.jugador2.user.username}"/></a>
-	                </td>
-	                <td>
-	                	<c:choose>
-	                		<c:when test="${partida.ganadorPartida==firstPlayer}"><c:out value="${partida.jugador1.user.username}"/></c:when>
-	                		<c:otherwise><c:out value="${partida.jugador2.user.username}"/></c:otherwise>
-	                    </c:choose>
-	                </td>
-	                <td><a href="">Estadísticas</a></td>
-	        	</tr>
-	  		</c:forEach>
+        	<c:choose>
+        		<c:when test="${sinPartidas}"> <div class="alert alert-info">En este momento no hay partidas que ya hayan sido jugada</div></c:when>
+        		<c:otherwise>
+			        <c:forEach items="${selections}" var="partida">
+			            <tr>
+			                
+			                <td>
+			                    <spring:url value="/jugadores/{jugadorId}" var="EnlaceUrl">
+		        					<spring:param name="jugadorId" value="${partida.jugador1.id}"/>
+		    					</spring:url>
+		    					<a href="${fn:escapeXml(EnlaceUrl)}"><c:out value="${partida.jugador1.user.username}"/></a>
+			                </td>
+			                <td>
+			                    <spring:url value="/jugadores/{jugadorId}" var="EnlaceUrl">
+		        					<spring:param name="jugadorId" value="${partida.jugador2.id}"/>
+		    					</spring:url>
+		    					<a href="${fn:escapeXml(EnlaceUrl)}"><c:out value="${partida.jugador2.user.username}"/></a>
+			                </td>
+			                <td>
+			                	<c:choose>
+			                		<c:when test="${partida.ganadorPartida==firstPlayer}"><c:out value="${partida.jugador1.user.username}"/></c:when>
+			                		<c:otherwise><c:out value="${partida.jugador2.user.username}"/></c:otherwise>
+			                    </c:choose>
+			                </td>
+			                <td>
+			                	<spring:url value="/matches/{idMatch}/statistics" var="estadisticasUrl">
+									<spring:param name="idMatch" value="${partida.id}" />
+								</spring:url>
+								<a href="${fn:escapeXml(estadisticasUrl)}">Estadísticas</a>
+			                </td>
+			        	</tr>
+			  		</c:forEach>
+				</c:otherwise>
+			</c:choose>
         </tbody>
     </table>
    

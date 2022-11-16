@@ -201,18 +201,28 @@ public class MatchController {
 	}
 	
 	@GetMapping(value = "/InProgress")
-	public String showMatchesInProgress(Map<String, Object> model) {
+	public String showMatchesInProgress(Map<String, Object> model,Map<String, Object> model2) {
 		List<Match> results = this.matchService.getMatchesByGameWinner(GameWinner.UNDEFINED);
+		Boolean b=false;
 		model.put("selections", results);
+		if(results.isEmpty()) {
+			b=true;
+		}
+		model2.put("sinPartidas", b);
 		return "matches/listMatchesInProgress";
 	}
 	
 	@GetMapping(value = "/Finished")
-	public String showMatchesFinished(Map<String, Object> model,Map<String, Object> model2) {
+	public String showMatchesFinished(Map<String, Object> model,Map<String, Object> model2,Map<String, Object> model3) {
 		List<Match> results = this.matchService.getMatchesByGameWinner(GameWinner.FIRST_PLAYER);
 		results.addAll(this.matchService.getMatchesByGameWinner(GameWinner.SECOND_PLAYER));
+		Boolean b=false;
 		model.put("selections", results);
-		model2.put("firstPlayer", GameWinner.FIRST_PLAYER);
+		if(results.isEmpty()) {
+			b=true;
+		}
+		model2.put("sinPartidas", b);
+		model3.put("firstPlayer", GameWinner.FIRST_PLAYER);
 		return "matches/listMatchesFinished";
 	}
 	

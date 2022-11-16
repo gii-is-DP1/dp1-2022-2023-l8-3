@@ -32,7 +32,7 @@ public class EstadoController {
 	Authentication auth=SecurityContextHolder.getContext().getAuthentication();
 	
 	@GetMapping("/cambiarEstadoOnline")
-	public String ponerOnline(Map<String, Object> model) {
+	public String ponerOnline() {
 		auth=SecurityContextHolder.getContext().getAuthentication();
 		User user=userService.findUser(auth.getName()).get();
 		Jugador j=playerService.findPlayerByUsername(auth.getName());
