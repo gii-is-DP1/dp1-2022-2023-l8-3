@@ -8,13 +8,28 @@
 
 <petclinic:layout pageName="jugadorForm">
 	<h2>
-
 		<c:choose>
 			<c:when test="${jugador['new']}">Nuevo </c:when>
 		</c:choose>
 		Jugador
 	</h2>
 	<br>
+	<c:if test="${contraseñaIncorrecta}">
+		<div class="alert alert-info">
+    	 Contrase&ntilde;a incorrecta, debe tener entre 10 y 50 caracteres y al menos un numero
+		</div>
+	</c:if>
+	<c:if test="${emailIncorrecto1}">
+		<div class="alert alert-info">
+    	 Email incorrecto, ya esta registrado a nombre de otro jugador
+		</div>
+	</c:if>
+	<c:if test="${emailIncorrecto2}">
+		<div class="alert alert-info">
+    	 Email incorrecto, debe acabar en @gmail.com
+		</div>
+	</c:if>
+    <c:if test="${sinJugadores}"><div class="alert alert-info">No hay jugadores registrados actualmente</div></c:if>
 	<form:form modelAttribute="jugador" class="form-horizontal"
 		id="add-owner-form">
 		<div class="form-group has-feedback">
