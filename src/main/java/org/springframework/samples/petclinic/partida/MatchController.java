@@ -102,13 +102,15 @@ public class MatchController {
 	public ModelAndView showCurrentMatch(@PathVariable int idMatch) {
 		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
 		Match match = matchService.getMatchById(idMatch);
+		Jugador player1 = match.getJugador1();
+		Jugador player2 = match.getJugador2();
 				
 		if(match.esFaseBinaria()) {
 			System.out.println("FASE BINARIA");
-			binaryPhase(match);
+			binaryPhase(match, player1, player2);
 		} else if(match.esFaseContaminacion()) {
 			System.out.println("FASE CONTAMINACION");
-			pollutionPhase(match);
+			pollutionPhase(match, player1, player2);
 		} else if(match.esFin()){
 			System.out.println("FIN");
 			result = new ModelAndView(MATCH_STATISTICS_VIEW);
@@ -116,14 +118,18 @@ public class MatchController {
 		
 		result.addObject("match", match);
 		matchService.saveMatch(match);
+		playerService.saveJugador(player1);
+		playerService.saveJugador(player2);
 		return result;
 	}
 	
 
-	@PostMapping("/{idMatch}/currentMatch")
+	@RequestMapping("/{idMatch}/currentMatch")
 	public ModelAndView nextPhase(@PathVariable int idMatch, Match auxMatch) {
 		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
 		Match match = matchService.getMatchById(idMatch);
+		Jugador player1 = match.getJugador1();
+		Jugador player2 = match.getJugador2();
 		
 		if(match.esPropagacion()) {
 			System.out.println("FASE PROPAGACION");
@@ -137,9 +143,11 @@ public class MatchController {
 			if(validacion.length()==0) {
 				// Realizar movimiento
 				if(match.turnoPrimerJugador()) {
-					movingBacteria(0, auxMatch, match);
+					movingBacteria(player1, auxMatch, match);
+					playerService.saveJugador(player1);
 				} else {
-					movingBacteria(1, auxMatch, match);
+					movingBacteria(player2, auxMatch, match);
+					playerService.saveJugador(player2);
 				}
 				//Pasa turno
 				match.nextTurn();
@@ -154,25 +162,24 @@ public class MatchController {
 		return result;
 	}
 	
-	// TODO: por algún motivo, falla cuando se añade una sarcina y se mueven bacterias a otro disco en el mismo momento.
-	private void movingBacteria(Integer playerId, Match auxMatch, Match match) {
+	private void movingBacteria(Jugador player, Match auxMatch, Match match) {
 		Integer initialDiskId = auxMatch.getDeDisco()[0]; // disco origen
 		List<List<Integer>> targetDisksAndNumberOfBacteria = auxMatch.getTargetDiskAndNumberOfBacteria();
 		List<Integer> targetDisks = targetDisksAndNumberOfBacteria.get(0); // discos destino
 		List<Integer> numberOfBacteria = targetDisksAndNumberOfBacteria.get(1); // número de bacterias desplazadas a cada disco destino
 		
 		for(int i = 0; i < targetDisks.size(); i++) {
-			match.movingBacteria(playerId, initialDiskId, targetDisks.get(i), numberOfBacteria.get(i));
+			match.movingBacteria(player, initialDiskId, targetDisks.get(i), numberOfBacteria.get(i));
 		}
 	}
 	
-	private void binaryPhase(Match match) {
-		// TODO
+	private void binaryPhase(Match match, Jugador player1, Jugador player2) {
+		match.binaryPhase(player1, player2);
 		match.nextTurn();
 	}
 	
-	private void pollutionPhase(Match match) {
-		// TODO
+	private void pollutionPhase(Match match, Jugador player1, Jugador player2) {
+		match.pollutionPhase(player1, player2);
 		match.nextTurn();
 	}
 	
@@ -194,18 +201,28 @@ public class MatchController {
 	}
 	
 	@GetMapping(value = "/InProgress")
-	public String showMatchesInProgress(Map<String, Object> model) {
+	public String showMatchesInProgress(Map<String, Object> model,Map<String, Object> model2) {
 		List<Match> results = this.matchService.getMatchesByGameWinner(GameWinner.UNDEFINED);
+		Boolean b=false;
 		model.put("selections", results);
+		if(results.isEmpty()) {
+			b=true;
+		}
+		model2.put("sinPartidas", b);
 		return "matches/listMatchesInProgress";
 	}
 	
 	@GetMapping(value = "/Finished")
-	public String showMatchesFinished(Map<String, Object> model,Map<String, Object> model2) {
+	public String showMatchesFinished(Map<String, Object> model,Map<String, Object> model2,Map<String, Object> model3) {
 		List<Match> results = this.matchService.getMatchesByGameWinner(GameWinner.FIRST_PLAYER);
 		results.addAll(this.matchService.getMatchesByGameWinner(GameWinner.SECOND_PLAYER));
+		Boolean b=false;
 		model.put("selections", results);
-		model2.put("firstPlayer", GameWinner.FIRST_PLAYER);
+		if(results.isEmpty()) {
+			b=true;
+		}
+		model2.put("sinPartidas", b);
+		model3.put("firstPlayer", GameWinner.FIRST_PLAYER);
 		return "matches/listMatchesFinished";
 	}
 	

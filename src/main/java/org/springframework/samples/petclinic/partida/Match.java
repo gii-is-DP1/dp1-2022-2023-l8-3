@@ -347,16 +347,53 @@ public class Match extends NamedEntity{
 		return "";
 	}
 	
-	public void movingBacteria(Integer playerId, Integer initialDiskId, Integer targetDiskId, Integer numberOfBacteriaDisplaced) {
-		getDisco(initialDiskId-1).eliminarBacterias(playerId, numberOfBacteriaDisplaced);
-		getDisco(targetDiskId-1).annadirBacterias(playerId, numberOfBacteriaDisplaced);
-		checkToAddSarcina(playerId, targetDiskId-1);
+	public void movingBacteria(Jugador player, Integer initialDiskId, Integer targetDiskId, Integer numberOfBacteriaDisplaced) {
+		getDisco(initialDiskId-1).eliminarBacterias(player.getId()-1, numberOfBacteriaDisplaced);
+		getDisco(targetDiskId-1).annadirBacterias(player.getId()-1, numberOfBacteriaDisplaced);
+		checkToAddSarcina(player, targetDiskId-1);
 	}
 	
-	private void checkToAddSarcina(Integer playerId, Integer diskId) {
-		if(getDisco(diskId).getNumeroDeBacterias(playerId+1) == 5) {
-			getDisco(diskId).eliminarBacterias(playerId, 5);
-			getDisco(diskId).annadirSarcina(playerId);
+	private void checkToAddSarcina(Jugador player, Integer diskId) {
+		if(getDisco(diskId).getNumeroDeBacterias(player.getId()) == 5) {
+			getDisco(diskId).eliminarBacterias(player.getId()-1, 5);
+			player.addBacteria(5);
+			getDisco(diskId).annadirSarcina(player.getId()-1);
+			player.decreaseSarcinas();
+		}
+	}
+	
+	
+	public void binaryPhase(Jugador player1, Jugador player2) {
+		for(int i=0; i<NUMBER_OF_DISKS; i++) {
+			Integer numberOfBacteriaOfPlayer1 = getDiscos().get(i).getNumBact1();
+			Integer numberOfBacteriaOfPlayer2 = getDiscos().get(i).getNumBact2();
+			Integer numberOfSarcinaOfPlayer1 = getDiscos().get(i).getNumSarc1();
+			Integer numberOfSarcinaOfPlayer2 = getDiscos().get(i).getNumSarc2();
+			if(numberOfBacteriaOfPlayer1>0 && (numberOfBacteriaOfPlayer1-numberOfBacteriaOfPlayer2 == numberOfBacteriaOfPlayer1)
+					&& numberOfSarcinaOfPlayer2 == 0) { // solo hay bacterias del jugador 1
+				getDiscos().get(i).annadirBacterias(PRIMER_JUGADOR-1, 1);
+				jugador1.decreaseBacteria();
+				checkToAddSarcina(player1, i);
+			} else if(numberOfBacteriaOfPlayer2>0 && numberOfBacteriaOfPlayer2-numberOfBacteriaOfPlayer1 == numberOfBacteriaOfPlayer2
+					&& numberOfSarcinaOfPlayer1 == 0) { // solo hay bacterias del jugador 2
+				getDiscos().get(i).annadirBacterias(SEGUNDO_JUGADOR-1, 1);
+				jugador2.decreaseBacteria();
+				checkToAddSarcina(player2, i);
+			}
+		}
+	}
+	
+	public void pollutionPhase(Jugador player1, Jugador player2) {
+		for(int i=0; i<NUMBER_OF_DISKS; i++) {
+			Integer numberOfBacteriaOfPlayer1 = getDiscos().get(i).getNumBact1();
+			Integer numberOfBacteriaOfPlayer2 = getDiscos().get(i).getNumBact2();
+			Integer numberOfSarcinaOfPlayer1 = getDiscos().get(i).getNumSarc1();
+			Integer numberOfSarcinaOfPlayer2 = getDiscos().get(i).getNumSarc2();
+			if((numberOfSarcinaOfPlayer1*5 + numberOfBacteriaOfPlayer1)>(numberOfSarcinaOfPlayer2*5 + numberOfBacteriaOfPlayer2)) {
+				player1.increseContaminationNumber();
+			} else if((numberOfSarcinaOfPlayer1*5 + numberOfBacteriaOfPlayer1)<(numberOfSarcinaOfPlayer2*5 + numberOfBacteriaOfPlayer2)) {
+				player2.increseContaminationNumber();
+			}
 		}
 	}
 	
