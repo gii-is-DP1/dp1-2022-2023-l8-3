@@ -6,11 +6,11 @@
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags"%>
 
 
-<petclinic:layout pageName="currentMatch">
+<petclinic:layout pageName="waitForMatch">
 
 	<h2>Esperando a 2º jugador</h2>
 	<h2>${match.name}</h2>
-
+	<form:form method="post">
 	<div>
 		<label for="check" style="color: blue">${match.esPrivada}</label>
 	</div>
@@ -22,8 +22,11 @@
 
 	</div>
 
-	<a class="btn btn-primary btn-lg btn-block" href="<c:url value="/matches/${match.id}/currentMatch" />">ENTRAR EN LA PARTIDA</a>
 	
+	<input type="submit"  class="btn btn-primary btn-lg btn-block" value="ENTRAR EN LA PARTIDA">
+	
+	
+	</form:form>
 
 
 

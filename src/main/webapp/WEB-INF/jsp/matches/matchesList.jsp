@@ -2,6 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags"%>
 
 
@@ -20,19 +21,20 @@
 			</tr>
 		</thead>
 		<tbody>
-			<form:form method="post">
-				<c:forEach items="${match_list}" var="match">
 
-					<tr>
+			<c:forEach items="${match_list}" var="match">
+
+
+				<tr>
+					<form:form action="" method="post">
 						<td><c:out value="${match.jugador1.user.username}" /></td>
 						<td><c:out value="${match.name}" /></td>
 						<td><c:out value="${match.inicioPartida}" /></td>
-						<td><input type="submit" value="UNIRME"
-							class="btn btn-success"
-							onclick="location.href = '/matches/${match.id}/currentMatch'" /></input></td>
-					</tr>
-				</c:forEach>
-			</form:form>
+						<td><a class="btn btn-success" href="<c:url value="/matches/${match.id}/waitForMatch" />">UNIRME</a></td>
+					</form:form>
+				</tr>
+			</c:forEach>
+
 
 		</tbody>
 

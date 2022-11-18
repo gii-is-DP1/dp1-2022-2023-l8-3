@@ -56,7 +56,7 @@
 			<div class="seccion botones">
 				<a class="button" href="#"
 					onclick="javascript:window.history.back(-1);return false;">Volver
-					atras</a> <input class="button" type="submit" value="Crear partida" />
+					atras</a> <input href="<c:url value="/matches/${match.id}/currentMatch" /> class="button" type="submit" value="Crear partida" />
 			</div>
 		</div>
 	</form:form>
