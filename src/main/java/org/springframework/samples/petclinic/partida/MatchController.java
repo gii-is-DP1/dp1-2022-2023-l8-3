@@ -92,6 +92,10 @@ public class MatchController {
 	    ModelAndView resul = new ModelAndView(WAIT_MATCH_VIEW);
 	    Match match = matchService.getMatchById(idMatch);
 	    resul.addObject("match", match);
+	    if(match.getJugador2()!=null) {
+	    resul.addObject("full_match", true);
+	    }
+	    
 	    return resul;
 	    
 	}

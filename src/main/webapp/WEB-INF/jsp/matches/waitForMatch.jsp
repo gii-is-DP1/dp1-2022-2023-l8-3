@@ -22,10 +22,16 @@
 
 	</div>
 
-	
-	<input type="submit"  class="btn btn-primary btn-lg btn-block" value="ENTRAR EN LA PARTIDA">
-	
-	
+
+
+
+		<c:if test="${!full_match}">
+
+			<input type="submit" class="btn btn-primary btn-lg btn-block"
+				value="ENTRAR EN LA PARTIDA">
+		</c:if>
+		
+
 	</form:form>
 
 
