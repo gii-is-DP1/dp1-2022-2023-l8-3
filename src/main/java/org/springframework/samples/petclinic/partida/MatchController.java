@@ -23,6 +23,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 
+
+
 @Controller
 @RequestMapping("/matches")
 public class MatchController {
@@ -51,58 +53,71 @@ public class MatchController {
         return result;
     }
 	
-	@PostMapping(value = "/matchesList")
-    public ModelAndView listingMatch(@Valid Match match, BindingResult br, @AuthenticationPrincipal Authentication user) {
-        ModelAndView result;
-        if(br.hasErrors()) {
-            result = new ModelAndView(LIST_MATCHES, br.getModel());
-            result.addObject("match", match);
-        } else {
-            String playerName = user.getName();
-            Jugador player = playerService.findPlayerByUsername(playerName);
-            match.setJugador2(player);
-            this.matchService.saveMatch(match);
-            result = new ModelAndView(WAIT_MATCH_VIEW, br.getModel());
-            result.addObject("match", match);
-            result.addObject("player", player);
-        }
-        return result;
-    }
+	
+    
+    
 	
 	
 //Usar estas dos funciones cuando creeis el crear partida bien
 	@GetMapping(value = "/createMatch")
-	public ModelAndView createNewMatch(@AuthenticationPrincipal Authentication user) {
+	public ModelAndView createNewMatch() {
 		ModelAndView result = new ModelAndView(CREATE_MATCH_VIEW);
-
-		String playerName = user.getName();
-		Jugador player = playerService.findPlayerByUsername(playerName);
-		Match match = new Match(false, player); //Hay que poner el jugador aqui!!! (creo, no entiendo los constructores en spring)
-		result.addObject("match", match);
-		result.addObject("player", player);
-
 		result.addObject("players", playerService.findAllJugadores());
 		return result;
 	}
 	@PostMapping(value = "/createMatch")
-	public ModelAndView createMatch(@RequestParam String nombre,@RequestParam Boolean tipoPartida, @AuthenticationPrincipal Authentication user) {
-		ModelAndView result;
+	public RedirectView createMatch(@RequestParam String nombre,@RequestParam Boolean tipoPartida, @AuthenticationPrincipal Authentication user) {
+		
 
 		    String playerName = user.getName();
 	        Jugador player = playerService.findPlayerByUsername(playerName);
 	        Match match = new Match(false, player);
 	        match.setName(nombre);
 	        match.setEsPrivada(tipoPartida);
-	        Jugador jugador2 = playerService.findJugadorById(1);
+	        //Jugador jugador2 = playerService.findJugadorById(1);
 	        match.setJugador1(player);
-	        match.setJugador2(jugador2);
+	        //match.setJugador2(jugador2);
 		    this.matchService.saveMatch(match);
-			result = new ModelAndView(WAIT_MATCH_VIEW);
-			result.addObject("match", match);
+		    int id = match.getId();
+		    String matchId=String.valueOf(id);
+		    RedirectView result = new RedirectView("/matches/"+matchId+"/waitForMatch");
+		    return result;
+		    
 		
 
-		return result;
+
 	}
+	@GetMapping(value ="/{idMatch}/waitForMatch")
+	public ModelAndView showWait(@PathVariable int idMatch, @AuthenticationPrincipal Authentication user) {
+	    ModelAndView resul = new ModelAndView(WAIT_MATCH_VIEW);
+	    Match match = matchService.getMatchById(idMatch);
+	    String playerName = user.getName();
+        Jugador player = playerService.findPlayerByUsername(playerName);
+	    resul.addObject("match", match);
+	    if(match.getJugador1()==player) {
+	    resul.addObject("EresJugador1", true);
+	    }
+	    
+	    return resul;
+	    
+	}
+	
+	
+	@PostMapping(value ="/{idMatch}/waitForMatch")
+	public RedirectView post(@PathVariable("idMatch") Integer matchId, @AuthenticationPrincipal Authentication user) {
+	    String playerName = user.getName();
+        Jugador player = playerService.findPlayerByUsername(playerName);
+        Match match = matchService.getMatchById(matchId);
+        match.setJugador2(player);
+        this.matchService.saveMatch(match);
+        String id = String.valueOf(matchId);
+        RedirectView result = new RedirectView("/matches/"+id+"/currentMatch");
+        return result;
+        
+	}
+	
+	
+	
 
 	
 	@GetMapping(value = "/{idMatch}/currentMatch")
