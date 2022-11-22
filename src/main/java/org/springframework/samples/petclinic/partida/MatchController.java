@@ -88,12 +88,14 @@ public class MatchController {
 
 	}
 	@GetMapping(value ="/{idMatch}/waitForMatch")
-	public ModelAndView showWait(@PathVariable int idMatch) {
+	public ModelAndView showWait(@PathVariable int idMatch, @AuthenticationPrincipal Authentication user) {
 	    ModelAndView resul = new ModelAndView(WAIT_MATCH_VIEW);
 	    Match match = matchService.getMatchById(idMatch);
+	    String playerName = user.getName();
+        Jugador player = playerService.findPlayerByUsername(playerName);
 	    resul.addObject("match", match);
-	    if(match.getJugador2()!=null) {
-	    resul.addObject("full_match", true);
+	    if(match.getJugador1()==player) {
+	    resul.addObject("EresJugador1", true);
 	    }
 	    
 	    return resul;

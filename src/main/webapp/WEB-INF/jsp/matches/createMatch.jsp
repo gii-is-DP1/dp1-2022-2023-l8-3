@@ -46,7 +46,7 @@
 	</div>
 	<form:form method="post">
 		<div class="form-group">
-			<input class="form-control" value="nombrePartida" name="nombre">
+			<input class="form-control" value="Nombre Partida" name="nombre">
 			<select name="tipoPartida" class="form-control">
 				<option value="false">Publica</option>
 				<option value="true" selected>Privada</option>

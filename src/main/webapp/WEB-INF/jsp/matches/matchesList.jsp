@@ -4,20 +4,17 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags"%>
-
-
 <petclinic:layout pageName="matchesList">
 	<h2>Partidas</h2>
-
 
 
 	<table id="matchesList" class="table table-striped">
 		<thead>
 			<tr>
-				<th>Anfitrion</th>
-				<th>Nombre Partida</th>
-				<th>Fecha Inicio</th>
-				<th></th>
+				<th class="col-md-3">Anfitrion</th>
+				<th class="col-md-3">Nombre Partida</th>
+				<th class="col-md-3">Fecha Inicio</th>
+				<th class="col-md-3"></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -45,10 +42,10 @@
 	<table id="matches" class="table table-striped">
 		<thead>
 			<tr>
-				<th>Anfitrion</th>
-				<th>Jugador 2</th>
-				<th>Fecha Inicio</th>
-				<th></th>
+				<th class="col-md-3">Anfitrion</th>
+				<th class="col-md-3">Jugador 2</th>
+				<th class="col-md-3">Fecha Inicio</th>
+				<th class="col-md-3"></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -65,11 +62,60 @@
 			</c:forEach>
 		</tbody>
 	</table>
-
+	
+	<div style="text-align: center;">
+	<button type="button" class="btn-3d" onclick="window.location.href='./Finished'">Historial de partidas</button>
+	</div>
+	
+	
 	<table class="table-buttons">
 		<tr>
 			<td><a href="<spring:url value="/vets.xml" htmlEscape="true" />">View
 					as XML</a></td>
 		</tr>
 	</table>
+	<style type="text/css">
+	th{
+	text-align: center;
+	
+	}
+	td{
+	text-align: center;
+	}
+	
+	.btn-3d {
+  padding: .6rem 1rem;
+  border: 1px solid #995309;
+  border-radius: 4px;
+  background-color: #AEFF00;
+  color: #fff;
+  width:100%;
+  height:50px;
+  margin:20px;
+
+  font-size: 1.5rem;
+  text-shadow: 0 -1px 0 rgba(0,0,0,.5);
+  box-shadow: 0 1px 0 rgba(255,255,255,.5) inset,
+    0 1px 3px rgba(0,0,0,.2);
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(10%,#f90),to(#e76a00));
+  background-image: linear-gradient(#f90 10%,#e76a00 100%);
+}
+
+.btn-3d:hover, .btn-3d:focus {
+  background-color: #AEFF00;
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(10%,#f0a100),to(#f70));
+  background-image: linear-gradient(#f0a100 10%,#f70 100%);
+}
+
+.btn-3d:active {
+  background-color: #AEFF00;
+  box-shadow: 0 2px 3px 0 rgba(0,0,0,.2) inset;
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(10%,#f0a100),to(#f70));
+  background-image: linear-gradient(#f0a100 10%,#f70 100%);
+}
+	
+	</style>
+	
+	
+	
 </petclinic:layout>
