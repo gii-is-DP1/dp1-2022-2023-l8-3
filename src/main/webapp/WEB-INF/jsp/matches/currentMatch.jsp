@@ -8,7 +8,7 @@
 
 <petclinic:layout pageName="currentMatch">
 
-	<form:form class="tablero" modelAttribute="match" onsubmit="return validate()">
+	<div class="tablero"></div>
 		<h2>Partida en curso</h2>
 
 		<div class="seccion1">
@@ -18,12 +18,36 @@
 				<petclinic:seccionJugador usuario="${jugador.user.username}" numeroBacterias="${jugador.bacterias}"
 					 numeroSarcinas="${jugador.sarcinas}" contaminacion="${jugador.numeroDeContaminacion}"/>
 			</div>
+			
+			<form:form class="tablero" modelAttribute="match" onsubmit="return validate()">
 
-			<div class="discos disable-select">
-				<c:forEach var="i" begin="0" end="6" >
-					<petclinic:disco indexDisco="${i}" clase="disco ${match.chooseTag(i)}"/>
-				</c:forEach>
-			</div>
+				<div class="discos disable-select">
+					<c:forEach var="i" begin="0" end="6" >
+						<petclinic:disco indexDisco="${i}" clase="disco ${match.chooseTag(i)}"/>
+					</c:forEach>
+				</div>
+
+				<div class="botones">
+
+					<c:choose>
+							<c:when test="${match.esPropagacion()}">
+								<input type="submit" value="Siguiente fase"/>
+							</c:when>
+							<c:otherwise>
+								<a class="button" href="<c:url value="/matches/${match.id}/currentMatch" />">Siguiente fase </a>
+							</c:otherwise>
+					</c:choose>
+					<c:choose>
+							<c:when test="${match.getMatchTime()>=2}">
+								<a class="button" href="<c:url value="/matches/${match.id}/completedMatch" />">Abandonar partida </a>
+							</c:when>
+							<c:otherwise>
+								<a class="button" href="<c:url value="#" />">Abandonar partida </a>
+							</c:otherwise>
+					</c:choose>
+					
+				</div>	
+			</form:form>
 
 			<div class="jugador2">
 				<c:set var="jugador" value="${match.jugador2}"/>
@@ -36,7 +60,39 @@
 
 		<div class="seccion2">
 			<div class="chat">
-				chat
+				<div class="msgs">
+					<c:choose>
+						<c:when test="${match.turnoPrimerJugador()}">
+							<c:forEach items="${match.getComentarios()}" var="c">
+								<c:set var="jugador1" value="${match.jugador1.user.username}"/>
+								<petclinic:comentario msg="${c.getTexto()}" fecha="${c.fechaComentario()}"
+								clase="${c.claseDeComentario(jugador1)}" jugador="${jugador1}"/>
+							</c:forEach>
+						</c:when>
+						<c:otherwise>
+							<c:forEach items="${match.getComentarios()}" var="c">
+								<c:set var="jugador2" value="${match.jugador2.user.username}"/>
+								<petclinic:comentario msg="${c.getTexto()}" fecha="${c.fechaComentario()}"
+								clase="${c.claseDeComentario(jugador2)}" jugador="${jugador2}"/>
+							</c:forEach>
+						</c:otherwise>
+					</c:choose>
+				</div>
+
+				<form:form class="formmsg" method="post" action="/chat/${match.id}/postMsg">
+					<textarea name="msg" style='width: 80%;' oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'></textarea>
+					<input type="hidden" name="idMatch" value="${match.id}">
+					<c:choose>
+						<c:when test="${match.turnoPrimerJugador()}">
+							<input type="hidden" name="idJugador" value="${match.getJugador1().getId()}">
+						</c:when>
+						<c:otherwise>
+							<input type="hidden" name="idJugador" value="${match.getJugador2().getId()}">
+						</c:otherwise>
+					</c:choose>
+
+					<input type="submit" value="Enviar">	
+				</form:form>
 			</div>
 
 			<div class="informacion">
@@ -47,33 +103,11 @@
 				<p class="error">
 					${error}
 				</p>
-
-			</div>
-
-			<div class="botones">
-
-				<c:choose>
-						<c:when test="${match.esPropagacion()}">
-							<input type="submit" value="Siguiente fase"/>
-						</c:when>
-						<c:otherwise>
-							<a class="button" href="<c:url value="/matches/${match.id}/currentMatch" />">Siguiente fase </a>
-						</c:otherwise>
-				</c:choose>
-				<c:choose>
-						<c:when test="${match.getMatchTime()>=2}">
-							<a class="button" href="<c:url value="/matches/${match.id}/completedMatch" />">Abandonar partida </a>
-						</c:when>
-						<c:otherwise>
-							<a class="button" href="<c:url value="#" />">Abandonar partida </a>
-						</c:otherwise>
-				</c:choose>
-				
 			</div>
 
 		</div>
 
-	</form:form>
+	</div>
 
 	<a class="idJugador noDisplay">
 		${match.getIdJugadorTurnoActual()}
@@ -131,41 +165,6 @@
 	}
 
 	function reglasComplejas(checkedDiskIndex, diskIndex){
-		/*Disco dDestino = getDisco(discoDestino-1);
-		Integer enemigo = jugador==PRIMER_JUGADOR ? SEGUNDO_JUGADOR : PRIMER_JUGADOR;
-
-		//Si disco destino tiene sarcina tuya el mov es ilegal
-		if(dDestino.getNumeroDeSarcinas(jugador)!=0){
-			String msg = "Disco destino con sarcina aliada";
-			System.out.println(msg);
-			return msg;
-		}
-		//Si quedan mismo numero de bacterias enemigas que aliadas el mov es ilegal
-		Integer i = dDestino.getNumeroDeBacterias(jugador)+valor;
-		if(i != 0 && i == dDestino.getNumeroDeBacterias(enemigo)){
-			String msg = "Mismo numero de bacterias enemigas que aliadas";
-			System.out.println(msg);
-			return msg;
-		}
-
-		//Si quedan mas de 5 bacterias en disco destino el mov es ilegal
-		if((dDestino.getNumeroDeBacterias(jugador)+valor > 5)) {
-			String msg = "Mas de 5 bacterias en disco destino";
-			System.out.println(msg);
-			return msg;
-		}
-		return "";
-		*/
-		/*
-		jugador = parseInt(document.getElementsByClassName('idJugador')[0].innerText);
-		var elChildren = discoLabels[checkedDiskIndex].parentNode.children;
-		for(var c=0; c<elChildren.length - 1; c++){
-			console.log(elChildren[c].className);
-			var s = 'bs'+jugador;
-			if(elChildren[c].className == s){
-				console.log("PIPO");
-			}
-		}*/
 		return '';
 	}
 
@@ -233,16 +232,14 @@
 				return false;
 		}
 		return true;
-	}
-
-
+	
 
 </script>
 
 <style type="text/css">
 	:root{
 		--discos-vw:40vw;
-		--discos-vh:60vh;
+		--discos-vh:45vh;
 		--color-disco:#878787;
 		--color-background-divs:rgba(22, 22, 26,0.2);
 		--jugadores:min(calc(100vw - var(--discos-vw))/2, calc(100vh - var(--discos-vh))/2);
@@ -319,8 +316,13 @@
 		text-align: center;
 		display: flex;
 	}
+	.seccion2{
+		height: min(calc(var(--discos-vw)/1.5),calc(var(--discos-vh)/1.5));
+		display: flex;
+	}
 	.seccion1{
 		height: min(var(--discos-vw),var(--discos-vh));
+		margin-bottom: 50px;
 	}
 
 	.seccion1 div{
@@ -422,12 +424,7 @@
 	}
 
 
-	.seccion2{
-		height: min(var(--discos-vw)/2,var(--discos-vh)/2);
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		grid-template-rows: repeat(1, 1fr);
-	}
+
 	.smallbacteria{
 		width: min(calc(var(--discos-vw)/20),calc(var(--discos-vh)/20));
 		height: min(calc(var(--discos-vw)/20),calc(var(--discos-vh)/20));
@@ -442,6 +439,29 @@
 	}
 	.seccion2 div{
 		border: 1px solid black;
+	}
+
+	.seccion2 .chat, .seccion2 .informacion{
+		width: 40vw;
+	}
+	.formmsg{
+		display: flex;
+		justify-content: space-between;
+		padding: 10px;
+	}
+	.chat .msgs{
+		height: 70%;
+		overflow-y: scroll;
+	}
+	.comentario{
+		display: flex;
+		margin: 5px;
+	}
+	.comentario > *{
+		margin: 5px;
+	}
+	.jugadorActual{
+
 	}
 
 </style>
