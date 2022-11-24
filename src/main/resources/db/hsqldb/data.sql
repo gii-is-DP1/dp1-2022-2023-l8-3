@@ -70,3 +70,14 @@ INSERT INTO achievements_players VALUES (1,1);
 INSERT INTO achievements_players VALUES (1,5);
 INSERT INTO achievements_players VALUES (2,5);
 
+
+INSERT INTO comentarios(id, match_id, texto, id_jugador, fecha_de_publicacion) 
+VALUES (1, 1, 'Texto1ashdalsukhdaslkduhasldkuhsdlksauhdlaskudhsalkduhsadlksuahduskadh', 1, '1999-04-12 10:12:12.55');
+INSERT INTO comentarios(id, match_id, texto, id_jugador, fecha_de_publicacion) 
+VALUES (2, 1, 'Texto2dsfsdfdsfdsfdsfdsf', 1, '1999-04-12 10:13:12.55');
+INSERT INTO comentarios(id, match_id, texto, id_jugador, fecha_de_publicacion) 
+VALUES (3, 1, 'Texto3sdfsadfdsfsdfsloifhsdifuhsdfiusdhfiksdufhsdifusydhfliudshfdslifuydshfduhf', 2, '1999-04-12 10:14:12.55');
+INSERT INTO comentarios(id, match_id, texto, id_jugador, fecha_de_publicacion) 
+VALUES (4, 1, 'Texto4sfsdfsdafsdfsdfsdfsadfsdfsdfsdf', 2, '1999-04-12 10:15:12.55');
+INSERT INTO comentarios(id, match_id, texto, id_jugador, fecha_de_publicacion) 
+VALUES (5, 1, 'Texto5sdfsdfdsfsdfsdfsdfdsf', 2, '1999-04-12 10:16:12.55');

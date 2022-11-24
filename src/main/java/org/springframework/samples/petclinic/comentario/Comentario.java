@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
+import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.petclinic.jugador.Jugador;
 import org.springframework.samples.petclinic.model.BaseEntity;
@@ -26,6 +27,7 @@ public class Comentario extends BaseEntity {
 	//---------------------------------------------------------------------------------------------//
 	@Column(name = "texto")
 	@NotEmpty
+	@Length(min = 1, max = 200)
 	private String texto;
 	
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -64,6 +66,16 @@ public class Comentario extends BaseEntity {
 	public String toString() {
 		return "Comentario [texto=" + texto + ", fechaDePublicacion=" + fechaDePublicacion + ", jugador=" + jugador.getUser().getUsername()+"]";
 	}
+
+	public String claseDeComentario(String username) {
+		if(this.getJugador().getUser().getUsername() == username) 
+			return "jugadorActual";
+		else
+			return "jugadorEnemigo";
+	}
 	
-	
+	public String fechaComentario() {
+		LocalDateTime fecha =  this.getFechaDePublicacion();
+		return fecha.getHour()+":"+fecha.getMinute()+":"+fecha.getSecond();
+	}
 }
