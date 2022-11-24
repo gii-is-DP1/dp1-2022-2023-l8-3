@@ -184,7 +184,7 @@ public class PlayerController {
 				return "jugadores/createOrUpdateJugadorForm";
 			}
 			jugador.setId(jugadorId);
-			jugador.getUser().setUsername(playerService.findJugadorById(jugadorId).getUser().getUsername());
+			jugador.getUser().setId(playerService.findJugadorById(jugadorId).getUser().getId());
 			this.playerService.saveJugador(jugador);
 			return "redirect:/jugadores/{jugadorId}";
 		}

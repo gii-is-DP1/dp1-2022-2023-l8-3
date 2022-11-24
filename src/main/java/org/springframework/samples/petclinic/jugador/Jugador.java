@@ -10,6 +10,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.springframework.samples.petclinic.statistics.Achievement;
@@ -49,8 +50,8 @@ public class Jugador extends Person{
 
 
 
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "username",referencedColumnName = "username")
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "username")
 	private User user;
 	
 	@OneToMany(cascade = CascadeType.ALL)
