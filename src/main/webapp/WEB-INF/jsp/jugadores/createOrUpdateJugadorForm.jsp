@@ -33,12 +33,7 @@
 	<form:form modelAttribute="jugador" class="form-horizontal"
 		id="add-owner-form">
 		<div class="form-group has-feedback">
-			<c:choose>
-				<c:when test="${jugador['new']}">
-					<petclinic:inputField label="Nombre de usuario"
-						name="user.username" />
-				</c:when>
-			</c:choose>
+			<petclinic:inputField label="Nombre de usuario" name="user.username" />
 			<petclinic:inputField label="Nombre" name="firstName" />
 			<petclinic:inputField label="Apellido" name="lastName" />
 			<petclinic:inputField label="Email" name="user.email" />

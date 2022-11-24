@@ -1,33 +1,33 @@
 -- One admin user, named admin1 with passwor 4dm1n and authority admin
-INSERT INTO users(username,password,email,enabled) VALUES ('admin1','4dm1n', 'admin1@gmail.com',TRUE);
-INSERT INTO authorities(id,username,authority) VALUES (1,'admin1','admin');
+INSERT INTO users(id,username,password,email,enabled) VALUES (1,'admin1','4dm1n', 'admin1@gmail.com',TRUE);
+INSERT INTO authorities(id,username,authority) VALUES (1,1,'admin');
 -- One owner user, named owner1 with passwor 0wn3r
-INSERT INTO users(username,password,email,enabled) VALUES ('davdancab','davdancab','davdancab@gmail.com',TRUE);
-INSERT INTO authorities(id,username,authority) VALUES (4,'davdancab','jugador');
-INSERT INTO users(username,password,email,enabled) VALUES ('manortgar','petclinic','manortgar@gmail.com',TRUE);
-INSERT INTO authorities(id,username,authority) VALUES (5,'manortgar','jugador');
-INSERT INTO users(username,password,email,enabled) VALUES ('seraguoro','seraguoro','seraguoro@gmail.com',TRUE);
-INSERT INTO authorities(id,username,authority) VALUES (6,'seraguoro','jugador');
-INSERT INTO users(username,password,email,enabled) VALUES ('juamarher','juamarher','juamarher@gmail.com',TRUE);
-INSERT INTO authorities(id,username,authority) VALUES (7,'juamarher','jugador');
-INSERT INTO users(username,password,email,enabled) VALUES ('framonmar','framonmar','framonmar@gmail.com',TRUE);
-INSERT INTO authorities(id,username,authority) VALUES (8,'framonmar','jugador');
-INSERT INTO users(username,password,email,enabled) VALUES ('josibocon','josibocon','josibocon@gmail.com',TRUE);
-INSERT INTO authorities(id,username,authority) VALUES (9,'josibocon','jugador');
+INSERT INTO users(id,username,password,email,enabled) VALUES (2,'davdancab','davdancab','davdancab@gmail.com',TRUE);
+INSERT INTO authorities(id,username,authority) VALUES (2,2,'jugador');
+INSERT INTO users(id,username,password,email,enabled) VALUES (3,'manortgar','petclinic','manortgar@gmail.com',TRUE);
+INSERT INTO authorities(id,username,authority) VALUES (3,3,'jugador');
+INSERT INTO users(id,username,password,email,enabled) VALUES (4,'seraguoro','seraguoro','seraguoro@gmail.com',TRUE);
+INSERT INTO authorities(id,username,authority) VALUES (4,4,'jugador');
+INSERT INTO users(id,username,password,email,enabled) VALUES (5,'juamarher','juamarher','juamarher@gmail.com',TRUE);
+INSERT INTO authorities(id,username,authority) VALUES (5,5,'jugador');
+INSERT INTO users(id,username,password,email,enabled) VALUES (6,'framonmar','framonmar','framonmar@gmail.com',TRUE);
+INSERT INTO authorities(id,username,authority) VALUES (6,6,'jugador');
+INSERT INTO users(id,username,password,email,enabled) VALUES (7,'josibocon','josibocon','josibocon@gmail.com',TRUE);
+INSERT INTO authorities(id,username,authority) VALUES (7,7,'jugador');
 
 
 INSERT INTO jugadores(id, first_name,last_name,username) 
-VALUES(1,'David','Dana','davdancab');
+VALUES(1,'David','Dana',2);
 INSERT INTO jugadores(id, first_name,last_name,username) 
-VALUES(2,'Juan Jesus','Martin','juamarher');
+VALUES(2,'Juan Jesus','Martin',3);
 INSERT INTO jugadores(id, first_name,last_name,username) 
-VALUES(3,'Manuel','Ortega','manortgar');
+VALUES(3,'Manuel','Ortega',4);
 INSERT INTO jugadores(id, first_name,last_name,username)
-VALUES(4,'Yeyo','Peyeyo','seraguoro');
+VALUES(4,'Yeyo','Peyeyo',5);
 INSERT INTO jugadores(id, first_name,last_name,username)
-VALUES(5,'Francisco Jesús','Montero','framonmar');
+VALUES(5,'Francisco Jesús','Montero',6);
 INSERT INTO jugadores(id, first_name,last_name,username)
-VALUES(6,'José Miguel','Iborra','josibocon');
+VALUES(6,'José Miguel','Iborra',7);
 
 
 
