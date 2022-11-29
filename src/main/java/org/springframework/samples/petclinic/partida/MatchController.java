@@ -74,6 +74,8 @@ public class MatchController {
 	        Match match = new Match(false, player);
 	        match.setName(nombre);
 	        match.setEsPrivada(tipoPartida);
+	        match.getDisco(2).annadirBacterias(0, 1);
+	        match.getDisco(4).annadirBacterias(1, 1);
 	        //Jugador jugador2 = playerService.findJugadorById(1);
 	        match.setJugador1(player);
 	        //match.setJugador2(jugador2);
