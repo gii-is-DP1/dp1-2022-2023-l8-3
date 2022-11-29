@@ -30,12 +30,12 @@
 				<div class="botones">
 
 					<c:choose>
-							<c:when test="${match.esPropagacion()}">
+							<c:when test="${match.esPropagacion() && isYourTurn}">
 								<input type="submit" value="Siguiente fase"/>
 							</c:when>
-							<c:otherwise>
+							<c:when test="${!match.esPropagacion()}">
 								<a class="button" href="<c:url value="/matches/${match.id}/currentMatch" />">Siguiente fase </a>
-							</c:otherwise>
+							</c:when>
 					</c:choose>
 					<c:choose>
 							<c:when test="${match.getMatchTime()>=2}">

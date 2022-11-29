@@ -42,7 +42,7 @@ public class Match extends NamedEntity{
 	
 	private static final Map<Integer, List<Integer>> map = new HashMap<>();
 	
-
+	
 	//Valores representan el numero de bacterias a sumar a discoX
 	@Transient
 	private Integer disco1;
@@ -107,7 +107,7 @@ public class Match extends NamedEntity{
 	@OneToMany(mappedBy="match")
 	private List<Comentario> comentarios;
 
-
+	
 	// Constructor para cuando se crea una partida desde la aplicación
 	public Match(Boolean esPrivada, Jugador jugadorAnfitrion) {
 		this.inicioPartida = LocalDateTime.now();
@@ -347,17 +347,17 @@ public class Match extends NamedEntity{
 		return "";
 	}
 	
-	public void movingBacteria(Jugador player, Integer initialDiskId, Integer targetDiskId, Integer numberOfBacteriaDisplaced) {
-		getDisco(initialDiskId-1).eliminarBacterias(player.getId()-1, numberOfBacteriaDisplaced);
-		getDisco(targetDiskId-1).annadirBacterias(player.getId()-1, numberOfBacteriaDisplaced);
-		checkToAddSarcina(player, targetDiskId-1);
+	public void movingBacteria(Integer idPlayerMatch, Jugador player, Integer initialDiskId, Integer targetDiskId, Integer numberOfBacteriaDisplaced) {
+		getDisco(initialDiskId-1).eliminarBacterias(idPlayerMatch, numberOfBacteriaDisplaced);
+		getDisco(targetDiskId-1).annadirBacterias(idPlayerMatch, numberOfBacteriaDisplaced);
+		checkToAddSarcina(idPlayerMatch, player, targetDiskId-1);
 	}
 	
-	private void checkToAddSarcina(Jugador player, Integer diskId) {
-		if(getDisco(diskId).getNumeroDeBacterias(player.getId()) == 5) {
-			getDisco(diskId).eliminarBacterias(player.getId()-1, 5);
+	private void checkToAddSarcina(Integer idPlayerMatch, Jugador player, Integer diskId) {
+		if(getDisco(diskId).getNumeroDeBacterias(idPlayerMatch+1) == 5) {
+			getDisco(diskId).eliminarBacterias(idPlayerMatch, 5);
 			player.addBacteria(5);
-			getDisco(diskId).annadirSarcina(player.getId()-1);
+			getDisco(diskId).annadirSarcina(idPlayerMatch);
 			player.decreaseSarcinas();
 		}
 	}
@@ -373,12 +373,12 @@ public class Match extends NamedEntity{
 					&& numberOfSarcinaOfPlayer2 == 0) { // solo hay bacterias del jugador 1
 				getDiscos().get(i).annadirBacterias(PRIMER_JUGADOR-1, 1);
 				jugador1.decreaseBacteria();
-				checkToAddSarcina(player1, i);
+				checkToAddSarcina(PRIMER_JUGADOR-1, player1, i);
 			} else if(numberOfBacteriaOfPlayer2>0 && numberOfBacteriaOfPlayer2-numberOfBacteriaOfPlayer1 == numberOfBacteriaOfPlayer2
 					&& numberOfSarcinaOfPlayer1 == 0) { // solo hay bacterias del jugador 2
 				getDiscos().get(i).annadirBacterias(SEGUNDO_JUGADOR-1, 1);
 				jugador2.decreaseBacteria();
-				checkToAddSarcina(player2, i);
+				checkToAddSarcina(SEGUNDO_JUGADOR-1, player2, i);
 			}
 		}
 	}
