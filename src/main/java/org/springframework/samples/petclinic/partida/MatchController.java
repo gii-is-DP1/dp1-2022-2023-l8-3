@@ -91,16 +91,20 @@ public class MatchController {
 
 	}
 	@GetMapping(value ="/{idMatch}/waitForMatch")
-	public ModelAndView showWait(@PathVariable int idMatch, @AuthenticationPrincipal Authentication user) {
+	public ModelAndView showWait(@PathVariable("idMatch") int matchId, @AuthenticationPrincipal Authentication user, HttpServletResponse response) {
+	    response.addHeader("Refresh", "1.85");
 	    ModelAndView resul = new ModelAndView(WAIT_MATCH_VIEW);
-	    Match match = matchService.getMatchById(idMatch);
+	    Match match = matchService.getMatchById(matchId);
+	    String id = String.valueOf(matchId);
 	    String playerName = user.getName();
         Jugador player = playerService.findPlayerByUsername(playerName);
 	    resul.addObject("match", match);
 	    if(match.getJugador1()==player) {
 	    resul.addObject("EresJugador1", true);
 	    }
-	    
+	    if(match.getJugador2()!=null) {
+	        resul = new ModelAndView("redirect:/matches/"+id+"/currentMatch");
+	    }
 	    return resul;
 	    
 	}
