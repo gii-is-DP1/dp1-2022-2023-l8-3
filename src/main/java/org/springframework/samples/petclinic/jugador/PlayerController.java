@@ -91,6 +91,7 @@ public class PlayerController {
 
 	@GetMapping(value = "/jugadores/new")
 	public String initCreationForm(Map<String, Object> model,Map<String, Object> model2) {
+	    System.out.println("pepepe");
 		Jugador jugador = new Jugador();
 		model.put("jugador", jugador);
 		Collection<Jugador> c = this.playerService.findAllJugadores();

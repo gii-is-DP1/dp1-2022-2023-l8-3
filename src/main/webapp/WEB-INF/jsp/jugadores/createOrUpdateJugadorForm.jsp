@@ -7,6 +7,9 @@
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags"%>
 
 <petclinic:layout pageName="jugadorForm">
+	
+				
+	
 	<h2>
 		<c:choose>
 			<c:when test="${jugador['new']}">Nuevo </c:when>

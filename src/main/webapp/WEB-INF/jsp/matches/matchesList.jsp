@@ -92,25 +92,27 @@
   width:100%;
   height:50px;
   margin:20px;
-
+  display: flex;
+  justify-content:center;
+  align-items:center;
   font-size: 1.5rem;
   text-shadow: 0 -1px 0 rgba(0,0,0,.5);
   box-shadow: 0 1px 0 rgba(255,255,255,.5) inset,
     0 1px 3px rgba(0,0,0,.2);
-  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(10%,#f90),to(#e76a00));
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(10%,#f90),to(#AEFF00));
   background-image: linear-gradient(#f90 10%,#e76a00 100%);
 }
 
 .btn-3d:hover, .btn-3d:focus {
   background-color: #AEFF00;
-  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(10%,#f0a100),to(#f70));
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(10%,#f0a100),to(#AEFF00));
   background-image: linear-gradient(#f0a100 10%,#f70 100%);
 }
 
 .btn-3d:active {
   background-color: #AEFF00;
   box-shadow: 0 2px 3px 0 rgba(0,0,0,.2) inset;
-  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(10%,#f0a100),to(#f70));
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(10%,#f0a100),to(#AEFF00));
   background-image: linear-gradient(#f0a100 10%,#f70 100%);
 }
 	
