@@ -45,7 +45,7 @@ public class AchievementController {
 	@GetMapping(value = "/")
 	public ModelAndView showAchievements() {
 		ModelAndView result = new ModelAndView(ACHIEVEMENTS_LISTING_VIEW);
-		result.addObject("achievements", achievementService.getAchievements());
+		result.addObject("achievements", achievementService.getPublicAchievements());
 		return result;
 	}
 	
@@ -107,6 +107,7 @@ public class AchievementController {
 		result.addObject(achievement);
 		result.addObject("metrics", List.of(Metrics.values()));
 		result.addObject("difficulty", List.of(AchievementDifficulty.values()));
+		result.addObject("visibility", List.of(Visibility.values()));
 		return result;
 	}
 	
