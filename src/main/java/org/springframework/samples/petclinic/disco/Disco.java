@@ -15,28 +15,14 @@
  */
 package org.springframework.samples.petclinic.disco;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.springframework.beans.support.MutableSortDefinition;
-import org.springframework.beans.support.PropertyComparator;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.petclinic.model.BaseEntity;
-import org.springframework.samples.petclinic.model.NamedEntity;
-import org.springframework.samples.petclinic.owner.Owner;
+import org.springframework.samples.petclinic.partida.Match;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -68,5 +54,69 @@ public class Disco extends BaseEntity{
     
     @Column(name="num_movimientos")
     private Integer numMov;
+    
+    @ManyToOne
+    @JoinColumn(name="id_match")
+    private Match match;
+
+    
+    public Disco(Match match) {
+    	super();
+		this.numBact1 = 0;
+		this.numBact2 = 0;
+		this.numSarc1 = 0;
+		this.numSarc2 = 0;
+		this.numMov = 0;
+		this.match = match;
+	}  
+	 
+    
+    
+    public Disco() {
+    	super();
+    }
+    
+    // ----------------------------------------------------------------------------------------------- //
 	
+    private Integer[] getBacterias() {
+    	return new Integer[] {numBact1, numBact2};
+    }
+    
+    private Integer[] getSarcinas() {
+    	return new Integer[] {numSarc1, numSarc2};
+    }
+    
+    public Integer getNumeroDeBacterias(Integer idJugador) {
+		return getBacterias()[idJugador-1];
+	}
+    
+    public Integer getNumeroDeSarcinas(Integer idJugador) {
+    	return getSarcinas()[idJugador-1];
+	}
+    
+    public void annadirBacterias(Integer idJugador, Integer numeroDeBacterias) {
+    	if(idJugador == 0) {
+			numBact1 += numeroDeBacterias;
+		} else {
+			numBact2 += numeroDeBacterias;
+		}
+	}
+	
+	public void eliminarBacterias(Integer idJugador, Integer numeroDeBacterias) {
+		if(idJugador == 0) {
+			numBact1 -= numeroDeBacterias;
+		} else {
+			numBact2 -= numeroDeBacterias;
+		}
+	}
+	
+	public void annadirSarcina(Integer idJugador) {
+		if(idJugador == 0) {
+			numSarc1++;
+		} else {
+			numSarc2++;
+		}
+	}
+	
+	// ----------------------------------------------------------------------------------------------- //
 }

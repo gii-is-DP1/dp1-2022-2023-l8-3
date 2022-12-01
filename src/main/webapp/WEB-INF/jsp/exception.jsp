@@ -4,11 +4,22 @@
 
 <petclinic:layout pageName="error">
 
-    <spring:url value="/resources/images/pets.png" var="petsImage"/>
-    <img src="${petsImage}"/>
-
+    <spring:url value="/resources/images/sarcina.png" var="sarcina"/>
+    <div class="content">
+    <img src="${sarcina}"/>
+	</div>
     <h2>Something happened...</h2>
 
     <p>${exception.message}</p>
+
+<style type="text/css">
+
+img{
+filter: drop_shadow(2px 4px 8px #585858)
+
+}
+
+</style>
+
 
 </petclinic:layout>

@@ -4,10 +4,15 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
 
 import org.springframework.samples.petclinic.jugador.Jugador;
 
@@ -19,8 +24,16 @@ import lombok.Setter;
 @Entity
 @Table(name = "users")
 public class User{
+	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	Integer id;
+	
+	@Column(name="username")
 	String username;
+	
+	@Email
+	String email;
 	
 	String password;
 	
@@ -28,7 +41,16 @@ public class User{
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private Set<Authorities> authorities;
-//	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-//	//Es una lista ya que puede haber uno o ningun jugador asociado a un user
-//	private List<Jugador> jugador;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
+	private Jugador jugador;
+	
+	public User() {
+		
+	}
+	
+	public User(String username) {
+		this.username = username;
+	}
+	
 }
