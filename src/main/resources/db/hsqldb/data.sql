@@ -16,18 +16,18 @@ INSERT INTO users(id,username,password,email,enabled) VALUES (7,'josibocon','jos
 INSERT INTO authorities(id,username,authority) VALUES (7,7,'jugador');
 
 
-INSERT INTO jugadores(id, first_name,last_name,username) 
-VALUES(1,'David','Dana',2);
-INSERT INTO jugadores(id, first_name,last_name,username) 
-VALUES(2,'Juan Jesus','Martin',3);
-INSERT INTO jugadores(id, first_name,last_name,username) 
-VALUES(3,'Manuel','Ortega',4);
-INSERT INTO jugadores(id, first_name,last_name,username)
-VALUES(4,'Yeyo','Peyeyo',5);
-INSERT INTO jugadores(id, first_name,last_name,username)
-VALUES(5,'Francisco Jesús','Montero',6);
-INSERT INTO jugadores(id, first_name,last_name,username)
-VALUES(6,'José Miguel','Iborra',7);
+INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,contamination_number,number_of_bacteria,number_of_sarcina) 
+VALUES(1,'David','Dana',2,false,0,20,4);
+INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,contamination_number,number_of_bacteria,number_of_sarcina) 
+VALUES(2,'Juan Jesus','Martin',3,false,0,20,4);
+INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,contamination_number,number_of_bacteria,number_of_sarcina) 
+VALUES(3,'Manuel','Ortega',4,false,0,20,4);
+INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,contamination_number,number_of_bacteria,number_of_sarcina)
+VALUES(4,'Yeyo','Peyeyo',5,false,0,20,4);
+INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,contamination_number,number_of_bacteria,number_of_sarcina)
+VALUES(5,'Francisco Jesús','Montero',6,false,0,20,4);
+INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,contamination_number,number_of_bacteria,number_of_sarcina)
+VALUES(6,'José Miguel','Iborra',7,false,0,20,4);
 
 
 

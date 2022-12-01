@@ -8,11 +8,9 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import org.springframework.samples.petclinic.statistics.Achievement;
 import org.springframework.samples.petclinic.model.Person;
 import org.springframework.samples.petclinic.partida.Match;
@@ -30,16 +28,14 @@ public class Jugador extends Person{
 	@Column(name="estado_Online")
 	private Boolean estadoOnline;
 	
-	// TODO: no pueden ser transient, deben almacenarse en la base de datos
-	@Transient
-	private Integer numeroDeContaminacion=0;
+	@Column(name="contamination_number")
+	private Integer numeroDeContaminacion;
 	
-	@Transient
-	private Integer bacterias=20;
+	@Column(name="number_of_bacteria")
+	private Integer bacterias;
 
-	@Transient
-	private Integer sarcinas=4;
-	
+	@Column(name="number_of_sarcina")
+	private Integer sarcinas;
 	
 	
 	@Override
@@ -74,10 +70,14 @@ public class Jugador extends Person{
 		
 	}
 	
-	public Jugador(String firstName, String lastName, User user) {
+	public Jugador(String firstName, String lastName, User user, Boolean estadoOnline) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.user = user;
+		this.estadoOnline = estadoOnline;
+		this.numeroDeContaminacion = 0;
+		this.bacterias = 20;
+		this.sarcinas = 4;
 		this.invitacionesPartidaRecibidas = new ArrayList<Match>();
 		this.listaAmigos = new ArrayList<Jugador>();
 		this.logros = new ArrayList<Achievement>();
