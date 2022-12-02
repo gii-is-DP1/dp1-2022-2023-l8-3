@@ -29,11 +29,12 @@ public class MatchService {
 		return matchRepository.findAll();
 	}
 	
-	public void saveMatch(Match match) {
+	public Match saveMatch(Match match) {
 		matchRepository.save(match);
 		for(Disco disco: match.getDiscos()) {
 		    diskService.saveDisk(disco);
 		}
+		return match;
 	}
 	
 	public Match getMatchById(Integer id) {

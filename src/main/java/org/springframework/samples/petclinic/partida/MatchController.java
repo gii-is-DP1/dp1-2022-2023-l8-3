@@ -54,12 +54,6 @@ public class MatchController {
         return result;
     }
 	
-	
-    
-    
-	
-	
-//Usar estas dos funciones cuando creeis el crear partida bien
 	@GetMapping(value = "/createMatch")
 	public ModelAndView createNewMatch() {
 		ModelAndView result = new ModelAndView(CREATE_MATCH_VIEW);
@@ -159,6 +153,7 @@ public class MatchController {
 
 	@RequestMapping("/{idMatch}/currentMatch")
 	public ModelAndView nextPhase(@PathVariable int idMatch, Match auxMatch, HttpServletResponse response) {
+		
 		response.addHeader("Refresh", "2");
 		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
 		Match match = matchService.getMatchById(idMatch);

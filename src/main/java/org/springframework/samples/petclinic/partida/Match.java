@@ -118,6 +118,7 @@ public class Match extends NamedEntity{
 		this.comentarios = new ArrayList<Comentario>();
 		this.ganadorPartida = GameWinner.UNDEFINED;
 		this.turn = 0;
+		
 		createDisks();
 		createTurns();
 		initializateMap();
@@ -284,7 +285,8 @@ public class Match extends NamedEntity{
 		Integer[] disks = getDiskMoves();
 
 		//Debe haber un unico disco origen
-		if(getDeDisco().length != 1) return "Más de un disco origen o ningu";
+		if(getDeDisco()==null || getDeDisco().length != 1) 
+			return "Más de un disco origen o ninguno";
 
 		Integer jugador = getIdJugadorTurnoActual();
 		Integer enemigo = jugador==PRIMER_JUGADOR ? SEGUNDO_JUGADOR : PRIMER_JUGADOR;

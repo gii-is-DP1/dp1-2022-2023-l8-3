@@ -58,7 +58,7 @@ public class PlayerServiceTest {
 	@Test
 	public void testSavePlayer() {
 		User user = new User("pepe33");
-		Jugador player = new Jugador("Pepe", "García", user);
+		Jugador player = new Jugador("Pepe", "García", user, false);
 		playerService.saveJugador(player);
 		Integer id = player.getId();
 		assertNotNull(playerService.findJugadorById(id));
@@ -67,7 +67,7 @@ public class PlayerServiceTest {
 	@Test
 	public void testDeletePlayer() {
 		User user = new User("maria33");
-		Jugador player = new Jugador("María", "Oliva", user);
+		Jugador player = new Jugador("María", "Oliva", user, false);
 		playerService.saveJugador(player);
 		Integer id = player.getId();
 		try {
