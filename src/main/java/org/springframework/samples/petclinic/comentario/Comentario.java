@@ -66,13 +66,6 @@ public class Comentario extends BaseEntity {
 	public String toString() {
 		return "Comentario [texto=" + texto + ", fechaDePublicacion=" + fechaDePublicacion + ", jugador=" + jugador.getUser().getUsername()+"]";
 	}
-
-	public String claseDeComentario(String username) {
-		if(this.getJugador().getUser().getUsername() == username) 
-			return "jugadorActual";
-		else
-			return "jugadorEnemigo";
-	}
 	
 	public String fechaComentario() {
 		LocalDateTime fecha =  this.getFechaDePublicacion();
