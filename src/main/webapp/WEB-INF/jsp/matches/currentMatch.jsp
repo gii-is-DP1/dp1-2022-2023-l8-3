@@ -61,36 +61,16 @@
 		<div class="seccion2">
 			<div class="chat">
 				<div class="msgs">
-					<c:choose>
-						<c:when test="${match.turnoPrimerJugador()}">
-							<c:forEach items="${match.getComentarios()}" var="c">
-								<c:set var="jugador1" value="${match.jugador1.user.username}"/>
-								<petclinic:comentario msg="${c.getTexto()}" fecha="${c.fechaComentario()}"
-								clase="${c.claseDeComentario(jugador1)}" jugador="${jugador1}"/>
-							</c:forEach>
-						</c:when>
-						<c:otherwise>
-							<c:forEach items="${match.getComentarios()}" var="c">
-								<c:set var="jugador2" value="${match.jugador2.user.username}"/>
-								<petclinic:comentario msg="${c.getTexto()}" fecha="${c.fechaComentario()}"
-								clase="${c.claseDeComentario(jugador2)}" jugador="${jugador2}"/>
-							</c:forEach>
-						</c:otherwise>
-					</c:choose>
+					<c:forEach items="${match.getComentarios()}" var="c">
+						<c:set var="jugador1" value="${c.getJugador().getUser().getUsername()}"/>
+						<petclinic:comentario msg="${c.getTexto()}" fecha="${c.fechaComentario()}"
+							jugador="${jugador1}"/>
+					</c:forEach>
 				</div>
 
 				<form:form class="formmsg" method="post" action="/chat/${match.id}/postMsg">
 					<textarea name="msg" style='width: 80%;' oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'></textarea>
 					<input type="hidden" name="idMatch" value="${match.id}">
-					<c:choose>
-						<c:when test="${match.turnoPrimerJugador()}">
-							<input type="hidden" name="idJugador" value="${match.getJugador1().getId()}">
-						</c:when>
-						<c:otherwise>
-							<input type="hidden" name="idJugador" value="${match.getJugador2().getId()}">
-						</c:otherwise>
-					</c:choose>
-
 					<input type="submit" value="Enviar">	
 				</form:form>
 			</div>
@@ -232,6 +212,11 @@
 				return false;
 		}
 		return true;
+	}
+
+	const chatBox = document.getElementsByClassName("msgs")[0];
+	window.onload = function () {
+		chatBox.scrollTo(0, chatBox.scrollHeight);
 	}
 
 </script>

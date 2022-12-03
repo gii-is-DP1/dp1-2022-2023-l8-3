@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.jugador.Jugador;
 import org.springframework.samples.petclinic.jugador.PlayerService;
 import org.springframework.samples.petclinic.partida.Match;
-import org.springframework.samples.petclinic.partida.MatchRepository;
 import org.springframework.samples.petclinic.partida.MatchService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,26 +33,28 @@ public class ComentarioController {
 	}
 	
 	@PostMapping(value = "/{idMatch}/postMsg")
-	public RedirectView postMsg(@PathVariable int idMatch, @AuthenticationPrincipal Authentication user,
-			@RequestParam String msg, @RequestParam int idJugador){
-		System.out.println("PENEEES");
-		Boolean msgCorrecto = true; //Comprobamos lenguaje vulgar
-		
-		if(msgCorrecto) { 
+	public String postMsg(@PathVariable int idMatch, @AuthenticationPrincipal Authentication user,
+			@RequestParam String msg){
+		RedirectView res = new RedirectView("/matches/"+idMatch+"/currentMatch");
+
+		Integer idJugador = ps.findPlayerByUsername(user.getName()).getId();
+
+	    Match match = ms.getMatchById(idMatch);
+	    
+	    boolean usuarioCorrecto = idJugador == match.getJugador1().getId() || 
+	    		idJugador == match.getJugador2().getId();
+	    
+	    if(usuarioCorrecto && msg!="") {
+		    Jugador j = ps.findJugadorById(idJugador);
 			Comentario c = new Comentario();
-		    Match match = ms.getMatchById(idMatch);
-		    
+
 		    c.setMatch(match);
 		    c.setFechaDePublicacion(LocalDateTime.now());
 		    c.setTexto(msg);
-		    
-		    Jugador j = ps.findJugadorById(idJugador);
 		    c.setJugador(j);
 		    
 		    cs.saveComentario(c);
-		}
-		System.out.println("pitoooooss");
-
-	    return new RedirectView("/matches/"+idMatch+"/currentMatch");
+	    }
+	    return "redirect:/matches/{idMatch}/currentMatch";
 	}
 }
