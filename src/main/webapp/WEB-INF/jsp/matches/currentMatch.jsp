@@ -23,7 +23,7 @@
 
 				<div class="discos disable-select">
 					<c:forEach var="i" begin="0" end="6" >
-						<petclinic:disco indexDisco="${i}" clase="disco ${match.chooseTag(i)}"/>
+						<petclinic:disco indexDisco="${i}" idLoggedPlayer="${idLoggedPlayer}" idCurrentPlayer="${idCurrentPlayer}" itIsPropagationPhase="${match.itIsPropagationPhase()}" clase="disco ${match.chooseTag(i)}"/>
 					</c:forEach>
 				</div>
 
@@ -32,9 +32,6 @@
 					<c:choose>
 							<c:when test="${match.esPropagacion() && isYourTurn}">
 								<input type="submit" value="Siguiente fase"/>
-							</c:when>
-							<c:when test="${!match.esPropagacion()}">
-								<a class="button" href="<c:url value="/matches/${match.id}/currentMatch" />">Siguiente fase </a>
 							</c:when>
 					</c:choose>
 					<c:choose>

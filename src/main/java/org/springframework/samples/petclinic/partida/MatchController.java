@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.jugador.Jugador;
@@ -14,7 +13,6 @@ import org.springframework.samples.petclinic.jugador.PlayerService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -123,27 +121,31 @@ public class MatchController {
 	
 	@GetMapping(value = "/{idMatch}/currentMatch")
 	public ModelAndView showCurrentMatch(@PathVariable int idMatch, @AuthenticationPrincipal Authentication user, HttpServletResponse response) {
-		response.addHeader("Refresh", "5");
 		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
 		Match match = matchService.getMatchById(idMatch);
 		Jugador player1 = match.getJugador1();
 		Jugador player2 = match.getJugador2();
-		Jugador loggedPlayer = playerService.findPlayerByUsername(user.getName());
-        Jugador currentPlayer = match.turnoPrimerJugador() ? match.getJugador1() : match.getJugador2();
-				
+        
 		if(match.esFaseBinaria()) {
-			System.out.println("FASE BINARIA");
 			binaryPhase(match, player1, player2);
 		} else if(match.esFaseContaminacion()) {
-			System.out.println("FASE CONTAMINACION");
 			pollutionPhase(match, player1, player2);
 		} else if(match.esFin()){
-			System.out.println("FIN");
 			result = new ModelAndView(MATCH_STATISTICS_VIEW);
 		}
 		
+		Integer idLoggedPlayer = playerService.findPlayerByUsername(user.getName()).getId();
+        Integer idCurrentPlayer = match.turnoPrimerJugador() ? match.getJugador1().getId() : match.getJugador2().getId();
+        if(idLoggedPlayer != idCurrentPlayer) {
+        	response.addHeader("Refresh", "5");
+        }
+        if(!match.itIsPropagationPhase()) {
+        	response.addHeader("Refresh", "1");
+        }
+        result.addObject("idLoggedPlayer", idLoggedPlayer);
+		result.addObject("idCurrentPlayer", idCurrentPlayer);
+		result.addObject("isYourTurn", idLoggedPlayer == idCurrentPlayer);
 		result.addObject("match", match);
-		result.addObject("isYourTurn", loggedPlayer.getUser().getUsername().equals(currentPlayer.getUser().getUsername()));
 		matchService.saveMatch(match);
 		playerService.saveJugador(player1);
 		playerService.saveJugador(player2);
@@ -152,43 +154,47 @@ public class MatchController {
 	
 
 	@RequestMapping("/{idMatch}/currentMatch")
-	public ModelAndView nextPhase(@PathVariable int idMatch, Match auxMatch, HttpServletResponse response) {
-		
-		response.addHeader("Refresh", "2");
+	public ModelAndView nextPhase(@PathVariable int idMatch, Match auxMatch, @AuthenticationPrincipal Authentication user, HttpServletResponse response) {
+		response.addHeader("Refresh", "1");
 		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
 		Match match = matchService.getMatchById(idMatch);
 		Jugador player1 = match.getJugador1();
 		Jugador player2 = match.getJugador2();
-		
+        
 		if(match.esPropagacion()) {
-			System.out.println("FASE PROPAGACION");
-			System.out.println("Validando");
-
 			match.copyTransientData(auxMatch);
 			//Si es "" es correcto. Si tiene un mensaje es un msg de error
 			String validacion = match.validateMove();
 			result.addObject("error", validacion);
 
 			if(validacion.length()==0) {
-				// Realizar movimiento
-				if(match.turnoPrimerJugador()) {
+				if(match.turnoPrimerJugador()) { // Realizar movimiento
 					movingBacteria(0, player1, auxMatch, match);
 					playerService.saveJugador(player1);
 				} else {
 					movingBacteria(1, player2, auxMatch, match);
 					playerService.saveJugador(player2);
 				}
-				//Pasa turno
 				match.nextTurn();
 				matchService.saveMatch(match);
-			} else {
-				System.out.println("Validación falló");
 			}
 		} else {
-			System.out.println("NO ES PROPAGACIÓN PERO HUBO POST");
+			match.nextTurn();
+			matchService.saveMatch(match);
 		}
-		result.addObject("match", match);
+		
+		addDataToTheView(user, result, match);
+		
 		return result;
+	}
+
+	private void addDataToTheView(Authentication user, ModelAndView result, Match match) {
+		Integer idLoggedPlayer = playerService.findPlayerByUsername(user.getName()).getId();
+        Integer idCurrentPlayer = match.turnoPrimerJugador() ? match.getJugador1().getId() : match.getJugador2().getId();
+        result.addObject("idLoggedPlayer", idLoggedPlayer);
+		result.addObject("idCurrentPlayer", idCurrentPlayer);
+		result.addObject("isYourTurn", idLoggedPlayer == idCurrentPlayer);
+		result.addObject("match", match);
 	}
 	
 	private void movingBacteria(Integer idPlayerMatch, Jugador player, Match auxMatch, Match match) {
