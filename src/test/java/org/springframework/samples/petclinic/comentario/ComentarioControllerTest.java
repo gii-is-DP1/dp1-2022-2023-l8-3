@@ -41,24 +41,24 @@ public class ComentarioControllerTest {
 
     
     @BeforeEach
-//    public void configureMock(){
-//	    Jugador jugador1 = new Jugador("test1", "test1", new User("testUser1","testUser1"));
-//	    Jugador jugador2 = new Jugador("test2", "test2", new User("testUser2","testUser2"));
-//	    jugador1.setId(5);
-//	    jugador2.setId(6);
-//
-//        Match match = new Match(false, jugador1);
-//        match.setName("GameName");
-//        match.setJugador2(jugador2);
-//        match.setId(1);
-//        
-//		given(this.matchService.getMatchById(1)).willReturn(match);
-//		given(this.playerService.findPlayerByUsername("testUser1")).willReturn(jugador1);
-//		given(this.playerService.findPlayerByUsername("testUser2")).willReturn(jugador2);
-//		given(this.playerService.findJugadorById(5)).willReturn(jugador1);
-//		given(this.playerService.findJugadorById(6)).willReturn(jugador2);
-//
-//    }
+    public void configureMock(){
+	    Jugador jugador1 = new Jugador("test1", "test1", new User("testUser1","testUser1"), false);
+	    Jugador jugador2 = new Jugador("test2", "test2", new User("testUser2","testUser2"), false);
+	    jugador1.setId(5);
+	    jugador2.setId(6);
+
+        Match match = new Match(false, jugador1);
+        match.setName("GameName");
+        match.setJugador2(jugador2);
+        match.setId(1);
+        
+		given(this.matchService.getMatchById(1)).willReturn(match);
+		given(this.playerService.findPlayerByUsername("testUser1")).willReturn(jugador1);
+		given(this.playerService.findPlayerByUsername("testUser2")).willReturn(jugador2);
+		given(this.playerService.findJugadorById(5)).willReturn(jugador1);
+		given(this.playerService.findJugadorById(6)).willReturn(jugador2);
+
+    }
     
     
     
