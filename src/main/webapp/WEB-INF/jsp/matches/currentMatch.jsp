@@ -35,8 +35,8 @@
 							</c:when>
 					</c:choose>
 					<c:choose>
-							<c:when test="${match.getMatchTime()>=2}">
-								<a class="button" href="<c:url value="/matches/${match.id}/completedMatch" />">Abandonar partida </a>
+							<c:when test="${match.getMatchTime()>=0}">
+								<a class="button" href="<c:url value="/matches/${match.id}/abandonedMatch" />">Abandonar partida </a>
 							</c:when>
 							<c:otherwise>
 								<a class="button" href="<c:url value="#" />">Abandonar partida </a>

@@ -42,8 +42,8 @@ public class ComentarioControllerTest {
     
     @BeforeEach
     public void configureMock(){
-	    Jugador jugador1 = new Jugador("test1", "test1", new User("testUser1","testUser1"));
-	    Jugador jugador2 = new Jugador("test2", "test2", new User("testUser2","testUser2"));
+	    Jugador jugador1 = new Jugador("test1", "test1", new User("testUser1","testUser1"), false);
+	    Jugador jugador2 = new Jugador("test2", "test2", new User("testUser2","testUser2"), false);
 	    jugador1.setId(5);
 	    jugador2.setId(6);
 
