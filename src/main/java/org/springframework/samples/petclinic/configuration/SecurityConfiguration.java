@@ -53,7 +53,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/cambiarEstadoOnline").hasAnyAuthority("admin","jugador")
 				.antMatchers("/cambiarEstadoOffline").permitAll()
 				.antMatchers("/perfil").hasAnyAuthority("jugador")
-				.antMatchers("/vets/**").authenticated()
+				.antMatchers("/jugadores/{jugadorId}/playerFriends").hasAnyAuthority("jugador")
 				.anyRequest().denyAll()
 				.and()
 				 	.formLogin().defaultSuccessUrl("/cambiarEstadoOnline")
