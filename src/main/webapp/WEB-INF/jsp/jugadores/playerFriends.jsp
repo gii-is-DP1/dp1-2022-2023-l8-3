@@ -8,21 +8,19 @@
 	<h2>Amigos</h2>
 
 	<table id="playerFriends" class="table table-striped">
-
-		<tbody>
-
-			<c:forEach items="${playerFriends}" var="friend">
-				<tr>
-					<td><c:out value="${friend.user.username}" /></td>
-				</tr>
-			</c:forEach>
-
-
+		<tbody>				
+			<div>
+				<c:forEach items="${playerFriends}" var="friend">
+					<tr>
+						<td><c:out value="${friend.user.username}" /></td>
+					</tr>
+				</c:forEach>
+			</div>					
 		</tbody>
 	</table>
-
-
-
-
+	<div>
+		<a class="btn btn-danger" href="<c:url value="/jugadores/${jugadorId}/friendRequests}" />">Solicitudes de amistad</a>
+		<a class="btn btn-danger" href="<c:url value="/jugadores/addFriends" />">Añadir amigos</a>
+	</div>
 
 </petclinic:layout>
