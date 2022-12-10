@@ -1,6 +1,7 @@
 
 package org.springframework.samples.petclinic.jugador;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -57,6 +58,15 @@ public class PlayerService {
 	@Transactional(readOnly = true)
 	public Jugador findPlayerByUsername(String username) throws DataAccessException {
 		return playerRepo.findByUserName(username);
+	}
+	
+	@Transactional(readOnly = true)
+	public List<Jugador> findPlayerByKeyword(String keyword) {
+		List<Jugador> result = new ArrayList<Jugador>();
+		if(keyword != null) {
+			result = playerRepo.findByKeyword(keyword);
+		}
+		return result;
 	}
 
 	@Transactional
