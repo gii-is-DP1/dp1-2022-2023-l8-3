@@ -7,27 +7,31 @@
 <petclinic:layout pageName="friends">
 	<h2>Amigos</h2>
 
-	<table id="playerFriends" class="table table-striped">
-		<tbody>
-			<div>
-				<c:forEach items="${playerFriends}" var="friend">
-					<tr>
-						<td><c:out value="${friend.user.username}" /></td>
-						<td><a
-							href="<c:url value="/jugadores/${jugadorId}/playerFriends/${friend.id}/delete" />">
-
-								<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-						</a></td>
-					</tr>
-				</c:forEach>
-			</div>
-		</tbody>
-	</table>
+	<c:choose>
+		<c:when test="${playerFriends.size() == 0}">
+			<div><br> <label>You don't have any friends yet!</label></div> <br>
+		</c:when>
+		<c:otherwise>
+			<table id="playerFriends" class="table table-striped">
+				<tbody>
+					<div>					
+						<c:forEach items="${playerFriends}" var="friend">
+							<tr>
+								<td><c:out value="${friend.user.username}" /></td>
+								<td>
+									<a href="<c:url value="/jugadores/${jugadorId}/playerFriends/${friend.id}/delete" />">
+									<span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+								</td>
+							</tr>
+						</c:forEach>
+					</div>
+				</tbody>
+			</table>
+		</c:otherwise>
+	</c:choose>
 	<div>
-		<a class="btn btn-danger"
-			href="<c:url value="/jugadores/${jugadorId}/friendRequests}" />">Solicitudes
-			de amistad</a> <a class="btn btn-danger"
-			href="<c:url value="/jugadores/addFriends" />">Añadir amigos</a>
+		<a class="btn btn-warning" href="<c:url value="/jugadores/friendRequests" />">Solicitudes de amistad</a> 
+		<a class="btn btn-warning" href="<c:url value="/jugadores/addFriends" />">Añadir amigos</a>
 	</div>
 
 </petclinic:layout>

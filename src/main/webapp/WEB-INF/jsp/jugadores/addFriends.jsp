@@ -26,7 +26,7 @@
 	                    <c:out value="${player.user.username} "/>
 	                </td>
 	                <td>
-	                	<a class="btn btn-success" href="<c:url value="#" />">Add friend</a>
+	                	<a class="btn btn-success" href="<c:url value="/jugadores/addFriends/${loggedPlayerId}/${player.id}" />">Add friend</a>
 	                </td>
 	            </tr>
 	        </c:forEach>

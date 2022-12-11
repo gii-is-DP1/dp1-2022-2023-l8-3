@@ -105,18 +105,28 @@ public class Jugador extends Person {
 	public List<Jugador> playerFriends() {
 		List<Jugador> res = new ArrayList<>();
 		for (FriendRequest r : sentFriendRequests) {
-			if (r.getResultado()) {
+			if (r.getResultado() != null && r.getResultado()) {
 				res.add(r.getJugador2());
 			}
 
 		}
 		for (FriendRequest r : receivedFriendRequests) {
-			if (r.getResultado()) {
+			if (r.getResultado() != null && r.getResultado()) {
 				res.add(r.getJugador1());
 			}
 
 		}
 
+		return res;
+	}
+	
+	public List<Jugador> playersWhoHaveSentYouAFriendRequest() {
+		List<Jugador> res = new ArrayList<Jugador>();
+		for(FriendRequest r : receivedFriendRequests) {
+			if(r.getResultado() == null) {
+				res.add(r.getJugador1());
+			}
+		}
 		return res;
 	}
 
