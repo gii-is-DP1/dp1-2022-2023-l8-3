@@ -24,5 +24,7 @@ public interface PlayerRepository extends CrudRepository<Jugador, Integer>{
 	@Query("SELECT DISTINCT jugador FROM Jugador jugador WHERE jugador.user.username LIKE :username")
     public Jugador findByUserName(@Param("username") String userName);
 
+	@Query("SELECT j FROM Jugador j WHERE j.user.username LIKE %?1%")
+	public List<Jugador> findByKeyword(String keyword);
 
 }

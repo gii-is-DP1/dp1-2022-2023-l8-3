@@ -55,13 +55,15 @@
 		<a href="${fn:escapeXml(playerMatchesUrl)}" class="btn btn-default">Historial
 			de partidas</a>
 	</sec:authorize>
-	
 
-	<spring:url value="" var="amigosUrl">
-		<spring:param name="jugadorId" value="${jugador.id}" />
-	</spring:url>
-	<a href="${fn:escapeXml(amigosUrl)}" class="btn btn-default">Lista
-		de amigos</a>
+
+	<sec:authorize access="hasAuthority('jugador')">
+		<spring:url value="{jugadorId}/playerFriends" var="amigosUrl">
+			<spring:param name="jugadorId" value="${jugador.id}" />
+		</spring:url>
+		<a href="${fn:escapeXml(amigosUrl)}" class="btn btn-default">Lista
+			de amigos</a>
+	</sec:authorize>
 
 
 	<sec:authorize access="hasAuthority('admin')">

@@ -122,6 +122,7 @@ public class Match extends NamedEntity{
 		this.abandonada = false;
 		this.ganadorPartida = GameWinner.UNDEFINED;
 		this.turn = 0;
+		
 		createDisks();
 		createTurns();
 		initializateMap();
@@ -176,6 +177,9 @@ public class Match extends NamedEntity{
 	
 	// ----------------------------------------------------------------------------------------------- //
 	
+	public Jugador getPlayer(Integer id) {
+		return id == 0 ? jugador1 : jugador2;
+	}
 
 	public Disco getDisco(Integer diskId) {
 		return discos.get(diskId);
@@ -289,7 +293,8 @@ public class Match extends NamedEntity{
 		Integer[] disks = getDiskMoves();
 
 		//Debe haber un unico disco origen
-		if(getDeDisco().length != 1) return "Más de un disco origen o ningu";
+		if(getDeDisco()==null || getDeDisco().length != 1) 
+			return "Más de un disco origen o ninguno";
 
 		Integer jugador = getIdJugadorTurnoActual();
 		Integer enemigo = jugador==PRIMER_JUGADOR ? SEGUNDO_JUGADOR : PRIMER_JUGADOR;
@@ -358,13 +363,20 @@ public class Match extends NamedEntity{
 		checkToAddSarcina(idPlayerMatch, player, targetDiskId-1);
 	}
 	
-	private void checkToAddSarcina(Integer idPlayerMatch, Jugador player, Integer diskId) {
+	private String checkToAddSarcina(Integer idPlayerMatch, Jugador player, Integer diskId) {
+		String message = "";
 		if(getDisco(diskId).getNumeroDeBacterias(idPlayerMatch+1) == 5) {
-			getDisco(diskId).eliminarBacterias(idPlayerMatch, 5);
-			player.addBacteria(5);
-			getDisco(diskId).annadirSarcina(idPlayerMatch);
-			player.decreaseSarcinas();
+			if(player.getSarcinas() > 0) {
+				getDisco(diskId).eliminarBacterias(idPlayerMatch, 5);
+				player.addBacteria(5);
+				getDisco(diskId).annadirSarcina(idPlayerMatch);
+				player.decreaseSarcinas();
+			} else {
+				ganadorPartida = player.getId() == jugador1.getId() ? GameWinner.SECOND_PLAYER : GameWinner.FIRST_PLAYER;
+				message = "You have no sarcinas left";
+			}
 		}
+		return message;
 	}
 	
 	
@@ -388,8 +400,10 @@ public class Match extends NamedEntity{
 		}
 	}
 	
-	public void pollutionPhase(Jugador player1, Jugador player2) {
-		for(int i=0; i<NUMBER_OF_DISKS; i++) {
+	public String pollutionPhase(Jugador player1, Jugador player2) {
+		String message = "";
+		Integer i = 0;
+		while(i < NUMBER_OF_DISKS && ganadorPartida == GameWinner.UNDEFINED) {
 			Integer numberOfBacteriaOfPlayer1 = getDiscos().get(i).getNumBact1();
 			Integer numberOfBacteriaOfPlayer2 = getDiscos().get(i).getNumBact2();
 			Integer numberOfSarcinaOfPlayer1 = getDiscos().get(i).getNumSarc1();
@@ -399,7 +413,71 @@ public class Match extends NamedEntity{
 			} else if((numberOfSarcinaOfPlayer1*5 + numberOfBacteriaOfPlayer1)<(numberOfSarcinaOfPlayer2*5 + numberOfBacteriaOfPlayer2)) {
 				player2.increseContaminationNumber();
 			}
+			i++;
 		}
+		if(player1.getNumeroDeContaminacion() == 9 || player2.getNumeroDeContaminacion() == 9) {
+			if(player1.getNumeroDeContaminacion() > player2.getNumeroDeContaminacion()) {
+				ganadorPartida = GameWinner.SECOND_PLAYER;
+				message = "The number of contamination has determined the winner";
+			} else if(player2.getNumeroDeContaminacion() > player1.getNumeroDeContaminacion()) {
+				ganadorPartida = GameWinner.FIRST_PLAYER;
+				message = "The number of contamination has determined the winner";
+			} else {
+				message = determineWinner();
+			}
+		}
+		return message;
+	}
+	
+	public String determineWinner() {
+		String message = "";
+		if(jugador1.getNumeroDeContaminacion() > jugador2.getNumeroDeContaminacion()) {
+			ganadorPartida = GameWinner.SECOND_PLAYER;
+			message = "The number of contamination has determined the winner";
+		} else if (jugador2.getNumeroDeContaminacion() > jugador1.getNumeroDeContaminacion()) {
+			ganadorPartida = GameWinner.FIRST_PLAYER;
+			message = "The number of contamination has determined the winner";
+		} else {
+			if(totalNumberOfTokens()[0] > totalNumberOfTokens()[1]) {
+				ganadorPartida = GameWinner.SECOND_PLAYER;
+				message = "The total number of tokens has determined the winner.";
+			} else if(totalNumberOfTokens()[1] > totalNumberOfTokens()[0]) {
+				ganadorPartida = GameWinner.FIRST_PLAYER;
+				message = "The total number of tokens has determined the winner.";
+			} else {
+				if(totalNumberOfSarcines()[0] > totalNumberOfSarcines()[1]) {
+					ganadorPartida = GameWinner.SECOND_PLAYER;
+					message = "The total number of sarcinas has determined the winner.";
+				} else if(totalNumberOfSarcines()[1] > totalNumberOfSarcines()[0]) {
+					ganadorPartida = GameWinner.FIRST_PLAYER;
+					message = "The total number of sarcinas has determined the winner.";
+				} else {
+					ganadorPartida = GameWinner.DRAW;
+					message = "No winner can be determined";
+				}
+			}
+		}
+		return message;
+	}
+	
+	public Integer[] totalNumberOfTokens() {
+		Integer player1Fiches = 0;
+		Integer player2Fiches = 0;
+		for(int i = 0; i<NUMBER_OF_DISKS; i++) {
+			player1Fiches += getDiscos().get(i).getNumBact1() + getDiscos().get(i).getNumSarc1();
+			player2Fiches += getDiscos().get(i).getNumBact2() + getDiscos().get(i).getNumSarc2();
+		}
+		return new Integer[] {player1Fiches, player2Fiches};
+	}
+	
+	public Integer[] totalNumberOfSarcines() {
+		Integer player1Sarcines = 0;
+		Integer player2Sarcines = 0;
+		for(int i = 0; i<NUMBER_OF_DISKS; i++) {
+			player1Sarcines += getDiscos().get(i).getNumSarc1();
+			player2Sarcines += getDiscos().get(i).getNumSarc2();
+		}
+		return new Integer[] {player1Sarcines, player2Sarcines};
 	}
 	
 	public Boolean turnoPrimerJugador() {

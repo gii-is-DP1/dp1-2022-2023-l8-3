@@ -7,12 +7,10 @@
               description="Texto del mensaje" %>
 <%@ attribute name="fecha" required="true" rtexprvalue="true"
               description="Fecha del mensaje" %>
-<%@ attribute name="clase" required="true" rtexprvalue="true"
-              description="Clase del div. Es jugadorActual o jugadorEnemigo" %>
 <%@ attribute name="jugador" required="true" rtexprvalue="true"
               description="Nombre usuario del jugador" %>
 
-<div class="comentario ${clase}">
+<div class="comentario">
   <div style="width: 20%;">
     <span>${fecha}</span>
     <span>${jugador}:</span>

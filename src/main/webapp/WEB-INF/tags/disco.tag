@@ -7,6 +7,12 @@
               description="Clase de div disco" %>
 <%@ attribute name="indexDisco" required="true" rtexprvalue="true"
               description="Numero del disco" %>
+<%@ attribute name="idLoggedPlayer" required="true" rtexprvalue="true"
+              description="Jugador logueado" %>
+<%@ attribute name="idCurrentPlayer" required="true" rtexprvalue="true"
+              description="Jugador al que le toca mover bacterias" %>
+<%@ attribute name="itIsPropagationPhase" required="true" rtexprvalue="true"
+              description="Devuelve si es la fase de propagación o no" %>
 
 <c:set var="esteDisco" value="${match.getDisco(indexDisco)}"/>
 <c:set var="numeroDisco" value="${indexDisco + 1}"/>
@@ -15,7 +21,10 @@
 
   <label for="disco${numeroDisco}" class="pointer discoLabel">
     ${numeroDisco}
-    <form:checkbox class="checkbox" path="deDisco"  id="disco${numeroDisco}" value="${numeroDisco}" onchange="toggleCheckbox(this)"/>
+    <c:if test="${idLoggedPlayer == idCurrentPlayer && itIsPropagationPhase}">
+    		<form:checkbox class="checkbox" path="deDisco" id="disco${numeroDisco}" value="${numeroDisco}" onchange="toggleCheckbox(this)"/>
+    </c:if>
+    
   </label>
 
   <div class="bs1">
@@ -45,3 +54,4 @@
   </div>
 
 </div>
+

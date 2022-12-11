@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.jugador.Jugador;
@@ -14,7 +13,6 @@ import org.springframework.samples.petclinic.jugador.PlayerService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,12 +54,6 @@ public class MatchController {
         return result;
     }
 	
-	
-    
-    
-	
-	
-//Usar estas dos funciones cuando creeis el crear partida bien
 	@GetMapping(value = "/createMatch")
 	public ModelAndView createNewMatch() {
 		ModelAndView result = new ModelAndView(CREATE_MATCH_VIEW);
@@ -70,8 +62,6 @@ public class MatchController {
 	}
 	@PostMapping(value = "/createMatch")
 	public RedirectView createMatch(@RequestParam String nombre,@RequestParam Boolean tipoPartida, @AuthenticationPrincipal Authentication user) {
-		
-
 		    String playerName = user.getName();
 	        Jugador player = playerService.findPlayerByUsername(playerName);
 	        Match match = new Match(false, player);
@@ -87,11 +77,8 @@ public class MatchController {
 		    String matchId=String.valueOf(id);
 		    RedirectView result = new RedirectView("/matches/"+matchId+"/waitForMatch");
 		    return result;
-		    
-		
-
-
 	}
+	
 	@GetMapping(value ="/{idMatch}/waitForMatch")
 	public ModelAndView showWait(@PathVariable("idMatch") int matchId, @AuthenticationPrincipal Authentication user, HttpServletResponse response) {
 	    response.addHeader("Refresh", "1.85");
@@ -111,7 +98,6 @@ public class MatchController {
 	    
 	}
 	
-	
 	@PostMapping(value ="/{idMatch}/waitForMatch")
 	public RedirectView post(@PathVariable("idMatch") Integer matchId, @AuthenticationPrincipal Authentication user) {
 	    String playerName = user.getName();
@@ -125,77 +111,109 @@ public class MatchController {
         
 	}
 	
-	
-	
-
-	
 	@GetMapping(value = "/{idMatch}/currentMatch")
 	public ModelAndView showCurrentMatch(@PathVariable int idMatch, @AuthenticationPrincipal Authentication user, HttpServletResponse response) {
-		response.addHeader("Refresh", "5");
-		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
+		ModelAndView result;
 		Match match = matchService.getMatchById(idMatch);
 		Jugador player1 = match.getJugador1();
 		Jugador player2 = match.getJugador2();
-		Jugador loggedPlayer = playerService.findPlayerByUsername(user.getName());
-        Jugador currentPlayer = match.turnoPrimerJugador() ? match.getJugador1() : match.getJugador2();
-				
-		if(match.esFaseBinaria()) {
-			System.out.println("FASE BINARIA");
-			binaryPhase(match, player1, player2);
-		} else if(match.esFaseContaminacion()) {
-			System.out.println("FASE CONTAMINACION");
-			pollutionPhase(match, player1, player2);
-		} else if(match.esFin()){
-			System.out.println("FIN");
+		
+		if(match.getGanadorPartida() == GameWinner.UNDEFINED) {
+			result = new ModelAndView(CURRENT_MATCH_VIEW);
+			if(match.esFaseBinaria()) {
+				binaryPhase(match, player1, player2);
+			} else if(match.esFaseContaminacion()) {
+				pollutionPhase(match, player1, player2);
+			}
+		} else {
 			result = new ModelAndView(MATCH_STATISTICS_VIEW);
+			finishMatch(match);
 		}
 		
-		result.addObject("match", match);
-		result.addObject("isYourTurn", loggedPlayer.getUser().getUsername().equals(currentPlayer.getUser().getUsername()));
+		refresh(user, match, match.itIsPropagationPhase(), response);
+        addDataToTheView(user, result, match);
 		matchService.saveMatch(match);
 		playerService.saveJugador(player1);
 		playerService.saveJugador(player2);
+		
 		return result;
+	}
+
+	private void finishMatch(Match match) {
+		match.setFinPartida(LocalDateTime.now());
+		match.getJugador1().setNumeroDeContaminacion(0);
+		match.getJugador2().setNumeroDeContaminacion(0);
+		match.getJugador1().setBacterias(20);
+		match.getJugador1().setSarcinas(4);
+		match.getJugador2().setBacterias(20);
+		match.getJugador2().setSarcinas(4);
+	}
+	
+	/**
+	 * Dependiendo de diferentes factores, refresca o no la pantalla.
+	 * @param user
+	 * @param match
+	 * @param itIsPropagationPhase
+	 * @param response
+	 */
+	public void refresh(Authentication user, Match match, Boolean itIsPropagationPhase, HttpServletResponse response) {
+		Integer idLoggedPlayer = playerService.findPlayerByUsername(user.getName()).getId();
+        Integer idCurrentPlayer = match.turnoPrimerJugador() ? match.getJugador1().getId() : match.getJugador2().getId();
+		if (itIsPropagationPhase) {
+			if(idLoggedPlayer != idCurrentPlayer) {
+	        	response.addHeader("Refresh", "5");
+	        }
+		} else {
+			response.addHeader("Refresh", "1");
+		}
 	}
 	
 
 	@RequestMapping("/{idMatch}/currentMatch")
-	public ModelAndView nextPhase(@PathVariable int idMatch, Match auxMatch, HttpServletResponse response) {
-		response.addHeader("Refresh", "2");
+	public ModelAndView nextPhase(@PathVariable int idMatch, Match auxMatch, @AuthenticationPrincipal Authentication user, HttpServletResponse response) {
 		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
 		Match match = matchService.getMatchById(idMatch);
 		Jugador player1 = match.getJugador1();
 		Jugador player2 = match.getJugador2();
 		
 		if(match.esPropagacion()) {
-			System.out.println("FASE PROPAGACION");
-			System.out.println("Validando");
-
 			match.copyTransientData(auxMatch);
 			//Si es "" es correcto. Si tiene un mensaje es un msg de error
 			String validacion = match.validateMove();
 			result.addObject("error", validacion);
 
 			if(validacion.length()==0) {
-				// Realizar movimiento
-				if(match.turnoPrimerJugador()) {
+				if(match.turnoPrimerJugador()) { // Realizar movimiento
 					movingBacteria(0, player1, auxMatch, match);
 					playerService.saveJugador(player1);
 				} else {
 					movingBacteria(1, player2, auxMatch, match);
 					playerService.saveJugador(player2);
 				}
-				//Pasa turno
 				match.nextTurn();
 				matchService.saveMatch(match);
-			} else {
-				System.out.println("Validación falló");
 			}
+		} else if(match.esFin()) {
+			match.determineWinner();
+			result = new ModelAndView(MATCH_STATISTICS_VIEW);
+			finishMatch(match);
 		} else {
-			System.out.println("NO ES PROPAGACIÓN PERO HUBO POST");
+			match.nextTurn();
+			matchService.saveMatch(match);
 		}
-		result.addObject("match", match);
+		refresh(user, match, match.itIsPropagationPhase(), response);
+		addDataToTheView(user, result, match);
+		
 		return result;
+	}
+
+	private void addDataToTheView(Authentication user, ModelAndView result, Match match) {
+		Integer idLoggedPlayer = playerService.findPlayerByUsername(user.getName()).getId();
+        Integer idCurrentPlayer = match.turnoPrimerJugador() ? match.getJugador1().getId() : match.getJugador2().getId();
+        result.addObject("idLoggedPlayer", idLoggedPlayer);
+		result.addObject("idCurrentPlayer", idCurrentPlayer);
+		result.addObject("isYourTurn", idLoggedPlayer == idCurrentPlayer);
+		result.addObject("match", match);
 	}
 	
 	private void movingBacteria(Integer idPlayerMatch, Jugador player, Match auxMatch, Match match) {
@@ -219,13 +237,13 @@ public class MatchController {
 		match.nextTurn();
 	}
 	
-	@RequestMapping("/{idMatch}/completedMatch")
-	public RedirectView completedMatch(@PathVariable int idMatch) {
-		RedirectView result = new RedirectView();
+	@RequestMapping("/{idMatch}/abandonedMatch")
+	public RedirectView abandonedMatch(@PathVariable int idMatch, Authentication user) {
+		RedirectView result = new RedirectView("/matches/"+idMatch+"/currentMatch");
 		Match match = matchService.getMatchById(idMatch);
-		match.setFinPartida(LocalDateTime.now());
+		Jugador loggedPlayer = playerService.findPlayerByUsername(user.getName());
+		match.setGanadorPartida(loggedPlayer == match.getJugador1() ? GameWinner.SECOND_PLAYER : GameWinner.FIRST_PLAYER);
 		matchService.saveMatch(match);
-		result.setUrl("/matches/{idMatch}/statistics");
 		return result;
 	}
 	@GetMapping("/{idMatch}/abandoned")
