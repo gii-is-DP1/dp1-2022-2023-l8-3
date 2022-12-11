@@ -82,6 +82,7 @@ public class AchievementController {
 		result.addObject("achievement", achievement);
 		result.addObject("metrics", List.of(Metrics.values()));
 		result.addObject("difficulty", List.of(AchievementDifficulty.values()));
+		result.addObject("visibility", List.of(Visibility.values()));
 		return result;
 	}
 	
