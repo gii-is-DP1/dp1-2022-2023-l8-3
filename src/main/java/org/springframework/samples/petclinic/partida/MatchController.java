@@ -35,6 +35,8 @@ public class MatchController {
 	private static final String CREATE_MATCH_VIEW = "/matches/createMatch";
 	private static final String WAIT_MATCH_VIEW = "/matches/waitForMatch";
 	private static final String LIST_MATCHES = "/matches/matchesList";
+	private static final String ABANDONED = "/matches/abandoned";
+
 
 	private MatchService matchService;
 	private PlayerService playerService;
@@ -226,6 +228,18 @@ public class MatchController {
 		result.setUrl("/matches/{idMatch}/statistics");
 		return result;
 	}
+	@GetMapping("/{idMatch}/abandoned")
+	public ModelAndView abandonedMatch(@PathVariable int idMatch, @AuthenticationPrincipal Authentication user) {
+	    ModelAndView result = new ModelAndView(ABANDONED);
+	    String playerName = user.getName();
+        Jugador player = playerService.findPlayerByUsername(playerName);
+        Match match = matchService.getMatchById(idMatch);
+	    result.addObject("jugador", player);
+	    result.addObject("match", match);
+	    return result;
+	}
+	
+	
 	
 	@GetMapping("/{idMatch}/statistics")
 	public ModelAndView matchStatistics(@PathVariable int idMatch) {

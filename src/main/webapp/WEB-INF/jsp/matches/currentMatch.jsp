@@ -39,10 +39,10 @@
 					</c:choose>
 					<c:choose>
 							<c:when test="${match.getMatchTime()>=2}">
-								<a class="button" href="<c:url value="/matches/${match.id}/completedMatch" />">Abandonar partida </a>
+								<a class="button" href="<c:url value="/matches/${match.id}/abandoned" />">Abandonar partida </a>
 							</c:when>
 							<c:otherwise>
-								<a class="button" href="<c:url value="#" />">Abandonar partida </a>
+								<a class="button" href="<c:url value="#"/>" onclick="alert('Debes esperar 2 minutos para abandonar te quedan ${match.getMatchTime()} segundos');">Abandonar partida </a>
 							</c:otherwise>
 					</c:choose>
 					
