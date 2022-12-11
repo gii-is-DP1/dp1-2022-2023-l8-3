@@ -10,6 +10,7 @@ import org.springframework.samples.petclinic.user.Authorities;
 import org.springframework.samples.petclinic.user.User;
 import org.springframework.samples.petclinic.user.UserService;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.samples.petclinic.partida.GameWinner;
 import org.springframework.samples.petclinic.partida.Match;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 public class PlayerController {
@@ -224,7 +226,7 @@ public class PlayerController {
 
 	@GetMapping(value = "/jugadores/{jugadorId}/playerFriends")
 	public ModelAndView showFriendsOfAPlayer(@PathVariable("jugadorId") int jugadorId) {
-		ModelAndView result = new ModelAndView();
+		ModelAndView result = new ModelAndView("/jugadores/playerFriends");
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUser(auth.getName()).get();
 		String username = user.getUsername();
@@ -232,9 +234,8 @@ public class PlayerController {
 
 		for (Authorities authority : user.getAuthorities()) {
 			if (authority.getAuthority().equals("jugador")
-					|| playerService.findPlayerByUsername(auth.getName()).getId() == jugadorId) {
+					&& playerService.findPlayerByUsername(auth.getName()).getId() == jugadorId) {
 
-				result = new ModelAndView("/jugadores/playerFriends");
 				Collection<Jugador> f = player.playerFriends();
 				result.addObject("jugadorId", jugadorId);
 				result.addObject("playerFriends", f);
@@ -244,14 +245,68 @@ public class PlayerController {
 		return result;
 	}
 
-	@RequestMapping(value = "/jugadores/addFriends")
-	public ModelAndView addFriends(Model model, @Param("keyword") String keyword) {
+	@GetMapping(value = "/jugadores/friendRequests")
+	public ModelAndView friendRequests(@AuthenticationPrincipal Authentication user) {
+		ModelAndView result = new ModelAndView("/jugadores/friendRequests");
+		List<Jugador> listPlayers = playerService.findPlayerByUsername(user.getName()).playersWhoHaveSentYouAFriendRequest();
+
+		result.addObject("loggedPlayerId", playerService.findPlayerByUsername(user.getName()).getId());
+		result.addObject("listPlayers", listPlayers);
+
+		return result;
+	}
+	
+	@RequestMapping(value = "/jugadores/friendRequests/{player1Id}/{player2Id}/{result}")
+	public ModelAndView friendRequests(@PathVariable("player1Id") int player1Id, @PathVariable("player2Id") int player2Id, @PathVariable("result") boolean result) {
+		ModelAndView mv;
+		String message = "";
+		
+		FriendRequest fr = friendRequestService.getFriendRequestByPlayers(player1Id, player2Id);
+		fr.setResultado(result);
+		friendRequestService.saveFriendRequest(fr);
+		
+		if(result) {
+			message = "Request successfully accepted";
+		} else {
+			message = "Request successfully declined";
+		}
+		
+		mv = new ModelAndView("/jugadores/friendRequests");
+		mv.addObject("message", message);
+		
+		
+		return mv;
+	}
+	
+	@GetMapping(value = "/jugadores/addFriends")
+	public ModelAndView addFriends(Model model, @Param("keyword") String keyword, @AuthenticationPrincipal Authentication user) {
 		ModelAndView result = new ModelAndView("/jugadores/addFriends");
 		List<Jugador> listPlayers = playerService.findPlayerByKeyword(keyword);
 
+		result.addObject("loggedPlayerId", playerService.findPlayerByUsername(user.getName()).getId());
 		result.addObject("listPlayers", listPlayers);
 		model.addAttribute("keyword", keyword);
 
+		return result;
+	}
+	
+	@RequestMapping(value = "/jugadores/addFriends/{player1Id}/{player2Id}")
+	public ModelAndView addFriends(@PathVariable("player1Id") int player1Id, @PathVariable("player2Id") int player2Id) {
+		ModelAndView result;
+		String message = "";
+		
+		if(friendRequestService.getFriendRequestByPlayers(player1Id, player2Id) != null) {
+			message = "You have already sent a friend request to this player";
+		} else if(friendRequestService.getFriendRequestByPlayers(player2Id, player1Id) != null) {
+			message = "You have a pending friend request from this player";
+		} else {
+			friendRequestService.saveFriendRequest(new FriendRequest(playerService.findJugadorById(player1Id), playerService.findJugadorById(player2Id)));
+			message = "Friend request has been sent successfully";
+		}
+		
+		result = new ModelAndView("/jugadores/addFriends");
+		result.addObject("message", message);
+		
 		return result;
 	}
 
@@ -261,15 +316,24 @@ public class PlayerController {
 		ModelAndView result = new ModelAndView();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUser(auth.getName()).get();
+		Boolean hasDeletedFriend = false;
+		
 		for (Authorities authority : user.getAuthorities()) {
-			if (authority.getAuthority().equals("jugador")
-					|| playerService.findPlayerByUsername(auth.getName()).getId() == jugadorId1) {
-				friendRequestService
-						.deleteFriendRequest(friendRequestService.getFriendRequestByPlayers(jugadorId1, jugadorId2));
-				result = showFriendsOfAPlayer(jugadorId1);
-				result.addObject("message", "Friend was deleted succesfully");
+			if (authority.getAuthority().equals("jugador") && playerService.findPlayerByUsername(auth.getName()).getId() == jugadorId1) {
+				if(friendRequestService.getFriendRequestByPlayers(jugadorId1, jugadorId2) != null) {
+					friendRequestService.deleteFriendRequest(friendRequestService.getFriendRequestByPlayers(jugadorId1, jugadorId2));
+					hasDeletedFriend = true;
+				} else if(friendRequestService.getFriendRequestByPlayers(jugadorId2, jugadorId1) != null) {
+					friendRequestService.deleteFriendRequest(friendRequestService.getFriendRequestByPlayers(jugadorId2, jugadorId1));
+					hasDeletedFriend = true;
+				}
 			}
-
+		}
+		
+		result = showFriendsOfAPlayer(jugadorId1);
+		
+		if (hasDeletedFriend) {
+			result.addObject("message", "Friend was deleted succesfully");
 		}
 
 		return result;
