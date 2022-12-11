@@ -15,6 +15,7 @@ import org.springframework.samples.petclinic.disco.Disco;
 import org.springframework.samples.petclinic.disco.DishRepository;
 import org.springframework.samples.petclinic.partida.Match;
 import org.springframework.samples.petclinic.partida.MatchRepository;
+import org.springframework.samples.petclinic.statistics.Achievement;
 
 @Service
 public class PlayerService {
@@ -59,11 +60,11 @@ public class PlayerService {
 	public Jugador findPlayerByUsername(String username) throws DataAccessException {
 		return playerRepo.findByUserName(username);
 	}
-	
+
 	@Transactional(readOnly = true)
 	public List<Jugador> findPlayerByKeyword(String keyword) {
 		List<Jugador> result = new ArrayList<Jugador>();
-		if(keyword != null) {
+		if (keyword != null) {
 			result = playerRepo.findByKeyword(keyword);
 		}
 		return result;
@@ -115,5 +116,4 @@ public class PlayerService {
 		userRepo.save(jugador.getUser());
 		authService.saveAuthorities(jugador.getUser().getUsername(), "jugador");
 	}
-
 }
