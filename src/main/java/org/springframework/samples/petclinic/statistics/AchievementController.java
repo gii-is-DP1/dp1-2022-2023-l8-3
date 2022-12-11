@@ -92,11 +92,23 @@ public class AchievementController {
 		if(br.hasErrors()) {
 			result = new ModelAndView(ACHIEVEMENTS_FORM, br.getModel());
 		} else {
-			Achievement achievementToBeUpdated = achievementService.getAchievementById(id);
-			BeanUtils.copyProperties(achievement, achievementToBeUpdated, "id");
-			achievementService.saveAchievement(achievementToBeUpdated);
-			result = showAchievements();
-			result.addObject("message", "The achievement was updated succesfully");
+			boolean b=false;
+			for(Achievement a:achievementService.getAchievements()) {
+				if(achievement.getMetrics()==a.getMetrics()&& achievement.getThreshold()==a.getThreshold()) {
+					b=true;
+				}
+			}
+			if(b) {
+				Achievement achievementToBeUpdated = achievementService.getAchievementById(id);
+				BeanUtils.copyProperties(achievement, achievementToBeUpdated, "id");
+				achievementService.saveAchievement(achievementToBeUpdated);
+				result = showAchievements();
+				result.addObject("message", "The achievement was updated succesfully");
+			}
+			else {
+				result = editAchievement(id);
+				result.addObject("message", "La metrica y limite coinciden con un logro existente");
+			}
 		}
 		return result;
 	}
@@ -118,9 +130,21 @@ public class AchievementController {
 		if(br.hasErrors()) {
 			result = new ModelAndView(ACHIEVEMENTS_FORM, br.getModel());
 		} else {
-			achievementService.saveAchievement(achievement);
-			result = showAchievements();
-			result.addObject("message", "The achievement was added succesfully");
+			boolean b=false;
+			for(Achievement a:achievementService.getAchievements()) {
+				if(achievement.getMetrics()==a.getMetrics()&& achievement.getThreshold()==a.getThreshold()) {
+					b=true;
+				}
+			}
+			if(b) {
+				achievementService.saveAchievement(achievement);
+				result = showAchievements();
+				result.addObject("message", "The achievement was added succesfully");
+			}
+			else {
+				result = newAchievement();
+				result.addObject("message", "La metrica y limite coinciden con un logro existente");
+			}
 		}
 		return result;
 	}
