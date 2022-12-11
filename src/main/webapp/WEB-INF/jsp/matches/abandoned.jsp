@@ -6,7 +6,7 @@
 
 <petclinic:layout pageName="abandono">
 
-  <h1></h1>
+  <h1>LA PARTIDA NO PUDO TERMINAR SATISFACTORIAMENTE, EL GANADOR ES: <b>${winner.user.username}</b>, YA QUE EL ORTRO JUGADOR ABANDONÓ</h1>
    
 
 </petclinic:layout>

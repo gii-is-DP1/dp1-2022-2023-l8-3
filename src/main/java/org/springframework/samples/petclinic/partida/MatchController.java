@@ -243,16 +243,21 @@ public class MatchController {
 		Match match = matchService.getMatchById(idMatch);
 		Jugador loggedPlayer = playerService.findPlayerByUsername(user.getName());
 		match.setGanadorPartida(loggedPlayer == match.getJugador1() ? GameWinner.SECOND_PLAYER : GameWinner.FIRST_PLAYER);
+		match.setAbandonada(true);
 		matchService.saveMatch(match);
 		return result;
 	}
 	@GetMapping("/{idMatch}/abandoned")
-	public ModelAndView abandonedMatch(@PathVariable int idMatch, @AuthenticationPrincipal Authentication user) {
+	public ModelAndView abandonedMatchView(@PathVariable int idMatch) {
 	    ModelAndView result = new ModelAndView(ABANDONED);
-	    String playerName = user.getName();
-        Jugador player = playerService.findPlayerByUsername(playerName);
         Match match = matchService.getMatchById(idMatch);
-	    result.addObject("jugador", player);
+        Jugador winner = new Jugador();
+        if(match.getGanadorPartida()==GameWinner.SECOND_PLAYER){
+            winner = match.getJugador2();
+        }else if(match.getGanadorPartida()==GameWinner.FIRST_PLAYER) {
+            winner = match.getJugador1();
+        }
+        result.addObject("winner", winner);
 	    result.addObject("match", match);
 	    return result;
 	}
