@@ -1,6 +1,8 @@
 package org.springframework.samples.petclinic.statistics;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,5 +35,10 @@ public class AchievementService {
 	public Achievement getAchievementById(Integer id) {
 		return achievementRepository.findById(id).get();
 	}
+	
+	public List<Achievement> getPublicAchievements() throws DataAccessException {
+        Collection<Achievement> todos=  achievementRepository.findAll();
+        return todos.stream().filter(x -> x.getVisibility() == Visibility.PUBLICADO).collect(Collectors.toList());
+    }
 
 }
