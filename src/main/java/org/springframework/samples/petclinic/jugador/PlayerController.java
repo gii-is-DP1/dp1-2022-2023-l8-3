@@ -5,22 +5,27 @@ import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.samples.petclinic.user.Authorities;
 import org.springframework.samples.petclinic.user.User;
 import org.springframework.samples.petclinic.user.UserService;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.samples.petclinic.partida.GameWinner;
 import org.springframework.samples.petclinic.partida.Match;
 import org.springframework.samples.petclinic.partida.MatchService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 public class PlayerController {
@@ -28,12 +33,15 @@ public class PlayerController {
 	private PlayerService playerService;
 	private UserService userService;
 	private MatchService matchService;
+	private FriendRequestService friendRequestService;
 
 	@Autowired
-	public PlayerController(PlayerService playerService, UserService userService, MatchService matchService) {
+	public PlayerController(PlayerService playerService, UserService userService, MatchService matchService,
+			FriendRequestService friendRequestService) {
 		this.playerService = playerService;
 		this.userService = userService;
 		this.matchService = matchService;
+		this.friendRequestService = friendRequestService;
 
 	}
 
@@ -46,7 +54,7 @@ public class PlayerController {
 	public String showAllPlayers(Map<String, Object> model) {
 		Collection<Jugador> results = this.playerService.findAllJugadores();
 		model.put("selections", results);
-		if(results.isEmpty()) {
+		if (results.isEmpty()) {
 			return "redirect:/jugadores/new";
 		}
 		return "jugadores/listJugador";
@@ -87,44 +95,44 @@ public class PlayerController {
 	}
 
 	@GetMapping(value = "/jugadores/new")
-	public String initCreationForm(Map<String, Object> model,Map<String, Object> model2) {
-	    System.out.println("pepepe");
+	public String initCreationForm(Map<String, Object> model, Map<String, Object> model2) {
+		System.out.println("pepepe");
 		Jugador jugador = new Jugador();
 		model.put("jugador", jugador);
 		Collection<Jugador> c = this.playerService.findAllJugadores();
-			if(c.isEmpty()) {
-				model2.put("sinJugadores", true);
-			}
+		if (c.isEmpty()) {
+			model2.put("sinJugadores", true);
+		}
 		return "jugadores/createOrUpdateJugadorForm";
 	}
 
 	@PostMapping(value = "/jugadores/new")
-	public String processCreationForm(@Valid Jugador jugador, BindingResult result,Map<String, Object> model) {
+	public String processCreationForm(@Valid Jugador jugador, BindingResult result, Map<String, Object> model) {
 		if (result.hasErrors()) {
 			return "jugadores/createOrUpdateJugadorForm";
 		} else {
-			Boolean contraseñaCorrecta=false;
-			List<Jugador> lista=playerService.findAllJugadores();
-			//Comprobar si el correo ya esta registrado con otro jugador
-			for(Jugador j:lista) {
-				if(j.getUser().getEmail().equals(jugador.getUser().getEmail())) {
+			Boolean contraseñaCorrecta = false;
+			List<Jugador> lista = playerService.findAllJugadores();
+			// Comprobar si el correo ya esta registrado con otro jugador
+			for (Jugador j : lista) {
+				if (j.getUser().getEmail().equals(jugador.getUser().getEmail())) {
 					model.put("emailIncorrecto1", true);
 					return "jugadores/createOrUpdateJugadorForm";
 				}
 			}
-			//Comprobar si el correo acaba en @gmail.com
-			if(!(jugador.getUser().getEmail().endsWith("@gmail.com"))) {
+			// Comprobar si el correo acaba en @gmail.com
+			if (!(jugador.getUser().getEmail().endsWith("@gmail.com"))) {
 				model.put("emailIncorrecto2", true);
 				return "jugadores/createOrUpdateJugadorForm";
 			}
-			//Comprobar si la contraseña esta entre 10 y 50 y contiene al menos un numero
-			for(Integer i=0;i<10;i++) {
-				if(jugador.getUser().getPassword().length()>10 && jugador.getUser().getPassword().length()<50
+			// Comprobar si la contraseña esta entre 10 y 50 y contiene al menos un numero
+			for (Integer i = 0; i < 10; i++) {
+				if (jugador.getUser().getPassword().length() > 10 && jugador.getUser().getPassword().length() < 50
 						&& jugador.getUser().getPassword().contains(i.toString())) {
-					contraseñaCorrecta=true;
+					contraseñaCorrecta = true;
 				}
 			}
-			if(contraseñaCorrecta==false) {
+			if (contraseñaCorrecta == false) {
 				model.put("contraseñaIncorrecta", true);
 				return "jugadores/createOrUpdateJugadorForm";
 			}
@@ -151,33 +159,34 @@ public class PlayerController {
 
 	@PostMapping(value = "/jugadores/{jugadorId}/edit")
 	public String processUpdateOwnerForm(@Valid Jugador jugador, BindingResult result,
-			@PathVariable("jugadorId") int jugadorId,Map<String, Object> model) {
+			@PathVariable("jugadorId") int jugadorId, Map<String, Object> model) {
 		if (result.hasErrors()) {
 			return "jugadores/createOrUpdateJugadorForm";
 		} else {
-			Boolean contraseñaCorrecta=false;
-			List<Jugador> lista=playerService.findAllJugadores();
-			//Comprobar si el correo ya esta registrado con otro jugador que no seas tu mismo
-			for(Jugador j:lista) {
-				if(j.getUser().getEmail().equals(jugador.getUser().getEmail()) 
-						&& !(playerService.findJugadorById(jugadorId)==j)) {
+			Boolean contraseñaCorrecta = false;
+			List<Jugador> lista = playerService.findAllJugadores();
+			// Comprobar si el correo ya esta registrado con otro jugador que no seas tu
+			// mismo
+			for (Jugador j : lista) {
+				if (j.getUser().getEmail().equals(jugador.getUser().getEmail())
+						&& !(playerService.findJugadorById(jugadorId) == j)) {
 					model.put("emailIncorrecto1", true);
 					return "jugadores/createOrUpdateJugadorForm";
 				}
 			}
-			//Comprobar si el correo acaba en @gmail.com
-			if(!(jugador.getUser().getEmail().endsWith("@gmail.com"))) {
+			// Comprobar si el correo acaba en @gmail.com
+			if (!(jugador.getUser().getEmail().endsWith("@gmail.com"))) {
 				model.put("emailIncorrecto2", true);
 				return "jugadores/createOrUpdateJugadorForm";
 			}
-			//Comprobar si la contraseña esta entre 10 y 50 y contiene al menos un numero
-			for(Integer i=0;i<10;i++) {
-				if(jugador.getUser().getPassword().length()>10 && jugador.getUser().getPassword().length()>10
+			// Comprobar si la contraseña esta entre 10 y 50 y contiene al menos un numero
+			for (Integer i = 0; i < 10; i++) {
+				if (jugador.getUser().getPassword().length() > 10 && jugador.getUser().getPassword().length() > 10
 						&& jugador.getUser().getPassword().contains(i.toString())) {
-					contraseñaCorrecta=true;					
+					contraseñaCorrecta = true;
 				}
 			}
-			if(contraseñaCorrecta==false) {
+			if (contraseñaCorrecta == false) {
 				model.put("contraseñaIncorrecta", true);
 				return "jugadores/createOrUpdateJugadorForm";
 			}
@@ -210,6 +219,121 @@ public class PlayerController {
 					result.addObject("playerMatches", m);
 				}
 			}
+		}
+
+		return result;
+	}
+
+	@GetMapping(value = "/jugadores/{jugadorId}/playerFriends")
+	public ModelAndView showFriendsOfAPlayer(@PathVariable("jugadorId") int jugadorId) {
+		ModelAndView result = new ModelAndView("/jugadores/playerFriends");
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUser(auth.getName()).get();
+		String username = user.getUsername();
+		Jugador player = playerService.findPlayerByUsername(username);
+
+		for (Authorities authority : user.getAuthorities()) {
+			if (authority.getAuthority().equals("jugador")
+					&& playerService.findPlayerByUsername(auth.getName()).getId() == jugadorId) {
+
+				Collection<Jugador> f = player.playerFriends();
+				result.addObject("jugadorId", jugadorId);
+				result.addObject("playerFriends", f);
+			}
+		}
+
+		return result;
+	}
+
+	@GetMapping(value = "/jugadores/friendRequests")
+	public ModelAndView friendRequests(@AuthenticationPrincipal Authentication user) {
+		ModelAndView result = new ModelAndView("/jugadores/friendRequests");
+		List<Jugador> listPlayers = playerService.findPlayerByUsername(user.getName()).playersWhoHaveSentYouAFriendRequest();
+
+		result.addObject("loggedPlayerId", playerService.findPlayerByUsername(user.getName()).getId());
+		result.addObject("listPlayers", listPlayers);
+
+		return result;
+	}
+	
+	@RequestMapping(value = "/jugadores/friendRequests/{player1Id}/{player2Id}/{result}")
+	public ModelAndView friendRequests(@PathVariable("player1Id") int player1Id, @PathVariable("player2Id") int player2Id, @PathVariable("result") boolean result) {
+		ModelAndView mv;
+		String message = "";
+		
+		FriendRequest fr = friendRequestService.getFriendRequestByPlayers(player1Id, player2Id);
+		fr.setResultado(result);
+		friendRequestService.saveFriendRequest(fr);
+		
+		if(result) {
+			message = "Request successfully accepted";
+		} else {
+			message = "Request successfully declined";
+		}
+		
+		mv = new ModelAndView("/jugadores/friendRequests");
+		mv.addObject("message", message);
+		
+		
+		return mv;
+	}
+	
+	@GetMapping(value = "/jugadores/addFriends")
+	public ModelAndView addFriends(Model model, @Param("keyword") String keyword, @AuthenticationPrincipal Authentication user) {
+		ModelAndView result = new ModelAndView("/jugadores/addFriends");
+		List<Jugador> listPlayers = playerService.findPlayerByKeyword(keyword);
+
+		result.addObject("loggedPlayerId", playerService.findPlayerByUsername(user.getName()).getId());
+		result.addObject("listPlayers", listPlayers);
+		model.addAttribute("keyword", keyword);
+
+		return result;
+	}
+	
+	@RequestMapping(value = "/jugadores/addFriends/{player1Id}/{player2Id}")
+	public ModelAndView addFriends(@PathVariable("player1Id") int player1Id, @PathVariable("player2Id") int player2Id) {
+		ModelAndView result;
+		String message = "";
+		
+		if(friendRequestService.getFriendRequestByPlayers(player1Id, player2Id) != null) {
+			message = "You have already sent a friend request to this player";
+		} else if(friendRequestService.getFriendRequestByPlayers(player2Id, player1Id) != null) {
+			message = "You have a pending friend request from this player";
+		} else {
+			friendRequestService.saveFriendRequest(new FriendRequest(playerService.findJugadorById(player1Id), playerService.findJugadorById(player2Id)));
+			message = "Friend request has been sent successfully";
+		}
+		
+		result = new ModelAndView("/jugadores/addFriends");
+		result.addObject("message", message);
+		
+		return result;
+	}
+
+	@GetMapping("/jugadores/{jugadorId1}/playerFriends/{jugadorId2}/delete")
+	public ModelAndView deleteFriend(@PathVariable("jugadorId1") int jugadorId1,
+			@PathVariable("jugadorId2") int jugadorId2) {
+		ModelAndView result = new ModelAndView();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUser(auth.getName()).get();
+		Boolean hasDeletedFriend = false;
+		
+		for (Authorities authority : user.getAuthorities()) {
+			if (authority.getAuthority().equals("jugador") && playerService.findPlayerByUsername(auth.getName()).getId() == jugadorId1) {
+				if(friendRequestService.getFriendRequestByPlayers(jugadorId1, jugadorId2) != null) {
+					friendRequestService.deleteFriendRequest(friendRequestService.getFriendRequestByPlayers(jugadorId1, jugadorId2));
+					hasDeletedFriend = true;
+				} else if(friendRequestService.getFriendRequestByPlayers(jugadorId2, jugadorId1) != null) {
+					friendRequestService.deleteFriendRequest(friendRequestService.getFriendRequestByPlayers(jugadorId2, jugadorId1));
+					hasDeletedFriend = true;
+				}
+			}
+		}
+		
+		result = showFriendsOfAPlayer(jugadorId1);
+		
+		if (hasDeletedFriend) {
+			result.addObject("message", "Friend was deleted succesfully");
 		}
 
 		return result;

@@ -22,7 +22,7 @@
         </thead>
         <tbody>
         	<c:choose>
-        		<c:when test="${sinPartidas}"> <div class="alert alert-info">En este momento no hay partidas que ya hayan sido jugada</div></c:when>
+        		<c:when test="${sinPartidas}"> <div class="alert alert-info">En este momento no hay partidas que ya hayan sido jugadas</div></c:when>
         		<c:otherwise>
 			        <c:forEach items="${selections}" var="partida">
 			            <tr>  

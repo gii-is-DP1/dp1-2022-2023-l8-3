@@ -19,20 +19,22 @@ INSERT INTO authorities(id,username,authority) VALUES (7,7,'jugador');
 INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,contamination_number,number_of_bacteria,number_of_sarcina) 
 VALUES(1,'David','Dana',2,false,0,20,4);
 INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,contamination_number,number_of_bacteria,number_of_sarcina) 
-VALUES(2,'Juan Jesus','Martin',3,false,0,20,4);
+VALUES(2,'Juan Jesus','Martin',5,false,0,20,4);
 INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,contamination_number,number_of_bacteria,number_of_sarcina) 
-VALUES(3,'Manuel','Ortega',4,false,0,20,4);
+VALUES(3,'Manuel','Ortega',3,false,0,20,4);
 INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,contamination_number,number_of_bacteria,number_of_sarcina)
-VALUES(4,'Yeyo','Peyeyo',5,false,0,20,4);
+VALUES(4,'Yeyo','Peyeyo',4,false,0,20,4);
 INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,contamination_number,number_of_bacteria,number_of_sarcina)
 VALUES(5,'Francisco Jesús','Montero',6,false,0,20,4);
 INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,contamination_number,number_of_bacteria,number_of_sarcina)
 VALUES(6,'José Miguel','Iborra',7,false,0,20,4);
 
-
-
-INSERT INTO lista_amigos(id_jugador1,id_jugador2) VALUES (1,2);
-INSERT INTO lista_amigos(id_jugador1,id_jugador2) VALUES (2,3);
+INSERT INTO friend_request(id, resultado, jugador1_id, jugador2_id)
+VALUES (1, true, 1, 2);
+INSERT INTO friend_request(id, resultado, jugador1_id, jugador2_id)
+VALUES (2, true, 3, 1);
+INSERT INTO friend_request(id, resultado, jugador1_id, jugador2_id)
+VALUES (3, false, 4, 5);
 
 INSERT INTO achievements(id,name,metrics,threshold,description,visibility,difficulty) VALUES
 	(1, 'Viciado', 'JUGAR_PARTIDAS', 10.0, 'Si juegas <THRESHOLD> partidas o más, consideramos que ya estás enganchado', 'PUBLICADO', 'BRONCE'),

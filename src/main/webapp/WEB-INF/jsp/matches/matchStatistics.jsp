@@ -14,7 +14,7 @@
             	<h3>¡HA GANADO ${match.jugador1.user.username}!</h3> <br/>
             </c:if>
             <c:if test="${match.ganadorPartida == 'SECOND_PLAYER'}">
-            	<h3>¡HA GANADO ${match.jugador1.user.username}!</h3> <br/>
+            	<h3>¡HA GANADO ${match.jugador2.user.username}!</h3> <br/>
             </c:if>
         </tr>
         </thead>

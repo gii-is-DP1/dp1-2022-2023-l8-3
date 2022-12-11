@@ -67,13 +67,6 @@
 	<button type="button" class="btn-3d" onclick="window.location.href='./Finished'">Historial de partidas</button>
 	</div>
 	
-	
-	<table class="table-buttons">
-		<tr>
-			<td><a href="<spring:url value="/vets.xml" htmlEscape="true" />">View
-					as XML</a></td>
-		</tr>
-	</table>
 	<style type="text/css">
 	th{
 	text-align: center;

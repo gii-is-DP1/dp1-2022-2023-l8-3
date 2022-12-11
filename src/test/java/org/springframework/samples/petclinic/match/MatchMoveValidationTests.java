@@ -18,8 +18,8 @@ public class MatchMoveValidationTests {
 	
 	@BeforeEach
 	void init() {
-	    Jugador jugador = new Jugador("PlayerFirstName", "PlayerLastName", new User("PlayerUserName"));
-	    Jugador jugador2 = new Jugador("PlayerFirstName2", "PlayerLastName2", new User("PlayerUserName2"));
+	    Jugador jugador = new Jugador("PlayerFirstName", "PlayerLastName", new User("PlayerUserName"), false);
+	    Jugador jugador2 = new Jugador("PlayerFirstName2", "PlayerLastName2", new User("PlayerUserName2"), false);
 	   
         match = new Match(false, jugador);
         match.setJugador1(jugador);
