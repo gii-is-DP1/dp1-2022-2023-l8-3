@@ -31,12 +31,15 @@ public class PlayerController {
 	private PlayerService playerService;
 	private UserService userService;
 	private MatchService matchService;
+	private FriendRequestService friendRequestService;
 
 	@Autowired
-	public PlayerController(PlayerService playerService, UserService userService, MatchService matchService) {
+	public PlayerController(PlayerService playerService, UserService userService, MatchService matchService,
+			FriendRequestService friendRequestService) {
 		this.playerService = playerService;
 		this.userService = userService;
 		this.matchService = matchService;
+		this.friendRequestService = friendRequestService;
 
 	}
 
@@ -240,15 +243,35 @@ public class PlayerController {
 
 		return result;
 	}
-	
+
 	@RequestMapping(value = "/jugadores/addFriends")
 	public ModelAndView addFriends(Model model, @Param("keyword") String keyword) {
 		ModelAndView result = new ModelAndView("/jugadores/addFriends");
 		List<Jugador> listPlayers = playerService.findPlayerByKeyword(keyword);
-		
+
 		result.addObject("listPlayers", listPlayers);
 		model.addAttribute("keyword", keyword);
-		
+
+		return result;
+	}
+
+	@GetMapping("/jugadores/{jugadorId1}/playerFriends/{jugadorId2}/delete")
+	public ModelAndView deleteFriend(@PathVariable("jugadorId1") int jugadorId1,
+			@PathVariable("jugadorId2") int jugadorId2) {
+		ModelAndView result = new ModelAndView();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user = userService.findUser(auth.getName()).get();
+		for (Authorities authority : user.getAuthorities()) {
+			if (authority.getAuthority().equals("jugador")
+					|| playerService.findPlayerByUsername(auth.getName()).getId() == jugadorId1) {
+				friendRequestService
+						.deleteFriendRequest(friendRequestService.getFriendRequestByPlayers(jugadorId1, jugadorId2));
+				result = showFriendsOfAPlayer(jugadorId1);
+				result.addObject("message", "Friend was deleted succesfully");
+			}
+
+		}
+
 		return result;
 	}
 
