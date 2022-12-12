@@ -136,9 +136,9 @@ public class Jugador extends Person {
     //inicio del contgador que sea un map fecha/numero
 	Boolean play = true;
 	LocalDate fecha;
-    public Boolean canPlayPlayer() {
-        
-    }
+//    public Boolean canPlayPlayer() {
+//        
+//    }
 
 
 }
