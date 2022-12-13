@@ -1,7 +1,10 @@
 package org.springframework.samples.petclinic.jugador;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +19,8 @@ import org.springframework.samples.petclinic.model.Person;
 import org.springframework.samples.petclinic.partida.Match;
 import org.springframework.samples.petclinic.user.User;
 
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,7 +29,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "jugadores")
 public class Jugador extends Person {
-
 	@Column(name = "estado_Online")
 	private Boolean estadoOnline;
 
@@ -129,5 +133,12 @@ public class Jugador extends Person {
 		}
 		return res;
 	}
+    //inicio del contgador que sea un map fecha/numero
+	Boolean play = true;
+	LocalDate fecha;
+//    public Boolean canPlayPlayer() {
+//        
+//    }
+
 
 }

@@ -109,10 +109,12 @@ public class PlayerService {
 	}
 
 	@Transactional
-	public void saveJugador(Jugador jugador) throws DataAccessException {
+	public Jugador saveJugador(Jugador jugador) throws DataAccessException {
 		playerRepo.save(jugador);
 		jugador.getUser().setEnabled(true);
 		userRepo.save(jugador.getUser());
 		authService.saveAuthorities(jugador.getUser().getUsername(), "jugador");
+		
+		return jugador;
 	}
 }

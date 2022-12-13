@@ -33,6 +33,8 @@ public class MatchController {
 	private static final String CREATE_MATCH_VIEW = "/matches/createMatch";
 	private static final String WAIT_MATCH_VIEW = "/matches/waitForMatch";
 	private static final String LIST_MATCHES = "/matches/matchesList";
+	private static final String ABANDONED = "/matches/abandoned";
+
 
 	private MatchService matchService;
 	private PlayerService playerService;
@@ -241,9 +243,26 @@ public class MatchController {
 		Match match = matchService.getMatchById(idMatch);
 		Jugador loggedPlayer = playerService.findPlayerByUsername(user.getName());
 		match.setGanadorPartida(loggedPlayer == match.getJugador1() ? GameWinner.SECOND_PLAYER : GameWinner.FIRST_PLAYER);
+		match.setAbandonada(true);
 		matchService.saveMatch(match);
 		return result;
 	}
+	@GetMapping("/{idMatch}/abandoned")
+	public ModelAndView abandonedMatchView(@PathVariable int idMatch) {
+	    ModelAndView result = new ModelAndView(ABANDONED);
+        Match match = matchService.getMatchById(idMatch);
+        Jugador winner = new Jugador();
+        if(match.getGanadorPartida()==GameWinner.SECOND_PLAYER){
+            winner = match.getJugador2();
+        }else if(match.getGanadorPartida()==GameWinner.FIRST_PLAYER) {
+            winner = match.getJugador1();
+        }
+        result.addObject("winner", winner);
+	    result.addObject("match", match);
+	    return result;
+	}
+	
+	
 	
 	@GetMapping("/{idMatch}/statistics")
 	public ModelAndView matchStatistics(@PathVariable int idMatch) {

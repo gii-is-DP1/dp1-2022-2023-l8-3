@@ -63,7 +63,7 @@
 		</tbody>
 	</table>
 	
-	<div style="text-align: center;">
+	<div class="divBoton3d"">
 	<button type="button" class="btn-3d" onclick="window.location.href='./Finished'">Historial de partidas</button>
 	</div>
 	
@@ -76,6 +76,14 @@
 	text-align: center;
 	}
 	
+	
+	.divBoton3d{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	
+	}
+	
 	.btn-3d {
   padding: .6rem 1rem;
   border: 1px solid #995309;
@@ -86,13 +94,14 @@
   height:50px;
   margin:20px;
   display: flex;
+  
   justify-content:center;
   align-items:center;
   font-size: 1.5rem;
   text-shadow: 0 -1px 0 rgba(0,0,0,.5);
   box-shadow: 0 1px 0 rgba(255,255,255,.5) inset,
     0 1px 3px rgba(0,0,0,.2);
-  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(10%,#f90),to(#AEFF00));
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(10%,#AEFF00),to(#AEFF00));
   background-image: linear-gradient(#f90 10%,#e76a00 100%);
 }
 

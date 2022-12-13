@@ -106,6 +106,9 @@ public class Match extends NamedEntity{
 	
 	@OneToMany(mappedBy="match")
 	private List<Comentario> comentarios;
+	
+	@Column(name = "abandonada")
+	private Boolean abandonada;
 
 	
 	// Constructor para cuando se crea una partida desde la aplicación
@@ -116,6 +119,7 @@ public class Match extends NamedEntity{
 		this.espectadores = new ArrayList<Jugador>();
 		this.invitaciones = new ArrayList<Invitacion>();
 		this.comentarios = new ArrayList<Comentario>();
+		this.abandonada = false;
 		this.ganadorPartida = GameWinner.UNDEFINED;
 		this.turn = 0;
 		
@@ -129,6 +133,7 @@ public class Match extends NamedEntity{
 		this.espectadores = new ArrayList<Jugador>();
 		this.invitaciones = new ArrayList<Invitacion>();
 		this.comentarios = new ArrayList<Comentario>();
+		this.abandonada = false;
 		this.turn = 0;
 		createDisks();
 		createTurns();

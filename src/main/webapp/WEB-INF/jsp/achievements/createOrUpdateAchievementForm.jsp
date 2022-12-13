@@ -25,7 +25,12 @@
         		<petclinic:selectField name="metrics" label="Metrics" names="${metrics}" size="4"/>
                 <petclinic:inputField label="Threshold" name="threshold"/>
                 <petclinic:selectField name="difficulty" label="Difficulty" names="${difficulty}" size="3"/>
-                <!-- Falta que los logros puedan crearse en borrador -->                
+                 <petclinic:selectField name="visibility" label="Visibility" names="${visibility}" size="3"/>
+                
+              
+                
+				
+                <!-- como se haria el visibility con un checkboxs -->                
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
@@ -41,4 +46,17 @@
             </div>
         </form:form>        
     </jsp:body>
+
 </petclinic:layout>
+
+<style type="text/css">
+
+#labelBox{
+text-align: right;
+
+}
+
+
+
+
+</style>
