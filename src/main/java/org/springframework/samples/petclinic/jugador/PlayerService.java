@@ -65,7 +65,7 @@ public class PlayerService {
 	public List<Jugador> findPlayerByKeyword(String keyword) {
 		List<Jugador> result = new ArrayList<Jugador>();
 		if (keyword != null) {
-			result = playerRepo.findByKeyword(keyword);
+			result = playerRepo.findByKeyword(keyword.toUpperCase());
 		}
 		return result;
 	}
