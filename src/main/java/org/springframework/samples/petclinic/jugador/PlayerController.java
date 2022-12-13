@@ -25,11 +25,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 public class PlayerController {
 
+	private static final int FRIEND_LIMIT = 150;
 	private PlayerService playerService;
 	private UserService userService;
 	private MatchService matchService;
@@ -249,7 +251,7 @@ public class PlayerController {
 	public ModelAndView friendRequests(@AuthenticationPrincipal Authentication user) {
 		ModelAndView result = new ModelAndView("/jugadores/friendRequests");
 		List<Jugador> listPlayers = playerService.findPlayerByUsername(user.getName()).playersWhoHaveSentYouAFriendRequest();
-
+		
 		result.addObject("loggedPlayerId", playerService.findPlayerByUsername(user.getName()).getId());
 		result.addObject("listPlayers", listPlayers);
 
@@ -257,23 +259,30 @@ public class PlayerController {
 	}
 	
 	@RequestMapping(value = "/jugadores/friendRequests/{player1Id}/{player2Id}/{result}")
-	public ModelAndView friendRequests(@PathVariable("player1Id") int player1Id, @PathVariable("player2Id") int player2Id, @PathVariable("result") boolean result) {
+	public ModelAndView friendRequests(@PathVariable("player1Id") int player1Id, @PathVariable("player2Id") int player2Id, 
+			@PathVariable("result") boolean result, RedirectAttributes ra) {
 		ModelAndView mv;
 		String message = "";
 		
-		FriendRequest fr = friendRequestService.getFriendRequestByPlayers(player1Id, player2Id);
-		fr.setResultado(result);
-		friendRequestService.saveFriendRequest(fr);
-		
-		if(result) {
-			message = "Request successfully accepted";
+		if(playerService.findJugadorById(player2Id).playerFriends().size() >= FRIEND_LIMIT) {
+			message = "You have reached the limit number of friends";
+		} else if(playerService.findJugadorById(player1Id).playerFriends().size() >= FRIEND_LIMIT) {
+			message = "That player has reached the friend limit";
 		} else {
-			message = "Request successfully declined";
+			FriendRequest fr = friendRequestService.getFriendRequestByPlayers(player1Id, player2Id);
+			fr.setResultado(result);
+			friendRequestService.saveFriendRequest(fr);
+			
+			if(result) {
+				message = "Request successfully accepted";
+			} else {
+				message = "Request successfully declined";
+			}
 		}
 		
 		mv = new ModelAndView("/jugadores/friendRequests");
-		mv.addObject("message", message);
-		
+		mv.setViewName("redirect:/jugadores/friendRequests");
+		ra.addFlashAttribute("message", message);
 		
 		return mv;
 	}
@@ -282,6 +291,10 @@ public class PlayerController {
 	public ModelAndView addFriends(Model model, @Param("keyword") String keyword, @AuthenticationPrincipal Authentication user) {
 		ModelAndView result = new ModelAndView("/jugadores/addFriends");
 		List<Jugador> listPlayers = playerService.findPlayerByKeyword(keyword);
+		
+		if(listPlayers.contains(playerService.findPlayerByUsername(user.getName()))) {
+			listPlayers.remove(playerService.findPlayerByUsername(user.getName()));
+		}
 
 		result.addObject("loggedPlayerId", playerService.findPlayerByUsername(user.getName()).getId());
 		result.addObject("listPlayers", listPlayers);
@@ -291,7 +304,7 @@ public class PlayerController {
 	}
 	
 	@RequestMapping(value = "/jugadores/addFriends/{player1Id}/{player2Id}")
-	public ModelAndView addFriends(@PathVariable("player1Id") int player1Id, @PathVariable("player2Id") int player2Id) {
+	public ModelAndView addFriends(@PathVariable("player1Id") int player1Id, @PathVariable("player2Id") int player2Id, RedirectAttributes ra) {
 		ModelAndView result;
 		String message = "";
 		
@@ -300,19 +313,26 @@ public class PlayerController {
 		} else if(friendRequestService.getFriendRequestByPlayers(player2Id, player1Id) != null) {
 			message = "You have a pending friend request from this player";
 		} else {
-			friendRequestService.saveFriendRequest(new FriendRequest(playerService.findJugadorById(player1Id), playerService.findJugadorById(player2Id)));
-			message = "Friend request has been sent successfully";
+			if(playerService.findJugadorById(player1Id).playerFriends().size() >= FRIEND_LIMIT) {
+				message = "You have reached the limit number of friends";
+			} else if(playerService.findJugadorById(player2Id).playerFriends().size() >= FRIEND_LIMIT) {
+				message = "That player has reached the friend limit";
+			} else {
+				friendRequestService.saveFriendRequest(new FriendRequest(playerService.findJugadorById(player1Id), playerService.findJugadorById(player2Id)));
+				message = "Friend request has been sent successfully";
+			}
 		}
 		
 		result = new ModelAndView("/jugadores/addFriends");
-		result.addObject("message", message);
+		result.setViewName("redirect:/jugadores/addFriends");
+		ra.addFlashAttribute("message", message);
 		
 		return result;
 	}
 
 	@GetMapping("/jugadores/{jugadorId1}/playerFriends/{jugadorId2}/delete")
 	public ModelAndView deleteFriend(@PathVariable("jugadorId1") int jugadorId1,
-			@PathVariable("jugadorId2") int jugadorId2) {
+			@PathVariable("jugadorId2") int jugadorId2, RedirectAttributes ra) {
 		ModelAndView result = new ModelAndView();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUser(auth.getName()).get();
@@ -330,10 +350,10 @@ public class PlayerController {
 			}
 		}
 		
-		result = showFriendsOfAPlayer(jugadorId1);
+		result.setViewName("redirect:/jugadores/{jugadorId1}/playerFriends");
 		
 		if (hasDeletedFriend) {
-			result.addObject("message", "Friend was deleted succesfully");
+			ra.addFlashAttribute("message", "Friend was deleted succesfully");
 		}
 
 		return result;
