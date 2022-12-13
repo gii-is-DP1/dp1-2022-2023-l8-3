@@ -1,5 +1,7 @@
 package org.springframework.samples.petclinic.invitacion;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,15 @@ public class InvitationService {
 	@Transactional
 	public int invitationCount() {
 		return (int) invitationRepo.count();
+	}
+	@Transactional
+	public void save(Invitacion i) {
+		invitationRepo.save(i);
+	}
+	
+	@Transactional
+	public List<Invitacion> getInvitacionByInvitadoId(Integer id){
+		return invitationRepo.findInvitacionByInvitadoId(id);
 	}
 
 }

@@ -13,12 +13,13 @@
 
 	<div class="seccion seccion1">
 
-		<div>
+		<div style="text-align: center">
 			<label for="check" style="color: blue">ELIGE UN NOMBRE PARA TU PARTIDA, SELECCIONA SU PRIVACIDAD Y A JUGAR!!</label>
+		<br>
+			<label for="check" style="color:blue">TUS AMIGOS NO SER&Aacute;N INVITADOS HASTA QUE CREES LA PARTIDA</label>
 		</div>
 
 	</div>
-
 	<div class=" seccion invitaciones">
 		<div class="scroll">
 			<p style="font:fantasy; font-style:inherit ; font-size: x-large; text-align: center; justify-content: center; align-items: center;">INVITACIONES</p>
@@ -30,14 +31,26 @@
 
 				</thead>
 				<tbody>
-
+		
 					<c:forEach items="${players}" var="player">
-						<tr>
-							<td><c:out value="${player.user.username}" /></td>
-							<td><c:out value="${player.estadoOnline}" /></td>
-							<td><a class="btn btn-warning" href="<c:url value="#" />">INVITAR
-									AMIGO</a></td>
-						</tr>
+						<c:if test="${actualPlayer!=player.user.username}">
+							<tr>
+								<td><c:out value="${player.user.username}" /></td>
+								<c:choose>
+									<c:when test="${player.estadoOnline==true}"><td><c:out value="En linea"/></td></c:when>
+									<c:otherwise><td><c:out value="Desconectado"/></td></c:otherwise>
+								</c:choose>
+								<c:choose>
+									<c:when test="${amigosInvitados.contains(player)}">
+										<td><label for="check" style="color: blue">INVITADO</label></td>
+									</c:when>
+									<c:otherwise>
+										<td><a class="btn btn-warning" href="<c:url value="/invitarAmigo/${player.id}" />">INVITAR AMIGO</a></td>
+									</c:otherwise>
+								</c:choose>
+								
+							</tr>
+						</c:if>
 					</c:forEach>
 				</tbody>
 			</table>

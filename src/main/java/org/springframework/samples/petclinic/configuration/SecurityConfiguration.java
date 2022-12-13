@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -41,10 +42,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/jugadores/new").anonymous()
 				.antMatchers("/owners/**").hasAnyAuthority("admin")
 				.antMatchers("/jugadores").hasAnyAuthority("admin")
+				.antMatchers("/invitarAmigo/{id}").hasAnyAuthority("jugador")
 				.antMatchers("/jugadores/{jugadorId}").hasAnyAuthority("admin", "jugador")
 				.antMatchers("/jugadores/{jugadorId}/delete").hasAnyAuthority("admin")
 				.antMatchers("/jugadores/{jugadorId}/edit").hasAnyAuthority("admin","jugador")
 				.antMatchers("/jugadores/{jugadorId}/playerMatches").hasAnyAuthority("jugador")
+				.antMatchers("/matches/createMatch").hasAnyAuthority("jugador")
 				.antMatchers("/matches/**").hasAnyAuthority("admin","jugador")
 				.antMatchers("/chat/**").hasAnyAuthority("admin","jugador")
 				.antMatchers("/{idMatch}/currentMatch").hasAnyAuthority("admin","jugador")

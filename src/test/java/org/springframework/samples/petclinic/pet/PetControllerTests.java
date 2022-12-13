@@ -33,6 +33,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.samples.petclinic.configuration.SecurityConfiguration;
+import org.springframework.samples.petclinic.invitacion.InvitationService;
 import org.springframework.samples.petclinic.pet.PetController;
 import org.springframework.samples.petclinic.pet.PetService;
 import org.springframework.samples.petclinic.owner.Owner;
@@ -60,8 +61,11 @@ class PetControllerTests {
 	@MockBean
 	private PetService petService;
         
-        @MockBean
+    @MockBean
 	private OwnerService ownerService;
+    
+    @MockBean
+    private InvitationService invitacionService;
 
 	@Autowired
 	private MockMvc mockMvc;

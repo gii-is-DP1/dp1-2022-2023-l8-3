@@ -18,6 +18,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.samples.petclinic.configuration.SecurityConfiguration;
+import org.springframework.samples.petclinic.invitacion.InvitationService;
+import org.springframework.samples.petclinic.menu.MenuService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,7 +35,12 @@ class VetControllerTests {
 
 	@MockBean
 	private VetService clinicService;
+	
+	@MockBean
+    private InvitationService invitacionService;
 
+	@MockBean
+    private MenuService menuService;
 	@Autowired
 	private MockMvc mockMvc;
 
