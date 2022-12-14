@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -33,17 +34,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests().antMatchers("/resources/**", "/webjars/**", "/h2-console/**").permitAll()
-				.antMatchers(HttpMethod.GET, "/", "/oups").permitAll().antMatchers("/users/new").permitAll()
+				.antMatchers(HttpMethod.GET, "/", "/oups").permitAll()
+				.antMatchers("/users/new").permitAll()
 				.antMatchers("/session/**").permitAll()
 				.antMatchers("/admin/**").hasAnyAuthority("admin")
 				.antMatchers("/jugadores/new").hasAnyAuthority("admin")
-				.antMatchers("/jugadores/new").anonymous()
+				.antMatchers("/registerNewJugador").anonymous()
 				.antMatchers("/owners/**").hasAnyAuthority("admin")
 				.antMatchers("/jugadores").hasAnyAuthority("admin")
+				.antMatchers("/invitarAmigo/{id}").hasAnyAuthority("jugador")
 				.antMatchers("/jugadores/{jugadorId}").hasAnyAuthority("admin", "jugador")
 				.antMatchers("/jugadores/{jugadorId}/delete").hasAnyAuthority("admin")
 				.antMatchers("/jugadores/{jugadorId}/edit").hasAnyAuthority("admin","jugador")
 				.antMatchers("/jugadores/{jugadorId}/playerMatches").hasAnyAuthority("jugador")
+				.antMatchers("/matches/createMatch").hasAnyAuthority("jugador")
 				.antMatchers("/matches/**").hasAnyAuthority("admin","jugador")
 				.antMatchers("/chat/**").hasAnyAuthority("admin","jugador")
 				.antMatchers("/{idMatch}/currentMatch").hasAnyAuthority("admin","jugador")
@@ -57,6 +61,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/jugadores/{jugadorId1}/playerFriends/{jugadorId2}/delete").hasAnyAuthority("jugador")
 				.antMatchers("/jugadores/addFriends/**").hasAnyAuthority("jugador")
 				.antMatchers("/jugadores/friendRequests/**").hasAnyAuthority("jugador")
+				.antMatchers("/invitacionesPendientes").hasAnyAuthority("jugador")
+				.antMatchers("/rechazarInvitacion/{id}").hasAnyAuthority("jugador")
+				.antMatchers("/aceptarInvitacion/{id}").hasAnyAuthority("jugador")
 				.anyRequest().denyAll()
 				.and()
 				 	.formLogin().defaultSuccessUrl("/cambiarEstadoOnline")
