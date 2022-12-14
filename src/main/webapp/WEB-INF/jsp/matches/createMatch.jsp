@@ -23,10 +23,16 @@
 	<div class=" seccion invitaciones">
 		<div class="scroll">
 			<p style="font:fantasy; font-style:inherit ; font-size: x-large; text-align: center; justify-content: center; align-items: center;">INVITACIONES</p>
+			<c:if test="${amigoEnPartida}">
+				<div class="alert alert-info">
+		    	 	No puedes invitar a <b style="color: blue;">${nombreAmigo}</b> porque se encuentra en una partida
+				</div>
+			</c:if>
+			
 			<table style="width: 100%">
 				<thead>
 					<th style="text-align: center">AMIGO</th>
-					<th style="text-align: center">ESTADO ONLINE</th>
+					<th style="text-align: center">ESTADO</th>
 					<th></th>
 
 				</thead>

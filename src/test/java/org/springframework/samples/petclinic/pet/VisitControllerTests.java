@@ -17,6 +17,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.samples.petclinic.configuration.SecurityConfiguration;
 import org.springframework.samples.petclinic.invitacion.InvitationService;
+import org.springframework.samples.petclinic.menu.MenuService;
 import org.springframework.samples.petclinic.pet.PetService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -40,6 +41,9 @@ class VisitControllerTests {
 	
 	@MockBean
     private InvitationService invitacionService;
+
+	@MockBean
+    private MenuService menuService;
 
 	@Autowired
 	private MockMvc mockMvc;

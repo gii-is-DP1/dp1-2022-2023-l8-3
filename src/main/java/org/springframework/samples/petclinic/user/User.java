@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.user;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -52,9 +53,10 @@ public class User{
 	public User(String username) {
 		this.username = username;
 	}
+	
 	public User(String username,String password) {
 		this.username = username;
 		this.password = password;
-
 	}
+	
 }

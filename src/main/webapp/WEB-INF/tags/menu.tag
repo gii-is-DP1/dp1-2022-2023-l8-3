@@ -22,7 +22,6 @@
 		</div>
 		<div class="navbar-collapse collapse" id="main-navbar">
 			<ul class="nav navbar-nav">
-		
 				<petclinic:menuItem active="${name eq 'home'}" url="/"
 					title="home page">
 					<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
@@ -90,7 +89,7 @@
 				
 				<sec:authorize access="!isAuthenticated()">
 					<li><a href="<c:url value="/login" />">Inicia sesi&oacute;n</a></li>
-					<li><a href="<c:url value="/jugadores/new" />">Reg&iacute;strate</a></li>
+					<li><a href="<c:url value="/registerNewJugador" />">Reg&iacute;strate</a></li>
 				</sec:authorize>
 				<sec:authorize access="isAuthenticated()">
 					<li class="dropdown"><a href="#" class="dropdown-toggle"
@@ -113,7 +112,7 @@
 				</sec:authorize>
 				<sec:authorize access="isAuthenticated()">
 					<c:if test="${tengoInvitaciones}">
-						<a href="<c:url value="#"/>" class="btn btn-light" style="margin-top: 4.5%;">
+						<a href="<c:url value="/invitacionesPendientes"/>" class="btn btn-light" style="margin-top: 4.5%;">
 							<span class="glyphicon glyphicon-bell" aria-hidden="true" style="color: orange;font-size: 3em">
 							</span>
 						</a>

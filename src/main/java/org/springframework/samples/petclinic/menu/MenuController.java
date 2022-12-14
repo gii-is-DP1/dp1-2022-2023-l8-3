@@ -15,13 +15,14 @@ import org.springframework.samples.petclinic.partida.MatchService;
 import org.springframework.samples.petclinic.statistics.AchievementController;
 import org.springframework.samples.petclinic.user.Authorities;
 import org.springframework.samples.petclinic.user.UserController;
+import org.springframework.samples.petclinic.web.WelcomeController;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-@ControllerAdvice(assignableTypes = {DishController.class,InvitationController.class,PlayerController.class,MatchController.class,AchievementController.class,UserController.class})
+@ControllerAdvice(assignableTypes = {ComentarioController.class,DishController.class,InvitationController.class,PlayerController.class,MatchController.class,AchievementController.class})
 public class MenuController {
 	
 	private InvitationService invitacionService;

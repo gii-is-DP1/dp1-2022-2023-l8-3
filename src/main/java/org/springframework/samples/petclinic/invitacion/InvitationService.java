@@ -30,5 +30,15 @@ public class InvitationService {
 	public List<Invitacion> getInvitacionByInvitadoId(Integer id){
 		return invitationRepo.findInvitacionByInvitadoId(id);
 	}
+	
+	@Transactional
+	public Invitacion getInvitacionById(Integer id) {
+		return invitationRepo.findById(id).get();
+	}
+	
+	@Transactional
+	public void delete(Invitacion i) {
+		invitationRepo.delete(i);
+	}
 
 }
