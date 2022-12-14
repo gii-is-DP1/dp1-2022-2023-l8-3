@@ -3,7 +3,6 @@ package org.springframework.samples.petclinic.disco;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.samples.petclinic.statistics.Achievement;
 import org.springframework.stereotype.Service;
 
 @Service

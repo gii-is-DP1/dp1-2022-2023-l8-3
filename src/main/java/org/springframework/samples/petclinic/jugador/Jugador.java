@@ -133,7 +133,7 @@ public class Jugador extends Person {
 		}
 		return res;
 	}
-   
+
 
 
 }

@@ -15,7 +15,6 @@ import org.springframework.samples.petclinic.disco.Disco;
 import org.springframework.samples.petclinic.disco.DishRepository;
 import org.springframework.samples.petclinic.partida.Match;
 import org.springframework.samples.petclinic.partida.MatchRepository;
-import org.springframework.samples.petclinic.statistics.Achievement;
 
 @Service
 public class PlayerService {
@@ -65,7 +64,7 @@ public class PlayerService {
 	public List<Jugador> findPlayerByKeyword(String keyword) {
 		List<Jugador> result = new ArrayList<Jugador>();
 		if (keyword != null) {
-			result = playerRepo.findByKeyword(keyword);
+			result = playerRepo.findByKeyword(keyword.toUpperCase());
 		}
 		return result;
 	}
@@ -110,10 +109,12 @@ public class PlayerService {
 	}
 
 	@Transactional
-	public void saveJugador(Jugador jugador) throws DataAccessException {
+	public Jugador saveJugador(Jugador jugador) throws DataAccessException {
 		playerRepo.save(jugador);
 		jugador.getUser().setEnabled(true);
 		userRepo.save(jugador.getUser());
 		authService.saveAuthorities(jugador.getUser().getUsername(), "jugador");
+		
+		return jugador;
 	}
 }
