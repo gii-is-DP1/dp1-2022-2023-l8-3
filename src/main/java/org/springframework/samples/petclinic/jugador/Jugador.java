@@ -11,10 +11,14 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import org.springframework.samples.petclinic.statistics.Achievement;
+import org.springframework.samples.petclinic.invitacion.Invitacion;
 import org.springframework.samples.petclinic.model.Person;
 import org.springframework.samples.petclinic.partida.Match;
 import org.springframework.samples.petclinic.user.User;
@@ -40,6 +44,7 @@ public class Jugador extends Person {
 
 	@Column(name = "number_of_sarcina")
 	private Integer sarcinas;
+	
 
 	@Override
 	public String toString() {
@@ -51,12 +56,12 @@ public class Jugador extends Person {
 	@JoinColumn(name = "username")
 	private User user;
 
-	@OneToMany(cascade = CascadeType.ALL)
-	private List<Match> invitacionesPartidaRecibidas;
+	@ManyToMany(cascade = CascadeType.ALL,mappedBy = "jugador")
+	private List<Invitacion> invitacionesPartidaRecibidas;
 
-//	@ManyToMany(cascade = CascadeType.REMOVE)
-//	@JoinTable(name = "lista_amigos", joinColumns = @JoinColumn(name = "person_id"), inverseJoinColumns = @JoinColumn(name = "friend_id"))
-//	private List<Jugador> listaAmigos;
+	@ManyToMany(cascade = CascadeType.REMOVE)
+	@JoinTable(name = "amigosInvitados", joinColumns = @JoinColumn(name = "idJugador1"), inverseJoinColumns = @JoinColumn(name = "idJugador2"))
+	private List<Jugador> amigosInvitados;
 
 //	@ManyToMany(cascade = CascadeType.REMOVE)
 //	@JoinTable(name = "lista_amigos", joinColumns = @JoinColumn(name = "friend_id"), inverseJoinColumns = @JoinColumn(name = "person_id"))
@@ -84,7 +89,8 @@ public class Jugador extends Person {
 		this.numeroDeContaminacion = 0;
 		this.bacterias = 20;
 		this.sarcinas = 4;
-		this.invitacionesPartidaRecibidas = new ArrayList<Match>();
+		this.amigosInvitados=new ArrayList<Jugador>();
+		this.invitacionesPartidaRecibidas = new ArrayList<Invitacion>();
 		this.sentFriendRequests = new ArrayList<FriendRequest>();
 		this.receivedFriendRequests = new ArrayList<FriendRequest>();
 		this.logros = new ArrayList<Achievement>();
@@ -133,7 +139,13 @@ public class Jugador extends Person {
 		}
 		return res;
 	}
-
+	
+//inicio del contgador que sea un map fecha/numero
+//	Boolean play = true;
+//	LocalDate fecha;
+//    public Boolean canPlayPlayer() {
+//        
+//    }
 
 
 }
