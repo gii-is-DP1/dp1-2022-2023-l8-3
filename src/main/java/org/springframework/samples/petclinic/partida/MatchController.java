@@ -77,24 +77,21 @@ public class MatchController {
 		return result;
 	}
 	@PostMapping(value = "/createMatch")
-	public RedirectView createMatch(@RequestParam String nombre,@RequestParam Boolean tipoPartida, @AuthenticationPrincipal Authentication user) {
-		    String playerName = user.getName();
-	        Jugador player = playerService.findPlayerByUsername(playerName);
+	public ModelAndView createMatch(@RequestParam String nombre,@RequestParam Boolean tipoPartida, @AuthenticationPrincipal Authentication user) {
+	        ModelAndView result =  new ModelAndView();
+	        Jugador player = playerService.findPlayerByUsername(user.getName());
+	        if(matchService.canIplay(player)) {
 	        Match match = new Match(false, player);
 	        match.setName(nombre);
 	        match.setEsPrivada(tipoPartida);
 	        match.getDisco(2).annadirBacterias(0, 1);
 	        match.getDisco(4).annadirBacterias(1, 1);
-	        //Jugador jugador2 = playerService.findJugadorById(1);
 	        match.setJugador1(player);
-	        //match.setJugador2(jugador2);
 		    this.matchService.saveMatch(match);
 		    int id = match.getId();
 		    String matchId=String.valueOf(id);
-		    RedirectView result = new RedirectView("/matches/"+matchId+"/waitForMatch");
-		    
-		    Jugador actualPlayer=playerService.findPlayerByUsername(playerName);
-		    for(Jugador j:actualPlayer.getAmigosInvitados()) {
+
+		    for(Jugador j:player.getAmigosInvitados()) {
 		    	Invitacion i=new Invitacion();
 		    	i.setFechaHora(LocalDate.now());
 		    	i.setJugador(j);
@@ -103,10 +100,16 @@ public class MatchController {
 		    	i.setTipo(tipoInvitacion.JUGADOR);
 		    	invitacionService.save(i);
 		    }
-		    List<Jugador>copia=actualPlayer.getAmigosInvitados();
+		    List<Jugador>copia=player.getAmigosInvitados();
 		    copia.clear();
-		    actualPlayer.setAmigosInvitados(copia);
-		    playerService.saveJugador(actualPlayer);
+		    player.setAmigosInvitados(copia);
+		    playerService.saveJugador(player);
+		    
+		    result = new ModelAndView("redirect:/matches/"+matchId+"/waitForMatch");
+		    }else {
+		        result = new ModelAndView("/matches/exception");
+		        result.addObject("jugador", player);
+		    }
 		    return result;
 	}
 	
