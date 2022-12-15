@@ -24,10 +24,12 @@
 
 				<tr>
 					<form:form action="" method="post">
+						<c:if test="${!match.esPrivada}">
 						<td><c:out value="${match.jugador1.user.username}" /></td>
 						<td><c:out value="${match.name}" /></td>
 						<td><c:out value="${match.inicioPartida}" /></td>
 						<td><a class="btn btn-success" href="<c:url value="/matches/${match.id}/waitForMatch" />">UNIRME</a></td>
+						</c:if>
 					</form:form>
 				</tr>
 			</c:forEach>

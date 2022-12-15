@@ -1,13 +1,19 @@
  package org.springframework.samples.petclinic.partida;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.invitacion.Invitacion;
+import org.springframework.samples.petclinic.invitacion.InvitationService;
+import org.springframework.samples.petclinic.invitacion.resultadoInvitacion;
+import org.springframework.samples.petclinic.invitacion.tipoInvitacion;
 import org.springframework.samples.petclinic.jugador.Jugador;
 import org.springframework.samples.petclinic.jugador.PlayerService;
 import org.springframework.security.core.Authentication;
@@ -38,12 +44,16 @@ public class MatchController {
 
 	private MatchService matchService;
 	private PlayerService playerService;
+	private InvitationService invitacionService;
 	
 	@Autowired
-	public MatchController(MatchService matchService, PlayerService playerService) {
+	public MatchController(MatchService matchService, PlayerService playerService,InvitationService invitacionService) {
 		this.matchService = matchService;
 		this.playerService = playerService;
+		this.invitacionService=invitacionService;
 	}
+	
+	
 	
 	@GetMapping(value = "/matchesList")
     public ModelAndView listingMatch() {
@@ -55,9 +65,15 @@ public class MatchController {
     }
 	
 	@GetMapping(value = "/createMatch")
-	public ModelAndView createNewMatch() {
+	public ModelAndView createNewMatch(@AuthenticationPrincipal Authentication user) {
 		ModelAndView result = new ModelAndView(CREATE_MATCH_VIEW);
-		result.addObject("players", playerService.findAllJugadores());
+		Jugador jugadorActual=playerService.findPlayerByUsername(user.getName());
+		List<Jugador> listaAmigos=new ArrayList<>(jugadorActual.playerFriends());
+		List<Jugador> listaAmigosInvitados=new ArrayList<>();
+		listaAmigosInvitados.addAll(jugadorActual.getAmigosInvitados());
+		result.addObject("actualPlayer", user.getName());
+		result.addObject("amigosInvitados",listaAmigosInvitados);
+		result.addObject("players",listaAmigos);
 		return result;
 	}
 	@PostMapping(value = "/createMatch")
@@ -74,6 +90,21 @@ public class MatchController {
 		    this.matchService.saveMatch(match);
 		    int id = match.getId();
 		    String matchId=String.valueOf(id);
+
+		    for(Jugador j:player.getAmigosInvitados()) {
+		    	Invitacion i=new Invitacion();
+		    	i.setFechaHora(LocalDate.now());
+		    	i.setJugador(j);
+		    	i.setMatch(match);
+		    	i.setResultado(resultadoInvitacion.SIN_RESPONDER);
+		    	i.setTipo(tipoInvitacion.JUGADOR);
+		    	invitacionService.save(i);
+		    }
+		    List<Jugador>copia=player.getAmigosInvitados();
+		    copia.clear();
+		    player.setAmigosInvitados(copia);
+		    playerService.saveJugador(player);
+		    
 		    result = new ModelAndView("redirect:/matches/"+matchId+"/waitForMatch");
 		    }else {
 		        result = new ModelAndView("/matches/exception");

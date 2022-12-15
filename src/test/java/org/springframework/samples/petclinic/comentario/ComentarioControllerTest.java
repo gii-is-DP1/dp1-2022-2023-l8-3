@@ -1,21 +1,31 @@
 package org.springframework.samples.petclinic.comentario;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.samples.petclinic.configuration.SecurityConfiguration;
+import org.springframework.samples.petclinic.invitacion.Invitacion;
+import org.springframework.samples.petclinic.invitacion.InvitationService;
 import org.springframework.samples.petclinic.jugador.Jugador;
 import org.springframework.samples.petclinic.jugador.PlayerService;
+import org.springframework.samples.petclinic.menu.MenuService;
 import org.springframework.samples.petclinic.partida.Match;
 import org.springframework.samples.petclinic.partida.MatchService;
 import org.springframework.samples.petclinic.user.User;
@@ -27,6 +37,7 @@ import org.springframework.test.web.servlet.MockMvc;
 excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class),
 excludeAutoConfiguration= SecurityConfiguration.class)
 
+
 public class ComentarioControllerTest {
 	
 	@MockBean
@@ -35,6 +46,12 @@ public class ComentarioControllerTest {
     private PlayerService playerService;
 	@MockBean
     private ComentarioService comentarioService;
+	@MockBean
+    private InvitationService invitacionService;
+	@MockBean
+    private MenuService menuService;
+	
+
 
     @Autowired
     private MockMvc mockMvc;
@@ -42,6 +59,21 @@ public class ComentarioControllerTest {
     
     @BeforeEach
     public void configureMock(){
+
+    	User user=new User("testUser1","testUser1");
+    	
+    	user.setAuthorities(new HashSet());
+    	
+    	Optional<User>userr=Optional.of(user);
+
+    	given(this.menuService.findUser(any(String.class))).willReturn(userr);
+        
+    	Jugador jugador = new Jugador("test1", "test1", new User("testUser1","testUser1"), false);
+    	given(this.menuService.findPlayerByUsername(any(String.class))).willReturn(jugador);
+    	
+    	List<Invitacion> lista=new ArrayList<>();
+    	given(this.invitacionService.getInvitacionByInvitadoId(any(Integer.class))).willReturn(lista);
+    	
 	    Jugador jugador1 = new Jugador("test1", "test1", new User("testUser1","testUser1"), false);
 	    Jugador jugador2 = new Jugador("test2", "test2", new User("testUser2","testUser2"), false);
 	    jugador1.setId(5);
