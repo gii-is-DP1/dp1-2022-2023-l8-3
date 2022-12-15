@@ -11,8 +11,6 @@ import javax.persistence.Table;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.petclinic.jugador.Jugador;
 import org.springframework.samples.petclinic.model.BaseEntity;
-import org.springframework.samples.petclinic.model.NamedEntity;
-import org.springframework.samples.petclinic.owner.Owner;
 import org.springframework.samples.petclinic.partida.Match;
 
 import lombok.Getter;
