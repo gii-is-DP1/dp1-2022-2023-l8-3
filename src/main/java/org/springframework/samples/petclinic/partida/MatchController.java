@@ -102,14 +102,19 @@ public class MatchController {
 	}
 	
 	@PostMapping(value ="/{idMatch}/waitForMatch")
-	public RedirectView post(@PathVariable("idMatch") Integer matchId, @AuthenticationPrincipal Authentication user) {
-	    String playerName = user.getName();
-        Jugador player = playerService.findPlayerByUsername(playerName);
+	public ModelAndView post(@PathVariable("idMatch") Integer matchId, @AuthenticationPrincipal Authentication user) {
+        ModelAndView result =  new ModelAndView();
+        Jugador player = playerService.findPlayerByUsername(user.getName());
+        if(matchService.canIplay(player)) {
         Match match = matchService.getMatchById(matchId);
         match.setJugador2(player);
         this.matchService.saveMatch(match);
         String id = String.valueOf(matchId);
-        RedirectView result = new RedirectView("/matches/"+id+"/currentMatch");
+        result =new ModelAndView("redirect:/matches/"+id+"/currentMatch");
+        }else {
+            result = new ModelAndView("/matches/exception");
+            result.addObject("jugador", player);
+        }
         return result;
         
 	}
