@@ -26,24 +26,30 @@
 						<petclinic:disco indexDisco="${i}" idLoggedPlayer="${idLoggedPlayer}" idCurrentPlayer="${idCurrentPlayer}" itIsPropagationPhase="${match.itIsPropagationPhase()}" clase="disco ${match.chooseTag(i)}"/>
 					</c:forEach>
 				</div>
-
-				<div class="botones">
-
-					<c:choose>
-							<c:when test="${match.esPropagacion() && isYourTurn}">
-								<input type="submit" value="Siguiente fase"/>
-							</c:when>
-					</c:choose>
-					<c:choose>
-							<c:when test="${match.getMatchTime()>=2}">
-								<a class="button" href="<c:url value="/matches/${match.id}/abandonedMatch" />">Abandonar partida </a>
-							</c:when>
-							<c:otherwise>
-								<a class="button" href="<c:url value="#"/>" onclick="alert('Debes esperar 2 minutos para abandonar te quedan ${match.getMatchTime()} segundos');">Abandonar partida </a>
-							</c:otherwise>
-					</c:choose>
-					
-				</div>	
+				
+				<c:if test="${idLoggedPlayer==match.jugador1.id || idLoggedPlayer==match.jugador2.id}">
+					<div class="botones">
+						<c:choose>
+								<c:when test="${match.esPropagacion() && isYourTurn}">
+									<input type="submit" value="Siguiente fase"/>
+								</c:when>
+						</c:choose>
+						<c:choose>
+								<c:when test="${match.getMatchTime()>=2}">
+									<a class="button" href="<c:url value="/matches/${match.id}/abandonedMatch" />">Abandonar partida </a>
+								</c:when>
+								<c:otherwise>
+									<a class="button" href="<c:url value="#"/>" onclick="alert('Debes esperar 2 minutos para abandonar te quedan ${match.getMatchTime()} segundos');">Abandonar partida </a>
+								</c:otherwise>
+						</c:choose>
+						
+					</div>
+				</c:if>
+				<c:if test="${idLoggedPlayer!=match.jugador1.id && idLoggedPlayer!=match.jugador2.id}">
+					<a class="button" href="<c:url value="/matches/${match.id}/abandonedMatchSpectated" />">Dejar de ver</a>
+				</c:if>
+				
+				
 			</form:form>
 
 			<div class="jugador2">
@@ -64,12 +70,13 @@
 							jugador="${jugador1}"/>
 					</c:forEach>
 				</div>
-
-				<form:form class="formmsg" method="post" action="/chat/${match.id}/postMsg">
-					<textarea name="msg" style='width: 80%;' oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'></textarea>
-					<input type="hidden" name="idMatch" value="${match.id}">
-					<input type="submit" value="Enviar">	
-				</form:form>
+				<c:if test="${idLoggedPlayer==match.jugador1.id || idLoggedPlayer==match.jugador2.id}">
+					<form:form class="formmsg" method="post" action="/chat/${match.id}/postMsg">
+						<textarea name="msg" style='width: 80%;' oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'></textarea>
+						<input type="hidden" name="idMatch" value="${match.id}">
+						<input type="submit" value="Enviar">	
+					</form:form>
+				</c:if>
 			</div>
 
 			<div class="informacion">

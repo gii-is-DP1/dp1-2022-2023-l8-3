@@ -48,7 +48,7 @@
 								</c:choose>
 								<c:choose>
 									<c:when test="${amigosInvitados.contains(player)}">
-										<td><label for="check" style="color: blue">INVITADO</label></td>
+										<td><div class="glyphicon glyphicon-ok" style="color: green; font-size: 1.5em;"></div></td>
 									</c:when>
 									<c:otherwise>
 										<td><a class="btn btn-warning" href="<c:url value="/invitarAmigo/${player.id}" />">INVITAR AMIGO</a></td>

@@ -154,8 +154,8 @@ public class MatchControllerTest {
 		config(true,false);
     	
 		mockMvc.perform(get("/matches/{idMatch}/waitForMatch", 1))
-				.andExpect(status().is3xxRedirection())
-				.andExpect(view().name("redirect:/matches/1/currentMatch"));
+				.andExpect(status().isOk())
+				.andExpect(view().name("/matches/matchesList"));
 	}
     
     @WithMockUser(username = "testUser2", password="testUser2")
