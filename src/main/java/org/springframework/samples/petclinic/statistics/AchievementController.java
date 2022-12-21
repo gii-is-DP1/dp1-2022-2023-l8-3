@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/statistics/achievements")
@@ -76,39 +77,36 @@ public class AchievementController {
 	}
 	
 	@GetMapping(value = "/admin/{id}/edit")
-	public ModelAndView editAchievement(@PathVariable int id) {
-		ModelAndView result = new ModelAndView(ACHIEVEMENTS_FORM);
+	public ModelAndView editAchievement(@PathVariable int id, RedirectAttributes ra) {
+		ModelAndView result;
 		Achievement achievement = achievementService.getAchievementById(id);
-		result.addObject("achievement", achievement);
-		result.addObject("metrics", List.of(Metrics.values()));
-		result.addObject("difficulty", List.of(AchievementDifficulty.values()));
-		result.addObject("visibility", List.of(Visibility.values()));
+		
+		if(achievement.getVisibility().equals(Visibility.EN_BORRADOR)) {
+			result = new ModelAndView(ACHIEVEMENTS_FORM);
+			result.addObject("achievement", achievement);
+			result.addObject("metrics", List.of(Metrics.values()));
+			result.addObject("difficulty", List.of(AchievementDifficulty.values()));
+			result.addObject("visibility", List.of(Visibility.values()));
+		} else {
+			result = new ModelAndView(ACHIEVEMENTS_LISTING_VIEW_ADMIN);
+			result.setViewName("redirect:/statistics/achievements/admin");
+			ra.addFlashAttribute("message", "Cannot edit an achievement that has already been published");
+		}
+		
 		return result;
 	}
 	
 	@PostMapping("/admin/{id}/edit")
 	public ModelAndView saveAchievement(@PathVariable int id, @Valid Achievement achievement, BindingResult br) {
-		ModelAndView result;
+		ModelAndView result = showAchievements();
+		
 		if(br.hasErrors()) {
 			result = new ModelAndView(ACHIEVEMENTS_FORM, br.getModel());
 		} else {
-			boolean b=false;
-			for(Achievement a:achievementService.getAchievements()) {
-				if(achievement.getMetrics()==a.getMetrics()&& achievement.getThreshold()==a.getThreshold()) {
-					b=true;
-				}
-			}
-			if(b) {
-				Achievement achievementToBeUpdated = achievementService.getAchievementById(id);
-				BeanUtils.copyProperties(achievement, achievementToBeUpdated, "id");
-				achievementService.saveAchievement(achievementToBeUpdated);
-				result = showAchievements();
-				result.addObject("message", "The achievement was updated succesfully");
-			}
-			else {
-				result = editAchievement(id);
-				result.addObject("message", "La metrica y limite coinciden con un logro existente");
-			}
+			Achievement achievementToBeUpdated = achievementService.getAchievementById(id);
+			BeanUtils.copyProperties(achievement, achievementToBeUpdated, "id");
+			achievementService.saveAchievement(achievementToBeUpdated);
+			result.addObject("message", "The achievement was updated succesfully");
 		}
 		return result;
 	}
@@ -127,21 +125,22 @@ public class AchievementController {
 	@PostMapping("/admin/new")
 	public ModelAndView saveAchievement(@Valid Achievement achievement, BindingResult br) {
 		ModelAndView result;
+		Integer i = 0;
+		Boolean isRepeated = false;
+		List<Achievement> achievements = (List<Achievement>) achievementService.getAchievements();
+		
 		if(br.hasErrors()) {
 			result = new ModelAndView(ACHIEVEMENTS_FORM, br.getModel());
 		} else {
-			boolean b=false;
-			for(Achievement a:achievementService.getAchievements()) {
-				if(achievement.getMetrics()==a.getMetrics()&& achievement.getThreshold()==a.getThreshold()) {
-					b=true;
-				}
+			while(!isRepeated && i < achievements.size()) {
+				isRepeated = achievement.getMetrics().equals(achievements.get(i).getMetrics()) && achievement.getThreshold().equals(achievements.get(i).getThreshold());
+				i++;
 			}
-			if(b) {
+			if(!isRepeated) {
 				achievementService.saveAchievement(achievement);
 				result = showAchievements();
 				result.addObject("message", "The achievement was added succesfully");
-			}
-			else {
+			} else {
 				result = newAchievement();
 				result.addObject("message", "La metrica y limite coinciden con un logro existente");
 			}
