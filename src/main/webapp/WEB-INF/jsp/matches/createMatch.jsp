@@ -22,38 +22,57 @@
 	</div>
 	<div class=" seccion invitaciones">
 		<div class="scroll">
-			<p style="font:fantasy; font-style:inherit ; font-size: x-large; text-align: center; justify-content: center; align-items: center;">INVITACIONES</p>
+			<p style="font:fantasy; font-style:inherit ; font-size: x-large; text-align: center; justify-content: center; align-items: center;">INVITA A TUS AMIGOS</p>
 			<c:if test="${amigoEnPartida}">
 				<div class="alert alert-info">
 		    	 	No puedes invitar a <b style="color: blue;">${nombreAmigo}</b> porque se encuentra en una partida
 				</div>
 			</c:if>
-			
+			<br/>
 			<table style="width: 100%">
 				<thead>
 					<th style="text-align: center">AMIGO</th>
 					<th style="text-align: center">ESTADO</th>
+					<th style="text-align: center">INVITACIONES COMO JUGADOR</th>
+					<th style="text-align: center">INVITACIONES COMO ESPECTADOR</th>
 					<th></th>
 
 				</thead>
 				<tbody>
 		
 					<c:forEach items="${players}" var="player">
-						<c:if test="${actualPlayer!=player.user.username}">
+						<c:if test="${actualPlayer.user.username!=player.user.username}">
 							<tr>
 								<td><c:out value="${player.user.username}" /></td>
 								<c:choose>
 									<c:when test="${player.estadoOnline==true}"><td><c:out value="En linea"/></td></c:when>
 									<c:otherwise><td><c:out value="Desconectado"/></td></c:otherwise>
 								</c:choose>
-								<c:choose>
-									<c:when test="${amigosInvitados.contains(player)}">
-										<td><div class="glyphicon glyphicon-ok" style="color: green; font-size: 1.5em;"></div></td>
-									</c:when>
-									<c:otherwise>
-										<td><a class="btn btn-warning" href="<c:url value="/invitarAmigo/${player.id}" />">INVITAR AMIGO</a></td>
-									</c:otherwise>
-								</c:choose>
+									<c:choose>
+										<c:when test="${amigosInvitados.contains(player)}">
+											<c:if test="${actualPlayer.tipoDeInvitacionPartidaEnviada.get(amigosInvitados.indexOf(player))=='jugador'}">
+												<td><div class="glyphicon glyphicon-ok" style="color: green; font-size: 1.5em;"></div></td>
+											</c:if>
+											<c:if test="${actualPlayer.tipoDeInvitacionPartidaEnviada.get(amigosInvitados.indexOf(player))=='espectador'}">
+												<td></td>
+												<td><div class="glyphicon glyphicon-ok" style="color: green; font-size: 1.5em;"></div></td>
+											</c:if>
+										</c:when>
+										<c:otherwise>
+											<td>
+												<spring:url value="/invitarAmigo/${player.id}/{tipoInvitacion}" var="invitarComoJugador">
+        											<spring:param name="tipoInvitacion" value="jugador"/>
+        										</spring:url>
+												<a class="btn btn-warning" href="${fn:escapeXml(invitarComoJugador)}">INVITAR COMO JUGADOR</a>
+											</td>
+											<td>
+												<spring:url value="/invitarAmigo/${player.id}/{tipoInvitacion}" var="invitarComoEspectador">
+        											<spring:param name="tipoInvitacion" value="espectador"/>
+        										</spring:url>
+												<a class="btn btn-warning" href="${fn:escapeXml(invitarComoEspectador)}">INVITAR COMO ESPECTADOR</a>
+											</td>
+										</c:otherwise>
+									</c:choose>
 								
 							</tr>
 						</c:if>
@@ -73,9 +92,8 @@
 			</select>
 
 			<div class="seccion botones">
-				<a class="button" href="#"
-					onclick="javascript:window.history.back(-1);return false;">Volver
-					atras</a> <input href="<c:url value="/matches/${match.id}/currentMatch" /> class="button" type="submit" value="Crear partida" />
+				<a class="button" href="/matches/cancelarCreacionPartida">Cancelar</a>
+				<input href="<c:url value="/matches/${match.id}/currentMatch" /> class="button" type="submit" value="Crear partida" />
 			</div>
 		</div>
 	</form:form>

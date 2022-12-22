@@ -80,7 +80,7 @@ public class MatchController {
 		List<Jugador> listaAmigos=new ArrayList<>(jugadorActual.playerFriends());
 		List<Jugador> listaAmigosInvitados=new ArrayList<>();
 		listaAmigosInvitados.addAll(jugadorActual.getAmigosInvitados());
-		result.addObject("actualPlayer", user.getName());
+		result.addObject("actualPlayer", playerService.findPlayerByUsername(user.getName()));
 		result.addObject("amigosInvitados",listaAmigosInvitados);
 		result.addObject("players",listaAmigos);
 		return result;
@@ -100,13 +100,19 @@ public class MatchController {
 		    int id = match.getId();
 		    String matchId=String.valueOf(id);
 
-		    for(Jugador j:player.getAmigosInvitados()) {
+		    for(Integer h=0;h<player.getAmigosInvitados().size();h++) {
+		    	Jugador j=player.getAmigosInvitados().get(h);
 		    	Invitacion i=new Invitacion();
 		    	i.setFechaHora(LocalDate.now());
 		    	i.setJugador(j);
 		    	i.setMatch(match);
 		    	i.setResultado(resultadoInvitacion.SIN_RESPONDER);
-		    	i.setTipo(tipoInvitacion.JUGADOR);
+		    	if(player.getTipoDeInvitacionPartidaEnviada().get(h).equals("jugador")) {
+		    		i.setTipo(tipoInvitacion.JUGADOR);
+		    	}
+		    	else {
+		    		i.setTipo(tipoInvitacion.ESPECTADOR);
+		    	}
 		    	invitacionService.save(i);
 		    }
 		    List<Jugador>copia=player.getAmigosInvitados();
@@ -401,6 +407,20 @@ public class MatchController {
         espectadores.remove(playerService.findPlayerByUsername(user.getName()));
         match.setEspectadores(espectadores);
         matchService.saveMatch(match);
+	    return result;
+	}
+	
+	@GetMapping("/cancelarCreacionPartida")
+	public ModelAndView cancelarPartida(@AuthenticationPrincipal Authentication user) {
+	    ModelAndView result = new ModelAndView("redirect:/");
+	    Jugador actualPlayer=playerService.findPlayerByUsername(user.getName());
+	    List<Jugador>copia=actualPlayer.getAmigosInvitados();
+	    copia.clear();
+	    actualPlayer.setAmigosInvitados(copia);
+	    List<String>copia2=actualPlayer.getTipoDeInvitacionPartidaEnviada();
+	    copia2.clear();
+	    actualPlayer.setTipoDeInvitacionPartidaEnviada(copia2);
+	    playerService.saveJugador(actualPlayer);
 	    return result;
 	}
 	
