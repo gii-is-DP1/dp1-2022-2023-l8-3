@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -56,11 +57,19 @@ public class MatchController {
 	
 	
 	@GetMapping(value = "/matchesList")
-    public ModelAndView listingMatch() {
+    public ModelAndView listingMatch(@AuthenticationPrincipal Authentication user) {
+		Jugador actualUser=playerService.findPlayerByUsername(user.getName());
         ModelAndView result = new ModelAndView(LIST_MATCHES);   
-
         result.addObject("match_list", matchService.getMatchesWithoutPlayer2());
-        result.addObject("matches", matchService.getMatches());
+        List<Match> matches=new ArrayList<Match>();
+        for(Match m:matchService.getMatches()) {
+        	if(m.getJugador2()!=null && m.getAbandonada()==false && m.getFinPartida()==null && 
+        			m.getEspectadores().size()<4 && m.getGanadorPartida()==GameWinner.UNDEFINED && 
+        			m.getJugador1()!=actualUser && m.getJugador2()!=actualUser) {
+        		matches.add(m);
+        	}
+        }
+        result.addObject("matches", matches);
         return result;
     }
 	
@@ -71,7 +80,7 @@ public class MatchController {
 		List<Jugador> listaAmigos=new ArrayList<>(jugadorActual.playerFriends());
 		List<Jugador> listaAmigosInvitados=new ArrayList<>();
 		listaAmigosInvitados.addAll(jugadorActual.getAmigosInvitados());
-		result.addObject("actualPlayer", user.getName());
+		result.addObject("actualPlayer", playerService.findPlayerByUsername(user.getName()));
 		result.addObject("amigosInvitados",listaAmigosInvitados);
 		result.addObject("players",listaAmigos);
 		return result;
@@ -91,13 +100,19 @@ public class MatchController {
 		    int id = match.getId();
 		    String matchId=String.valueOf(id);
 
-		    for(Jugador j:player.getAmigosInvitados()) {
+		    for(Integer h=0;h<player.getAmigosInvitados().size();h++) {
+		    	Jugador j=player.getAmigosInvitados().get(h);
 		    	Invitacion i=new Invitacion();
 		    	i.setFechaHora(LocalDate.now());
 		    	i.setJugador(j);
 		    	i.setMatch(match);
 		    	i.setResultado(resultadoInvitacion.SIN_RESPONDER);
-		    	i.setTipo(tipoInvitacion.JUGADOR);
+		    	if(player.getTipoDeInvitacionPartidaEnviada().get(h).equals("jugador")) {
+		    		i.setTipo(tipoInvitacion.JUGADOR);
+		    	}
+		    	else {
+		    		i.setTipo(tipoInvitacion.ESPECTADOR);
+		    	}
 		    	invitacionService.save(i);
 		    }
 		    List<Jugador>copia=player.getAmigosInvitados();
@@ -115,7 +130,23 @@ public class MatchController {
 	
 	@GetMapping(value ="/{idMatch}/waitForMatch")
 	public ModelAndView showWait(@PathVariable("idMatch") int matchId, @AuthenticationPrincipal Authentication user, HttpServletResponse response) {
-	    response.addHeader("Refresh", "1.85");
+	    if(matchService.getMatchById(matchId).getJugador2()!=null) {
+	    	Jugador actualUser=playerService.findPlayerByUsername(user.getName());
+	    	ModelAndView result = new ModelAndView("/matches/matchesList");
+	    	result.addObject("partidaLlena",true);
+	    	result.addObject("match_list", matchService.getMatchesWithoutPlayer2());
+	    	List<Match> matches=new ArrayList<Match>();
+	        for(Match m:matchService.getMatches()) {
+	        	if(m.getJugador2()!=null && m.getAbandonada()==false && m.getFinPartida()==null && 
+	        			m.getEspectadores().size()<4 && m.getGanadorPartida()==GameWinner.UNDEFINED && 
+	        			m.getJugador1()!=actualUser && m.getJugador2()!=actualUser) {
+	        		matches.add(m);
+	        	}
+	        }
+	        result.addObject("matches", matches);
+	    	return result;
+	    }
+		response.addHeader("Refresh", "1.85");
 	    ModelAndView resul = new ModelAndView(WAIT_MATCH_VIEW);
 	    Match match = matchService.getMatchById(matchId);
 	    String id = String.valueOf(matchId);
@@ -144,6 +175,7 @@ public class MatchController {
         return result;
         
 	}
+	
 	
 	@GetMapping(value = "/{idMatch}/currentMatch")
 	public ModelAndView showCurrentMatch(@PathVariable int idMatch, @AuthenticationPrincipal Authentication user, HttpServletResponse response) {
@@ -329,6 +361,67 @@ public class MatchController {
 		model2.put("sinPartidas", b);
 		model3.put("firstPlayer", GameWinner.FIRST_PLAYER);
 		return "matches/listMatchesFinished";
+	}
+	
+	
+	@GetMapping(value = "/{idMatch}/currentMatchSpectated")
+	public ModelAndView showCurrentMatchSpectated(@PathVariable int idMatch, @AuthenticationPrincipal Authentication user,HttpServletResponse response) {
+		ModelAndView result;
+		Jugador actualUser=playerService.findPlayerByUsername(user.getName());
+		Match match = matchService.getMatchById(idMatch);
+		if(match.getEspectadores().size()<4) {
+			if(match.getGanadorPartida() == GameWinner.UNDEFINED) {
+				result = new ModelAndView(CURRENT_MATCH_VIEW);
+			} else {
+				result = new ModelAndView(MATCH_STATISTICS_VIEW);
+			}
+			refresh(user, match, match.itIsPropagationPhase(), response);
+	        addDataToTheView(user, result, match);
+	        Set<Jugador> espectadores=match.getEspectadores();
+	        espectadores.add(playerService.findPlayerByUsername(user.getName()));
+	        match.setEspectadores(espectadores);
+	        matchService.saveMatch(match);
+		}
+		else {
+			result=new ModelAndView("/matches/matchesList");
+			result.addObject("match_list", matchService.getMatchesWithoutPlayer2());
+	        List<Match> matches=new ArrayList<Match>();
+	        for(Match m:matchService.getMatches()) {
+	        	if(m.getJugador2()!=null && m.getAbandonada()==false && m.getFinPartida()==null && 
+	        			m.getEspectadores().size()<4 && m.getGanadorPartida()==GameWinner.UNDEFINED && 
+	        			m.getJugador1()!=actualUser && m.getJugador2()!=actualUser) {
+	        		matches.add(m);
+	        	}
+	        }
+	        result.addObject("matches", matches);
+	        result.addObject("noCabenMasEspectadores",true);
+		}
+		return result;
+	}
+	
+	@GetMapping("/{matchId}/abandonedMatchSpectated")
+	public ModelAndView abandonedMatchSpectated(@PathVariable int matchId,@AuthenticationPrincipal Authentication user) {
+	    ModelAndView result = new ModelAndView("redirect:/matches/matchesList");
+        Match match = matchService.getMatchById(matchId);
+        Set<Jugador> espectadores=match.getEspectadores();
+        espectadores.remove(playerService.findPlayerByUsername(user.getName()));
+        match.setEspectadores(espectadores);
+        matchService.saveMatch(match);
+	    return result;
+	}
+	
+	@GetMapping("/cancelarCreacionPartida")
+	public ModelAndView cancelarPartida(@AuthenticationPrincipal Authentication user) {
+	    ModelAndView result = new ModelAndView("redirect:/");
+	    Jugador actualPlayer=playerService.findPlayerByUsername(user.getName());
+	    List<Jugador>copia=actualPlayer.getAmigosInvitados();
+	    copia.clear();
+	    actualPlayer.setAmigosInvitados(copia);
+	    List<String>copia2=actualPlayer.getTipoDeInvitacionPartidaEnviada();
+	    copia2.clear();
+	    actualPlayer.setTipoDeInvitacionPartidaEnviada(copia2);
+	    playerService.saveJugador(actualPlayer);
+	    return result;
 	}
 	
 

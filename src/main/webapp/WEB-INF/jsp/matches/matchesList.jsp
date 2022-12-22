@@ -6,7 +6,17 @@
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags"%>
 <petclinic:layout pageName="matchesList">
 	<h2>Partidas</h2>
-
+	
+	<c:if test="${partidaLlena}">
+		<div class="alert alert-info">
+			La partida a la que intenta unirse ya est&aacute; completa
+		</div>
+	</c:if>
+	<c:if test="${noCabenMasEspectadores}">
+		<div class="alert alert-info">
+			La partida que intenta visualizar ya tiene el numero m&aacute;ximo de espectadores
+		</div>
+	</c:if>
 
 	<table id="matchesList" class="table table-striped">
 		<thead>
@@ -59,7 +69,7 @@
 
 					<td><c:out value="${matches.inicioPartida}" /></td>
 					<td><a class="btn btn-danger"
-						href="<c:url value="/matches/${matches.id}/currentMatch" />">ENTRAR</a></td>
+						href="<c:url value="/matches/${matches.id}/currentMatchSpectated" />">Ver</a></td>
 				</tr>
 			</c:forEach>
 		</tbody>

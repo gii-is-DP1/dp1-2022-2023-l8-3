@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -62,10 +63,10 @@ public class Jugador extends Person {
 	@ManyToMany(cascade = CascadeType.REMOVE)
 	@JoinTable(name = "amigosInvitados", joinColumns = @JoinColumn(name = "idJugador1"), inverseJoinColumns = @JoinColumn(name = "idJugador2"))
 	private List<Jugador> amigosInvitados;
+	
+	@ElementCollection
+	private List<String> tipoDeInvitacionPartidaEnviada; //el indice de cada elemento se corresponde con el indice del jugador invitado en la lista amigos invitados
 
-//	@ManyToMany(cascade = CascadeType.REMOVE)
-//	@JoinTable(name = "lista_amigos", joinColumns = @JoinColumn(name = "friend_id"), inverseJoinColumns = @JoinColumn(name = "person_id"))
-//	private List<Jugador> amigoDe;
 
 	@OneToMany(mappedBy = "jugador1", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<FriendRequest> sentFriendRequests;
@@ -89,7 +90,6 @@ public class Jugador extends Person {
 		this.numeroDeContaminacion = 0;
 		this.bacterias = 20;
 		this.sarcinas = 4;
-		this.amigosInvitados=new ArrayList<Jugador>();
 		this.invitacionesPartidaRecibidas = new ArrayList<Invitacion>();
 		this.sentFriendRequests = new ArrayList<FriendRequest>();
 		this.receivedFriendRequests = new ArrayList<FriendRequest>();
