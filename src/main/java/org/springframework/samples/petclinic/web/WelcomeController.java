@@ -1,11 +1,12 @@
 package org.springframework.samples.petclinic.web;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.validation.Valid;
 
@@ -15,15 +16,11 @@ import org.springframework.samples.petclinic.invitacion.InvitationService;
 import org.springframework.samples.petclinic.jugador.Jugador;
 import org.springframework.samples.petclinic.jugador.PlayerService;
 import org.springframework.samples.petclinic.menu.MenuService;
-import org.springframework.samples.petclinic.model.Person;
 import org.springframework.samples.petclinic.user.Authorities;
 import org.springframework.samples.petclinic.user.User;
-import org.springframework.samples.petclinic.user.UserService;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -96,38 +93,68 @@ public class WelcomeController {
 	}
 
 	@PostMapping(value = "/registerNewJugador")
-	public String postRegisterNewPlayer(@Valid Jugador jugador, BindingResult result, Map<String, Object> model) {
-		if (result.hasErrors()) {
-			return "jugadores/createOrUpdateJugadorForm";
+	public ModelAndView postRegisterNewPlayer(@Valid Jugador jugador, BindingResult br, Map<String, Object> model) {
+		Boolean correctPassword = false;
+		ModelAndView resul;
+		
+		if (br.hasErrors()) {
+			resul = new ModelAndView("jugadores/createOrUpdateJugadorForm", br.getModel());
 		} else {
-			Boolean contraseñaCorrecta = false;
 			List<Jugador> lista = playerService.findAllJugadores();
-			// Comprobar si el correo ya esta registrado con otro jugador
-			for (Jugador j : lista) {
-				if (j.getUser().getEmail().equals(jugador.getUser().getEmail())) {
-					model.put("emailIncorrecto1", true);
-					return "jugadores/createOrUpdateJugadorForm";
-				}
+			
+			if(isRegisteredEmail(jugador, model, lista) || !isValidEmail(model, jugador) || !isCorrectPassword(jugador, model, correctPassword)) {
+				resul = new ModelAndView("jugadores/createOrUpdateJugadorForm");
+			} else {
+				jugador.setEstadoOnline(false);
+				this.playerService.saveJugador(jugador);
+				resul = new ModelAndView("redirect:/login");
 			}
-			// Comprobar si el correo acaba en @gmail.com
-			if (!(jugador.getUser().getEmail().endsWith("@gmail.com"))) {
-				model.put("emailIncorrecto2", true);
-				return "jugadores/createOrUpdateJugadorForm";
-			}
-			// Comprobar si la contraseña esta entre 10 y 50 y contiene al menos un numero
-			for (Integer i = 0; i < 10; i++) {
-				if (jugador.getUser().getPassword().length() > 10 && jugador.getUser().getPassword().length() < 50
-						&& jugador.getUser().getPassword().contains(i.toString())) {
-					contraseñaCorrecta = true;
-				}
-			}
-			if (contraseñaCorrecta == false) {
-				model.put("contraseñaIncorrecta", true);
-				return "jugadores/createOrUpdateJugadorForm";
-			}
-			this.playerService.saveJugador(jugador);
-
-			return "redirect:/login";
 		}
+		return resul;
+	}
+	
+	private Boolean isRegisteredEmail(Jugador jugador, Map<String, Object> model, List<Jugador> lista) {
+		Boolean result = false;
+		Integer i = 0;
+		while(!result && i < lista.size()) {
+			if (lista.get(i).getUser().getEmail().equals(jugador.getUser().getEmail())) {
+				model.put("emailIncorrecto1", true);
+				result = true;
+			}
+			i++;
+		}
+		return result;
+	}
+	
+	private Boolean isValidEmail(Map<String, Object> model, Jugador player) {
+		Boolean result = true;
+		String emailPattern = "^[_a-z0-9-]+(\\.[_a-z0-9-]+)*@" +"[a-z0-9-]+(\\.[a-z0-9-]+)*(\\.[a-z]{2,4})$";
+		Pattern pattern = Pattern.compile(emailPattern);
+		Matcher matcher = pattern.matcher(player.getUser().getEmail());
+		
+		if (!matcher.matches()) {
+			model.put("emailIncorrecto2", true);
+			result = false;
+		}
+		
+		return result;
+	}
+
+	private Boolean isCorrectPassword(Jugador player, Map<String, Object> model, Boolean correctPassword) {
+		Integer i = 0;
+		
+		if(player.getUser().getPassword().length() >= 10 && player.getUser().getPassword().length() <= 50) {
+			while(!correctPassword && i < 10) {
+				if (player.getUser().getPassword().contains(i.toString())) {
+					correctPassword = true;
+				}
+				i++;
+			}
+		}
+		if(!correctPassword) {
+			model.put("contraseñaIncorrecta", true);
+		}
+		
+		return correctPassword;
 	}
 }
