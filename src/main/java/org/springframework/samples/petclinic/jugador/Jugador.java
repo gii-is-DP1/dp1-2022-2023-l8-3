@@ -1,9 +1,7 @@
 package org.springframework.samples.petclinic.jugador;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,19 +10,14 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.springframework.samples.petclinic.statistics.Achievement;
 import org.springframework.samples.petclinic.invitacion.Invitacion;
 import org.springframework.samples.petclinic.model.Person;
-import org.springframework.samples.petclinic.partida.Match;
 import org.springframework.samples.petclinic.user.User;
-
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -68,10 +61,10 @@ public class Jugador extends Person {
 	private List<String> tipoDeInvitacionPartidaEnviada; //el indice de cada elemento se corresponde con el indice del jugador invitado en la lista amigos invitados
 
 
-	@OneToMany(mappedBy = "jugador1", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "jugador1")
 	private List<FriendRequest> sentFriendRequests;
 
-	@OneToMany(mappedBy = "jugador2", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "jugador2")
 	private List<FriendRequest> receivedFriendRequests;
 
 	@ManyToMany(cascade = CascadeType.ALL)
