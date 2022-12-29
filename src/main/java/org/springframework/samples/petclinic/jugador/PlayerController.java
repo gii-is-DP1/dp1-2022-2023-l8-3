@@ -263,21 +263,17 @@ public class PlayerController {
 		ModelAndView mv;
 		String message = "";
 		
-		if(playerService.findJugadorById(player2Id).playerFriends().size() >= FRIEND_LIMIT) {
+		if(result && playerService.findJugadorById(player2Id).playerFriends().size() >= FRIEND_LIMIT) {
 			message = "You have reached the limit number of friends";
-		} else if(playerService.findJugadorById(player1Id).playerFriends().size() >= FRIEND_LIMIT) {
+		} else if(result && playerService.findJugadorById(player1Id).playerFriends().size() >= FRIEND_LIMIT) {
 			message = "That player has reached the friend limit";
 		} else {
 			FriendRequest fr = friendRequestService.getFriendRequestByPlayers(player1Id, player2Id);
 			fr.setResultado(result);
 			friendRequestService.saveFriendRequest(fr);
-			
-			if(result) {
-				message = "Request successfully accepted";
-			} else {
-				message = "Request successfully declined";
-			}
+			message = result ? "Request successfully accepted" : "Request successfully declined";  
 		}
+		
 		
 		mv = new ModelAndView("/jugadores/friendRequests");
 		mv.setViewName("redirect:/jugadores/friendRequests");
