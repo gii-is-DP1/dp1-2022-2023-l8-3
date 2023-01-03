@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
 
 import org.springframework.samples.petclinic.jugador.Jugador;
 
@@ -30,9 +29,10 @@ public class User{
 	@Column(name="username")
 	String username;
 	
-	@Email
+	@Column(name="email")
 	String email;
 	
+	@Column(name="password")
 	String password;
 	
 	boolean enabled;

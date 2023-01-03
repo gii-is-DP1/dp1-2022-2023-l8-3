@@ -29,7 +29,7 @@
 	</c:if>
 	<c:if test="${emailIncorrecto2}">
 		<div class="alert alert-info">
-    	 Email incorrecto, debe acabar en @gmail.com
+    	 El Email no cumple el formato correcto
 		</div>
 	</c:if>
     <c:if test="${sinJugadores}"><div class="alert alert-info">No hay jugadores registrados actualmente</div></c:if>

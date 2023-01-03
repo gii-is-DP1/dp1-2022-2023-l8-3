@@ -6,7 +6,17 @@
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags"%>
 <petclinic:layout pageName="matchesList">
 	<h2>Partidas</h2>
-
+	
+	<c:if test="${partidaLlena}">
+		<div class="alert alert-info">
+			La partida a la que intenta unirse ya est&aacute; completa
+		</div>
+	</c:if>
+	<c:if test="${noCabenMasEspectadores}">
+		<div class="alert alert-info">
+			La partida que intenta visualizar ya tiene el numero m&aacute;ximo de espectadores
+		</div>
+	</c:if>
 
 	<table id="matchesList" class="table table-striped">
 		<thead>
@@ -24,7 +34,7 @@
 
 				<tr>
 					<form:form action="" method="post">
-						<c:if test="${!match.esPrivada}">
+						<c:if test="${!match.esPrivada && match.jugador1!=loggedUser}">
 						<td><c:out value="${match.jugador1.user.username}" /></td>
 						<td><c:out value="${match.name}" /></td>
 						<td><c:out value="${match.inicioPartida}" /></td>
@@ -59,15 +69,11 @@
 
 					<td><c:out value="${matches.inicioPartida}" /></td>
 					<td><a class="btn btn-danger"
-						href="<c:url value="/matches/${matches.id}/currentMatch" />">ENTRAR</a></td>
+						href="<c:url value="/matches/${matches.id}/currentMatchSpectated" />">Ver</a></td>
 				</tr>
 			</c:forEach>
 		</tbody>
 	</table>
-	
-	<div class="divBoton3d"">
-	<button type="button" class="btn-3d" onclick="window.location.href='./Finished'">Historial de partidas</button>
-	</div>
 	
 	<style type="text/css">
 	th{

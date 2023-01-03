@@ -3,7 +3,11 @@ package org.springframework.samples.petclinic.jugador;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.samples.petclinic.user.Authorities;
@@ -43,13 +47,14 @@ public class PlayerController {
 		this.userService = userService;
 		this.matchService = matchService;
 		this.friendRequestService = friendRequestService;
-
 	}
 
 	@InitBinder
 	public void setAllowedFields(WebDataBinder dataBinder) {
 		dataBinder.setDisallowedFields("id");
 	}
+	
+	// --------------------------------------------------------------------------------------------------------------------------------------------- //
 
 	@GetMapping(value = "/jugadores")
 	public String showAllPlayers(Map<String, Object> model) {
@@ -97,7 +102,6 @@ public class PlayerController {
 
 	@GetMapping(value = "/jugadores/new")
 	public String initCreationForm(Map<String, Object> model, Map<String, Object> model2) {
-		System.out.println("pepepe");
 		Jugador jugador = new Jugador();
 		model.put("jugador", jugador);
 		Collection<Jugador> c = this.playerService.findAllJugadores();
@@ -108,39 +112,24 @@ public class PlayerController {
 	}
 
 	@PostMapping(value = "/jugadores/new")
-	public String processCreationForm(@Valid Jugador jugador, BindingResult result, Map<String, Object> model) {
-		if (result.hasErrors()) {
-			return "jugadores/createOrUpdateJugadorForm";
+	public ModelAndView processCreationForm(@Valid Jugador jugador, BindingResult br, Map<String, Object> model) {
+		Boolean correctPassword = false;
+		ModelAndView resul;
+		
+		if (br.hasErrors()) {
+			resul = new ModelAndView("jugadores/createOrUpdateJugadorForm", br.getModel());
 		} else {
-			Boolean contraseñaCorrecta = false;
 			List<Jugador> lista = playerService.findAllJugadores();
-			// Comprobar si el correo ya esta registrado con otro jugador
-			for (Jugador j : lista) {
-				if (j.getUser().getEmail().equals(jugador.getUser().getEmail())) {
-					model.put("emailIncorrecto1", true);
-					return "jugadores/createOrUpdateJugadorForm";
-				}
+			
+			if(isRegisteredEmail(jugador, model, lista) || !isValidEmail(model, jugador) || !isCorrectPassword(jugador, model, correctPassword)) {
+				resul = new ModelAndView("jugadores/createOrUpdateJugadorForm");
+			} else {
+				jugador.setEstadoOnline(false);
+				this.playerService.saveJugador(jugador);
+				resul = new ModelAndView("redirect:/jugadores/" + jugador.getId());
 			}
-			// Comprobar si el correo acaba en @gmail.com
-			if (!(jugador.getUser().getEmail().endsWith("@gmail.com"))) {
-				model.put("emailIncorrecto2", true);
-				return "jugadores/createOrUpdateJugadorForm";
-			}
-			// Comprobar si la contraseña esta entre 10 y 50 y contiene al menos un numero
-			for (Integer i = 0; i < 10; i++) {
-				if (jugador.getUser().getPassword().length() > 10 && jugador.getUser().getPassword().length() < 50
-						&& jugador.getUser().getPassword().contains(i.toString())) {
-					contraseñaCorrecta = true;
-				}
-			}
-			if (contraseñaCorrecta == false) {
-				model.put("contraseñaIncorrecta", true);
-				return "jugadores/createOrUpdateJugadorForm";
-			}
-			this.playerService.saveJugador(jugador);
-
-			return "redirect:/jugadores/" + jugador.getId();
 		}
+		return resul;
 	}
 
 	@GetMapping(value = "/jugadores/{jugadorId}/edit")
@@ -159,43 +148,76 @@ public class PlayerController {
 	}
 
 	@PostMapping(value = "/jugadores/{jugadorId}/edit")
-	public String processUpdateOwnerForm(@Valid Jugador jugador, BindingResult result,
+	public ModelAndView processUpdateOwnerForm(@Valid Jugador jugador, BindingResult br,
 			@PathVariable("jugadorId") int jugadorId, Map<String, Object> model) {
-		if (result.hasErrors()) {
-			return "jugadores/createOrUpdateJugadorForm";
+		Boolean correctPassword = false;
+		ModelAndView resul;
+		
+		if (br.hasErrors()) {
+			resul = new ModelAndView("jugadores/createOrUpdateJugadorForm", br.getModel());
 		} else {
-			Boolean contraseñaCorrecta = false;
 			List<Jugador> lista = playerService.findAllJugadores();
-			// Comprobar si el correo ya esta registrado con otro jugador que no seas tu
-			// mismo
-			for (Jugador j : lista) {
-				if (j.getUser().getEmail().equals(jugador.getUser().getEmail())
-						&& !(playerService.findJugadorById(jugadorId) == j)) {
-					model.put("emailIncorrecto1", true);
-					return "jugadores/createOrUpdateJugadorForm";
-				}
+			
+			if((!isYourEmail(jugador, jugadorId) && isRegisteredEmail(jugador, model, lista)) || !isValidEmail(model, jugador) || !isCorrectPassword(jugador, model, correctPassword)) {
+				resul = new ModelAndView("jugadores/createOrUpdateJugadorForm");
+				resul.addObject(this.playerService.findJugadorById(jugadorId));
+			} else {
+				jugador.setId(jugadorId);
+				jugador.getUser().setId(playerService.findJugadorById(jugadorId).getUser().getId());
+				this.playerService.saveJugador(jugador);
+				resul = new ModelAndView("redirect:/jugadores/" + jugadorId);
 			}
-			// Comprobar si el correo acaba en @gmail.com
-			if (!(jugador.getUser().getEmail().endsWith("@gmail.com"))) {
-				model.put("emailIncorrecto2", true);
-				return "jugadores/createOrUpdateJugadorForm";
-			}
-			// Comprobar si la contraseña esta entre 10 y 50 y contiene al menos un numero
-			for (Integer i = 0; i < 10; i++) {
-				if (jugador.getUser().getPassword().length() > 10 && jugador.getUser().getPassword().length() > 10
-						&& jugador.getUser().getPassword().contains(i.toString())) {
-					contraseñaCorrecta = true;
-				}
-			}
-			if (contraseñaCorrecta == false) {
-				model.put("contraseñaIncorrecta", true);
-				return "jugadores/createOrUpdateJugadorForm";
-			}
-			jugador.setId(jugadorId);
-			jugador.getUser().setId(playerService.findJugadorById(jugadorId).getUser().getId());
-			this.playerService.saveJugador(jugador);
-			return "redirect:/jugadores/{jugadorId}";
 		}
+		return resul;
+	}
+
+	private Boolean isYourEmail(Jugador jugador, int jugadorId) {
+		return playerService.findJugadorById(jugadorId).getUser().getEmail().equals(jugador.getUser().getEmail());
+	}
+
+	private Boolean isRegisteredEmail(Jugador jugador, Map<String, Object> model, List<Jugador> lista) {
+		Boolean result = false;
+		Integer i = 0;
+		while(!result && i < lista.size()) {
+			if (lista.get(i).getUser().getEmail().equals(jugador.getUser().getEmail())) {
+				model.put("emailIncorrecto1", true);
+				result = true;
+			}
+			i++;
+		}
+		return result;
+	}
+	
+	private Boolean isValidEmail(Map<String, Object> model, Jugador player) {
+		Boolean result = true;
+		String emailPattern = "^[_a-z0-9-]+(\\.[_a-z0-9-]+)*@" +"[a-z0-9-]+(\\.[a-z0-9-]+)*(\\.[a-z]{2,4})$";
+		Pattern pattern = Pattern.compile(emailPattern);
+		Matcher matcher = pattern.matcher(player.getUser().getEmail());
+		
+		if (!matcher.matches()) {
+			model.put("emailIncorrecto2", true);
+			result = false;
+		}
+		
+		return result;
+	}
+
+	private Boolean isCorrectPassword(Jugador player, Map<String, Object> model, Boolean correctPassword) {
+		Integer i = 0;
+		
+		if(player.getUser().getPassword().length() >= 10 && player.getUser().getPassword().length() <= 50) {
+			while(!correctPassword && i < 10) {
+				if (player.getUser().getPassword().contains(i.toString())) {
+					correctPassword = true;
+				}
+				i++;
+			}
+		}
+		if(!correctPassword) {
+			model.put("contraseñaIncorrecta", true);
+		}
+		
+		return correctPassword;
 	}
 
 	@GetMapping(value = "/jugadores/{jugadorId}/playerMatches")
@@ -224,6 +246,8 @@ public class PlayerController {
 
 		return result;
 	}
+	
+	// --------------------------------------------------------------------------------------------------------------------------------------------- //
 
 	@GetMapping(value = "/jugadores/{jugadorId}/playerFriends")
 	public ModelAndView showFriendsOfAPlayer(@PathVariable("jugadorId") int jugadorId) {
@@ -263,21 +287,17 @@ public class PlayerController {
 		ModelAndView mv;
 		String message = "";
 		
-		if(playerService.findJugadorById(player2Id).playerFriends().size() >= FRIEND_LIMIT) {
+		if(result && playerService.findJugadorById(player2Id).playerFriends().size() >= FRIEND_LIMIT) {
 			message = "You have reached the limit number of friends";
-		} else if(playerService.findJugadorById(player1Id).playerFriends().size() >= FRIEND_LIMIT) {
+		} else if(result && playerService.findJugadorById(player1Id).playerFriends().size() >= FRIEND_LIMIT) {
 			message = "That player has reached the friend limit";
 		} else {
 			FriendRequest fr = friendRequestService.getFriendRequestByPlayers(player1Id, player2Id);
 			fr.setResultado(result);
 			friendRequestService.saveFriendRequest(fr);
-			
-			if(result) {
-				message = "Request successfully accepted";
-			} else {
-				message = "Request successfully declined";
-			}
+			message = result ? "Request successfully accepted" : "Request successfully declined";  
 		}
+		
 		
 		mv = new ModelAndView("/jugadores/friendRequests");
 		mv.setViewName("redirect:/jugadores/friendRequests");
@@ -358,6 +378,6 @@ public class PlayerController {
 		return result;
 	}
 	
-	
+	// --------------------------------------------------------------------------------------------------------------------------------------------- //
 
 }

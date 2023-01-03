@@ -1,5 +1,7 @@
 package org.springframework.samples.petclinic.jugador;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.user.Authorities;
 import org.springframework.samples.petclinic.user.User;
@@ -55,8 +57,6 @@ public class EstadoController {
 			j.setEstadoOnline(false);
 			playerService.saveJugador(j);
 		}
-
-		
 		return "redirect:/";
 	}
 	

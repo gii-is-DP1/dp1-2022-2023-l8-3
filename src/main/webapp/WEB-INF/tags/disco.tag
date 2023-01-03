@@ -21,7 +21,7 @@
 
   <label for="disco${numeroDisco}" class="pointer discoLabel">
     ${numeroDisco}
-    <c:if test="${idLoggedPlayer == idCurrentPlayer && itIsPropagationPhase}">
+    <c:if test="${(idLoggedPlayer == idCurrentPlayer && itIsPropagationPhase)}">
     		<form:checkbox class="checkbox" path="deDisco" id="disco${numeroDisco}" value="${numeroDisco}" onchange="toggleCheckbox(this)"/>
     </c:if>
     

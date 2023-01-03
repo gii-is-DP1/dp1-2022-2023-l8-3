@@ -4,8 +4,10 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -95,7 +97,7 @@ public class Match extends NamedEntity{
 	private Jugador jugador2;
 
 	@ManyToMany
-	private List<Jugador> espectadores;
+	private Set<Jugador> espectadores;
 	
 	@OneToMany(mappedBy="match")
 	private List<Invitacion> invitaciones;
@@ -113,10 +115,9 @@ public class Match extends NamedEntity{
 	
 	// Constructor para cuando se crea una partida desde la aplicación
 	public Match(Boolean esPrivada, Jugador jugadorAnfitrion) {
-		this.inicioPartida = LocalDateTime.now();
 		this.esPrivada = esPrivada;
 		this.jugador1 = jugadorAnfitrion;
-		this.espectadores = new ArrayList<Jugador>();
+		this.espectadores = new HashSet<Jugador>();
 		this.invitaciones = new ArrayList<Invitacion>();
 		this.comentarios = new ArrayList<Comentario>();
 		this.abandonada = false;
@@ -130,7 +131,7 @@ public class Match extends NamedEntity{
 	
 	// Constructor para cuando se crea una partida en el script SQL
 	public Match() {
-		this.espectadores = new ArrayList<Jugador>();
+		this.espectadores = new HashSet<Jugador>();
 		this.invitaciones = new ArrayList<Invitacion>();
 		this.comentarios = new ArrayList<Comentario>();
 		this.abandonada = false;
