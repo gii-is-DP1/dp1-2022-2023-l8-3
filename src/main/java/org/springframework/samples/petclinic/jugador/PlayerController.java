@@ -327,7 +327,7 @@ public class PlayerController {
 		ModelAndView result;
 		String message = "";
 		
-		if(friendRequestService.getFriendRequestByPlayers(player1Id, player2Id) != null) {
+		if(friendRequestService.getFriendRequestByPlayers(player1Id, player2Id) != null) { // cambiar consulta para que solo devuelva las solicitudes con respuesta = null
 			message = "You have already sent a friend request to this player";
 		} else if(friendRequestService.getFriendRequestByPlayers(player2Id, player1Id) != null) {
 			message = "You have a pending friend request from this player";
