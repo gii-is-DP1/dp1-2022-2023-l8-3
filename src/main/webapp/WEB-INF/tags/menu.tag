@@ -104,7 +104,7 @@
 							</li>
 							<li class="divider"></li>
 							</sec:authorize>
-							<li> <a href="<c:url value="/logout" />" class="text-center">Logout</a>
+							<li> <a href="<c:url value="/cambiarEstadoOffline" />" class="text-center">Cerrar Sesi&oacute;n</a>
 							</li>
 
  

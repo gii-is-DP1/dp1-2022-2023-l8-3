@@ -23,10 +23,9 @@ public class EstadoController {
 		this.userService = userService;
 	}
 	
-	Authentication auth=SecurityContextHolder.getContext().getAuthentication();
-	
 	@GetMapping("/cambiarEstadoOnline")
 	public String ponerOnline() {
+		Authentication auth=SecurityContextHolder.getContext().getAuthentication();
 		auth=SecurityContextHolder.getContext().getAuthentication();
 		User user=userService.findUser(auth.getName()).get();
 		Jugador j=playerService.findPlayerByUsername(auth.getName());
@@ -45,6 +44,7 @@ public class EstadoController {
 	
 	@GetMapping("/cambiarEstadoOffline")
 	public String ponerOffline() {
+		Authentication auth=SecurityContextHolder.getContext().getAuthentication();
 		User user=userService.findUser(auth.getName()).get();
 		Jugador j=playerService.findPlayerByUsername(auth.getName());
 		Boolean b=false;  //el boolean es necesario porque si se modifica el player dentro del for da error al loguearte 2 veces seguidas
@@ -57,7 +57,7 @@ public class EstadoController {
 			j.setEstadoOnline(false);
 			playerService.saveJugador(j);
 		}
-		return "redirect:/";
+		return "redirect:/logout";
 	}
 	
 	
