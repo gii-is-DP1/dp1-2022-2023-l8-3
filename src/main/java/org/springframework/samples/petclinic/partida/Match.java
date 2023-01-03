@@ -374,8 +374,13 @@ public class Match extends NamedEntity{
 				getDisco(diskId).annadirSarcina(idPlayerMatch);
 				player.decreaseSarcinas();
 			} else {
-				ganadorPartida = player.getId() == jugador1.getId() ? GameWinner.SECOND_PLAYER : GameWinner.FIRST_PLAYER;
-				message = "You have no sarcinas left";
+				if(ganadorPartida == GameWinner.UNDEFINED) {
+					ganadorPartida = player.getId() == jugador1.getId() ? GameWinner.SECOND_PLAYER : GameWinner.FIRST_PLAYER;
+					message = "You have no sarcinas left";
+				} else {
+					ganadorPartida = GameWinner.DRAW;
+					message = "Neither player has any sarcinas left";
+				}
 			}
 		}
 		return message;
@@ -411,9 +416,14 @@ public class Match extends NamedEntity{
 			Integer numberOfSarcinaOfPlayer1 = getDiscos().get(i).getNumSarc1();
 			Integer numberOfSarcinaOfPlayer2 = getDiscos().get(i).getNumSarc2();
 			if((numberOfSarcinaOfPlayer1*5 + numberOfBacteriaOfPlayer1)>(numberOfSarcinaOfPlayer2*5 + numberOfBacteriaOfPlayer2)) {
-				player1.increseContaminationNumber();
+				if(player1.getNumeroDeContaminacion() < 9) {
+					player1.increseContaminationNumber();
+				}
+				
 			} else if((numberOfSarcinaOfPlayer1*5 + numberOfBacteriaOfPlayer1)<(numberOfSarcinaOfPlayer2*5 + numberOfBacteriaOfPlayer2)) {
-				player2.increseContaminationNumber();
+				if(player2.getNumeroDeContaminacion() < 9) {
+					player2.increseContaminationNumber();
+				}
 			}
 			i++;
 		}
