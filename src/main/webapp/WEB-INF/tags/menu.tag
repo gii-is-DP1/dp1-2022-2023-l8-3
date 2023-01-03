@@ -58,7 +58,7 @@
 				</sec:authorize>
 				
 				<sec:authorize access="hasAuthority('admin')">
-				<petclinic:menuItem active="${name eq 'jugadores'}" url="/jugadores"
+				<petclinic:menuItem active="${name eq 'jugadores'}" url="/jugadores/list/1"
 					title="jugadores">
 					<span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
 					<span>Jugadores</span>
@@ -67,11 +67,11 @@
 				<petclinic:menuItem active="${name eq 'partidas'}" url="/matches" title="Partidas" dropdown="${true}">
 					<ul class="dropdown-menu">
 						<li>
-							<a href="<c:url value="/matches/InProgress" />">Partidas en curso</a>
+							<a href="<c:url value="/matches/InProgress/1" />">Partidas en curso</a>
 						</li>
 						<li class="divider"></li>
 						<li>
-							<a href="<c:url value="/matches/Finished" />">Partidas jugadas </a>
+							<a href="<c:url value="/matches/Finished/1" />">Partidas jugadas </a>
 						</li>
 					</ul>
 				</petclinic:menuItem>

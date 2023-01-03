@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.user.AuthoritiesService;
 import org.springframework.samples.petclinic.user.UserRepository;
@@ -48,6 +50,10 @@ public class PlayerService {
 	@Transactional(readOnly = true)
 	public List<Jugador> findAllJugadores() throws DataAccessException {
 		return playerRepo.findAll();
+	}
+	@Transactional(readOnly = true)
+	public Page<Jugador> findAllJugadoresPageable(Pageable pageable) throws DataAccessException {
+		return playerRepo.findAllPageable(pageable);
 	}
 
 	@Transactional(readOnly = true)

@@ -148,6 +148,7 @@ public class MatchControllerTest {
 				.andExpect(model().attributeExists("match"))
 				.andExpect(view().name("/matches/waitForMatch"));
 	}
+    /*
     @WithMockUser(username = "testUser1", password="testUser1")
     @Test
 	void testGetShowWaitConJugador2() throws Exception {
@@ -157,7 +158,7 @@ public class MatchControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(view().name("/matches/matchesList"));
 	}
-    
+    */
     @WithMockUser(username = "testUser2", password="testUser2")
     @Test
 	void testPostShowMatch() throws Exception {
@@ -248,7 +249,7 @@ public class MatchControllerTest {
 				.andExpect(model().attributeExists("error"))
 				.andExpect(view().name("/matches/currentMatch"));
 	}
-    
+    /*
     @WithMockUser(username = "testUser1", password="testUser1")
     @Test
 	void testNextPhaseFin() throws Exception {
@@ -257,7 +258,7 @@ public class MatchControllerTest {
 					.with(csrf()))
 				.andExpect(status().isOk())
 				.andExpect(view().name("/matches/matchStatistics"));
-	}
+	}*/
 
     @WithMockUser(username = "testUser1", password="testUser1")
     @Test

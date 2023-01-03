@@ -3,16 +3,21 @@ package org.springframework.samples.petclinic.jugador;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-public interface PlayerRepository extends CrudRepository<Jugador, Integer>{
+public interface PlayerRepository extends JpaRepository<Jugador, Integer>{
 	
 	@Query("SELECT jugador FROM Jugador jugador")
 	public List<Jugador> findAll() throws DataAccessException;
 	
+	@Query("SELECT jugador FROM Jugador jugador")
+	public Page<Jugador> findAllPageable(Pageable pageable) throws DataAccessException;
+
 	
 	@Query("SELECT jugador FROM Jugador jugador WHERE jugador.id =:id")
 	public Jugador findById(@Param("id") int id);
