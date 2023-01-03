@@ -70,6 +70,7 @@ public class MatchController {
         	}
         }
         result.addObject("matches", matches);
+        result.addObject("loggedUser", actualUser);
         return result;
     }
 	
@@ -130,7 +131,7 @@ public class MatchController {
 	
 	@GetMapping(value ="/{idMatch}/waitForMatch")
 	public ModelAndView showWait(@PathVariable("idMatch") int matchId, @AuthenticationPrincipal Authentication user, HttpServletResponse response) {
-	    if(matchService.getMatchById(matchId).getJugador2()!=null) {
+	    if(matchService.getMatchById(matchId).getJugador2()!=null && matchService.getMatchById(matchId).getJugador1()!=playerService.findPlayerByUsername(user.getName())) {
 	    	Jugador actualUser=playerService.findPlayerByUsername(user.getName());
 	    	ModelAndView result = new ModelAndView("/matches/matchesList");
 	    	result.addObject("partidaLlena",true);
@@ -157,6 +158,8 @@ public class MatchController {
 	    resul.addObject("EresJugador1", true);
 	    }
 	    if(match.getJugador2()!=null) {
+	    	match.setInicioPartida(LocalDateTime.now());
+	    	matchService.saveMatch(match);
 	        resul = new ModelAndView("redirect:/matches/"+id+"/currentMatch");
 	    }
 	    return resul;
@@ -183,7 +186,6 @@ public class MatchController {
 		Match match = matchService.getMatchById(idMatch);
 		Jugador player1 = match.getJugador1();
 		Jugador player2 = match.getJugador2();
-		
 		if(match.getGanadorPartida() == GameWinner.UNDEFINED) {
 			result = new ModelAndView(CURRENT_MATCH_VIEW);
 			if(match.esFaseBinaria()) {
@@ -193,24 +195,24 @@ public class MatchController {
 			}
 		} else {
 			result = new ModelAndView(MATCH_STATISTICS_VIEW);
-			finishMatch(match);
+			if(match.getFinPartida()==null) {
+				finishMatch(match);
+			}
 		}
-		
 		refresh(user, match, match.itIsPropagationPhase(), response);
         addDataToTheView(user, result, match);
 		matchService.saveMatch(match);
 		playerService.saveJugador(player1);
 		playerService.saveJugador(player2);
-		
 		return result;
 	}
 
 	private void finishMatch(Match match) {
 		match.setFinPartida(LocalDateTime.now());
 		match.getJugador1().setNumeroDeContaminacion(0);
-		match.getJugador2().setNumeroDeContaminacion(0);
 		match.getJugador1().setBacterias(20);
 		match.getJugador1().setSarcinas(4);
+		match.getJugador2().setNumeroDeContaminacion(0);
 		match.getJugador2().setBacterias(20);
 		match.getJugador2().setSarcinas(4);
 	}
@@ -313,6 +315,15 @@ public class MatchController {
 		matchService.saveMatch(match);
 		return result;
 	}
+	
+	@RequestMapping("/{idMatch}/abandonedWaitMatch")
+	public RedirectView abandonedWaitMatch(@PathVariable int idMatch, Authentication user) {
+		RedirectView result = new RedirectView("/matches/createMatch");
+		Match match = matchService.getMatchById(idMatch);
+		matchService.deleteMatch(match);
+		return result;
+	}
+	
 	@GetMapping("/{idMatch}/abandoned")
 	public ModelAndView abandonedMatchView(@PathVariable int idMatch) {
 	    ModelAndView result = new ModelAndView(ABANDONED);

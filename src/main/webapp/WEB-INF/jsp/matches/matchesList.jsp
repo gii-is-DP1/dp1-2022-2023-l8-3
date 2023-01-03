@@ -34,7 +34,7 @@
 
 				<tr>
 					<form:form action="" method="post">
-						<c:if test="${!match.esPrivada}">
+						<c:if test="${!match.esPrivada && match.jugador1!=loggedUser}">
 						<td><c:out value="${match.jugador1.user.username}" /></td>
 						<td><c:out value="${match.name}" /></td>
 						<td><c:out value="${match.inicioPartida}" /></td>
@@ -74,10 +74,6 @@
 			</c:forEach>
 		</tbody>
 	</table>
-	
-	<div class="divBoton3d"">
-	<button type="button" class="btn-3d" onclick="window.location.href='./Finished'">Historial de partidas</button>
-	</div>
 	
 	<style type="text/css">
 	th{

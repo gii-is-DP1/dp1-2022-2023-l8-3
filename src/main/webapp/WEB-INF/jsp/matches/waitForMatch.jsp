@@ -51,6 +51,9 @@
 				</div>
 			</c:otherwise>
 		</c:choose>
+		<c:if test="${EresJugador1}">
+			<div><a class="button" id="abandonar" href="<c:url value="/matches/${match.id}/abandonedWaitMatch" />">Abandonar partida</a></div>
+		</c:if>
 
 	</form:form>
 
@@ -108,6 +111,15 @@
 	animation-duration: 5s;
 	animation-iteration-count: infinite;
 }
+
+#abandonar{
+	display: flex;
+	width:15%;
+	justify-content: center;
+	margin-top: 3%;
+}
+
+
 @keyframes anim{
     0% {color: blue;} /*Amarillo*/
    25% {color: purple;} /*Naranja*/
