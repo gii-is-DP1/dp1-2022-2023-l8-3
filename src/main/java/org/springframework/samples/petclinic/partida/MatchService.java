@@ -60,7 +60,15 @@ public class MatchService {
 	public Collection<Match> getMatchesOfAPlayer(Integer id){
 		return matchRepository.findMatchesOfAPlayer(id);
 	}
-	
+	public Boolean imPlaying(Jugador player) {
+	       Boolean res = true;
+	       List<Match> todas = matchRepository.findAll();
+	        for(Match partida:todas) {
+	            if((partida.getFinPartida()==null)&&(partida.getJugador1()==player||partida.getJugador2()==player)) {
+	                res = false;
+	            }}
+	        return res;
+	}
 	public Boolean canIplay(Jugador player) {
 	    Boolean res = true;
 	    int contador = 0;

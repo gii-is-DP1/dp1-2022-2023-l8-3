@@ -1,5 +1,6 @@
 package org.springframework.samples.petclinic.menu;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.samples.petclinic.invitacion.InvitationController;
 import org.springframework.samples.petclinic.invitacion.InvitationService;
 import org.springframework.samples.petclinic.jugador.Jugador;
 import org.springframework.samples.petclinic.jugador.PlayerController;
+import org.springframework.samples.petclinic.partida.Match;
 import org.springframework.samples.petclinic.partida.MatchController;
 import org.springframework.samples.petclinic.partida.MatchService;
 import org.springframework.samples.petclinic.statistics.AchievementController;
@@ -27,11 +29,13 @@ public class MenuController {
 	
 	private InvitationService invitacionService;
 	private MenuService menuService;
+	private MatchService matchService;
 	
 	@Autowired
-	public MenuController(InvitationService invitacionService,MenuService menuService) {
+	public MenuController(InvitationService invitacionService,MenuService menuService, MatchService matchService) {
 		this.menuService=menuService;
 		this.invitacionService=invitacionService;
+		this.matchService=matchService;
 
 	}
 	
@@ -46,6 +50,16 @@ public class MenuController {
 			}
 			if(b) {
 				Jugador jugadorActual=menuService.findPlayerByUsername(user.getName());
+				Collection<Match> partidas = matchService.getMatches();
+				for(Match partida:partidas) {
+				    if(partida.getFinPartida()==null&&(partida.getJugador1()==jugadorActual||partida.getJugador2()==jugadorActual)) {
+				        int id = partida.getId();
+				        model.addAttribute("matchId", id);
+				        model.addAttribute("partidaPendiente", true);
+				    }else {
+                        model.addAttribute("partidaPendiente", false);
+				    }
+				}
 				List<Invitacion> lista=invitacionService.getInvitacionByInvitadoId(jugadorActual.getId());
 				if(lista.isEmpty()) {
 					model.addAttribute("tengoInvitaciones",false);
