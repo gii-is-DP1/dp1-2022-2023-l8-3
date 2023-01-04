@@ -15,8 +15,8 @@
         <tr>
             <th style="width: 150px;">Creador de la partida</th>
             <th style="width: 200px;">Invitado</th>
-            <th style="width: 200px;">Contaminación j1</th>
-            <th style="width: 200px;">Contaminación j2</th>
+            <th style="width: 200px;">Contaminacion j1</th>
+            <th style="width: 200px;">Contaminacion j2</th>
             
         </tr>
         </thead>
@@ -47,6 +47,8 @@
 			</c:choose>
         </tbody>
     </table>
-   
+	
+	<petclinic:pagination thisPage="${thisPage}" numberOfPages="${numberOfPages}" url="/matches/InProgress/"/>
+
 
 </petclinic:layout>
