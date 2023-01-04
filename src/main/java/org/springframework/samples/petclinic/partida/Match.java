@@ -115,6 +115,7 @@ public class Match extends NamedEntity{
 	
 	// Constructor para cuando se crea una partida desde la aplicación
 	public Match(Boolean esPrivada, Jugador jugadorAnfitrion) {
+	    this.inicioPartida = LocalDateTime.now();
 		this.esPrivada = esPrivada;
 		this.jugador1 = jugadorAnfitrion;
 		this.espectadores = new HashSet<Jugador>();

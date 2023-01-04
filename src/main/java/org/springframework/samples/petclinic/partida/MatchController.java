@@ -90,7 +90,7 @@ public class MatchController {
 	public ModelAndView createMatch(@RequestParam String nombre,@RequestParam Boolean tipoPartida, @AuthenticationPrincipal Authentication user) {
 	        ModelAndView result =  new ModelAndView();
 	        Jugador player = playerService.findPlayerByUsername(user.getName());
-	        if(matchService.canIplay(player)) {
+	        if(matchService.canIplay(player)&&matchService.imPlaying(player)) {
 	        Match match = new Match(false, player);
 	        match.setName(nombre);
 	        match.setEsPrivada(tipoPartida);
@@ -120,10 +120,15 @@ public class MatchController {
 		    copia.clear();
 		    player.setAmigosInvitados(copia);
 		    playerService.saveJugador(player);
-		    
+	    
 		    result = new ModelAndView("redirect:/matches/"+matchId+"/waitForMatch");
 		    }else {
 		        result = new ModelAndView("/matches/exception");
+		        if(!matchService.canIplay(player)) {
+		            result.addObject("mensaje", "hoy ya has jugado demasiado descansa la vista, sal a la calle un rato y disfruta de la naturaleza.");
+		        }else if(!matchService.imPlaying(player)){
+		            result.addObject("mensaje", "Ya estas jugando a otra partida en estos momentos. Termínala para poder comenzar otra.");
+		        }
 		        result.addObject("jugador", player);
 		    }
 		    return result;
@@ -170,7 +175,7 @@ public class MatchController {
 	public ModelAndView post(@PathVariable("idMatch") Integer matchId, @AuthenticationPrincipal Authentication user) {
         ModelAndView result =  new ModelAndView();
         Jugador player = playerService.findPlayerByUsername(user.getName());
-        if(matchService.canIplay(player)) {
+        if(matchService.canIplay(player)&&matchService.imPlaying(player)) {
         Match match = matchService.getMatchById(matchId);
         match.setJugador2(player);
         this.matchService.saveMatch(match);
@@ -178,6 +183,11 @@ public class MatchController {
         result =new ModelAndView("redirect:/matches/"+id+"/currentMatch");
         }else {
             result = new ModelAndView("/matches/exception");
+            if(!matchService.canIplay(player)) {
+                result.addObject("mensaje", "hoy ya has jugado demasiado descansa la vista, sal a la calle un rato y disfruta de la naturaleza.");
+            }else if(!matchService.imPlaying(player)){
+                result.addObject("mensaje", "Ya estas jugando a otra partida en estos momentos. Termínala para poder comenzar otra.");
+            }
             result.addObject("jugador", player);
         }
         return result;
