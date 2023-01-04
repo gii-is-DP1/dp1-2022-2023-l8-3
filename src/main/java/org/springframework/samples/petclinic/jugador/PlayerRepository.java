@@ -9,6 +9,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.samples.petclinic.statistics.Achievement;
 
 public interface PlayerRepository extends JpaRepository<Jugador, Integer>{
 	
@@ -31,5 +32,8 @@ public interface PlayerRepository extends JpaRepository<Jugador, Integer>{
 
 	@Query("SELECT j FROM Jugador j WHERE UPPER(j.user.username) LIKE %?1%")
 	public List<Jugador> findByKeyword(String keyword);
+
+	@Query("SELECT j.logros FROM Jugador j WHERE UPPER(j.user.username) LIKE %?1%")
+	public Page<Achievement> findAchievementsOfUser(String keyword, Pageable pageable);
 
 }

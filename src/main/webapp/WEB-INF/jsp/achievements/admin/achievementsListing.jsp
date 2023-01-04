@@ -48,6 +48,8 @@
         </tbody>
     </table>
     
+	<petclinic:pagination thisPage="${thisPage}" numberOfPages="${numberOfPages}" url="/statistics/achievements/admin/"/>
+
 	<a class="btn btn-default" href="/statistics/achievements/admin/new">Create new achievement</a>
 
 </petclinic:layout>

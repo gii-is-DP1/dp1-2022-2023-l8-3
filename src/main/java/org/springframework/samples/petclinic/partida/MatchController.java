@@ -238,9 +238,13 @@ public class MatchController {
         Integer idCurrentPlayer = match.turnoPrimerJugador() ? match.getJugador1().getId() : match.getJugador2().getId();
 		if (itIsPropagationPhase) {
 			if(idLoggedPlayer != idCurrentPlayer) {
-	        	response.addHeader("Refresh", "3");
+//	        	response.addHeader("Refresh", "3");
+	        	response.addHeader("Refresh", "1000000");
+
 	        } else {
-	        	response.addHeader("Refresh", "6");
+//	        	response.addHeader("Refresh", "6");
+	        	response.addHeader("Refresh", "1000000");
+
 	        }
 		} else {
 			response.addHeader("Refresh", "3");

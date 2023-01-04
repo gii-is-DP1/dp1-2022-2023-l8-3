@@ -47,11 +47,11 @@
 				<petclinic:menuItem active="${name eq 'achievements'}" url="/statistics/achievements/" title="achievements" dropdown="${true}">
 					<ul class="dropdown-menu">
 						<li>
-							<a href="<c:url value="/statistics/achievements/" />">Achievements listing</a>
+							<a href="<c:url value="/statistics/achievements/1" />">Achievements listing</a>
 						</li>
 						<li class="divider"></li>
 						<li>
-							<a href="<c:url value="/statistics/achievements/currentPlayer" />">My Achievements <span class="glyphicon glyphicon-certificate" aria-hidden="true"></span></a>
+							<a href="<c:url value="/statistics/achievements/currentPlayer/1" />">My Achievements <span class="glyphicon glyphicon-certificate" aria-hidden="true"></span></a>
 						</li>
 					</ul>
 				</petclinic:menuItem>
@@ -76,7 +76,7 @@
 					</ul>
 				</petclinic:menuItem>
 				
-				<petclinic:menuItem active="${name eq 'achievements'}" url="/statistics/achievements/admin"	title="achievements">
+				<petclinic:menuItem active="${name eq 'achievements'}" url="/statistics/achievements/admin/1"	title="achievements">
 					<span class="glyphicon glyphicon-certificate" aria-hidden="true"></span>
 					<span>Achievements</span>
 				</petclinic:menuItem>

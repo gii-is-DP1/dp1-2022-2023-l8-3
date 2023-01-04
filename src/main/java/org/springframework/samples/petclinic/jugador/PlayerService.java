@@ -17,6 +17,7 @@ import org.springframework.samples.petclinic.disco.Disco;
 import org.springframework.samples.petclinic.disco.DishRepository;
 import org.springframework.samples.petclinic.partida.Match;
 import org.springframework.samples.petclinic.partida.MatchRepository;
+import org.springframework.samples.petclinic.statistics.Achievement;
 
 @Service
 public class PlayerService {
@@ -74,6 +75,11 @@ public class PlayerService {
 		}
 		return result;
 	}
+	
+	@Transactional(readOnly = true)
+	public Page<Achievement> findAchievementsOfUser(String keyword, Pageable pageable) {			
+		return playerRepo.findAchievementsOfUser(keyword.toUpperCase(),pageable);
+	}
 
 	@Transactional
 	public void deletePlayer(Integer id) throws Exception {
@@ -123,4 +129,6 @@ public class PlayerService {
 		
 		return jugador;
 	}
+	
+	
 }
