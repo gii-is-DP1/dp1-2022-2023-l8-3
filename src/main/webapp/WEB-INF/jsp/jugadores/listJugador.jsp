@@ -21,7 +21,7 @@
 	        <c:forEach items="${selections}" var="jugador">
 	            <tr>
 	                <td>
-	                    <spring:url value="jugadores/{jugadorId}" var="EnlaceUrl">
+	                    <spring:url value="/jugadores/{jugadorId}" var="EnlaceUrl">
         					<spring:param name="jugadorId" value="${jugador.id}"/>
     					</spring:url>
     					<a href="${fn:escapeXml(EnlaceUrl)}"><c:out value="${jugador.firstName}"/></a>
@@ -39,7 +39,7 @@
 	  		</c:forEach>
         </tbody>
     </table>
-	<petclinic:pagination thisPage="${thisPage}" numberOfPages="${numberOfPages}" url="/matches/Finished/"/>
+	<petclinic:pagination thisPage="${thisPage}" numberOfPages="${numberOfPages}" url="/jugadores/list/"/>
 
 
 	<a class="btn btn-default" href='<spring:url value="/jugadores/new" htmlEscape="true"/>'>Anadir Jugador</a>

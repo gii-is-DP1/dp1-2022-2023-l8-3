@@ -65,7 +65,7 @@ public class PlayerController {
 		if(page<1) 
 			return "redirect:/jugadores/list/1";
 		
-		Pageable pageable = PageRequest.of(page-1, 5);
+		Pageable pageable = PageRequest.of(page-1, 2);
 		Page<Jugador> results = this.playerService.findAllJugadoresPageable(pageable);
 
 		Integer numberOfPages = results.getTotalPages();
