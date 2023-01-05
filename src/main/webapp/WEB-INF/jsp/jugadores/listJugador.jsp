@@ -21,7 +21,7 @@
 	        <c:forEach items="${selections}" var="jugador">
 	            <tr>
 	                <td>
-	                    <spring:url value="jugadores/{jugadorId}" var="EnlaceUrl">
+	                    <spring:url value="/jugadores/{jugadorId}" var="EnlaceUrl">
         					<spring:param name="jugadorId" value="${jugador.id}"/>
     					</spring:url>
     					<a href="${fn:escapeXml(EnlaceUrl)}"><c:out value="${jugador.firstName}"/></a>

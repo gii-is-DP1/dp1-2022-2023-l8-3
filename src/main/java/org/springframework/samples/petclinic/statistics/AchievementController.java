@@ -33,6 +33,7 @@ public class AchievementController {
 	private static final String ACHIEVEMENTS_LISTING_VIEW = "/achievements/achievementsListing";
 	private static final String ACHIEVEMENTS_LISTING_VIEW_ADMIN = "/achievements/admin/achievementsListing";
 	private static final String ACHIEVEMENTS_FORM = "/achievements/createOrUpdateAchievementForm";
+	
 	private AchievementService achievementService;
 	private UserService userService;
 	private PlayerService playerService;
@@ -52,15 +53,15 @@ public class AchievementController {
 			return new ModelAndView("redirect:/statistics/achievements/1");
 
 		ModelAndView result = new ModelAndView(ACHIEVEMENTS_LISTING_VIEW);
-		
+
 		Pageable pageable = PageRequest.of(page-1, 10);
 		Page<Achievement>achievements = achievementService.getPublicAchievementsPageable(pageable);
-		
+
 		Integer numberOfPages = achievements.getTotalPages();
 		Integer thisPage = page;
-		
+
 		if(thisPage > numberOfPages) 
-			return new ModelAndView("redirect:/statistics/achievements/admin/"+numberOfPages);
+			return new ModelAndView("redirect:/statistics/achievements/"+numberOfPages);
 
 		result.addObject("numberOfPages", numberOfPages);
 		result.addObject("thisPage", thisPage);		
@@ -80,19 +81,19 @@ public class AchievementController {
 		User user = userService.findUser(auth.getName()).get();
 		String username = user.getUsername();
 		Jugador player = playerService.findPlayerByUsername(username);
-		
+
 		if(matchService.getMatchesOfAPlayer(player.getId()).size()==0) {
+
 			result = new ModelAndView("welcome");
 			result.addObject("message", "Para desbloquear los logros debes jugar una partida");
 		} else {
 			result = new ModelAndView(ACHIEVEMENTS_LISTING_VIEW);
 			Pageable pageable = PageRequest.of(page-1, 10);
 			Page<Achievement>achievements = playerService.findAchievementsOfUser(username, pageable);
-			System.out.println("pito:1");
 			Integer numberOfPages = achievements.getTotalPages();
 			Integer thisPage = page;
-			
-			if(thisPage > numberOfPages) 
+
+			if((thisPage > numberOfPages) && numberOfPages != 0) 
 				return new ModelAndView("redirect:/statistics/achievements/currentPlayer/"+numberOfPages);
 
 			result.addObject("numberOfPages", numberOfPages);
@@ -149,13 +150,16 @@ public class AchievementController {
 	@PostMapping("/admin/{id}/edit")
 	public ModelAndView saveAchievement(@PathVariable int id, @Valid Achievement achievement, BindingResult br) {
 		ModelAndView result = showAchievementsAdmin(1);
+
 		if(br.hasErrors()) {
 			result = new ModelAndView(ACHIEVEMENTS_FORM, br.getModel());
 		} else {
 			Achievement achievementToBeUpdated = achievementService.getAchievementById(id);
 			BeanUtils.copyProperties(achievement, achievementToBeUpdated, "id");
+
 			achievementService.saveAchievement(achievementToBeUpdated);
 			result.addObject("message", "The achievement was updated succesfully");
+
 		}
 		return result;
 	}
@@ -173,6 +177,7 @@ public class AchievementController {
 	
 	@PostMapping("/admin/new")
 	public ModelAndView saveAchievement(@Valid Achievement achievement, BindingResult br) {
+		System.out.println("PIPO");
 		ModelAndView result;
 		Integer i = 0;
 		Boolean isRepeated = false;
