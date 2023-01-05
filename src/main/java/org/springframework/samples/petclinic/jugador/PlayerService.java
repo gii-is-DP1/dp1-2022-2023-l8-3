@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.user.AuthoritiesService;
 import org.springframework.samples.petclinic.user.UserRepository;
@@ -15,6 +17,7 @@ import org.springframework.samples.petclinic.disco.Disco;
 import org.springframework.samples.petclinic.disco.DishRepository;
 import org.springframework.samples.petclinic.partida.Match;
 import org.springframework.samples.petclinic.partida.MatchRepository;
+import org.springframework.samples.petclinic.statistics.Achievement;
 
 @Service
 public class PlayerService {
@@ -49,6 +52,10 @@ public class PlayerService {
 	public List<Jugador> findAllJugadores() throws DataAccessException {
 		return playerRepo.findAll();
 	}
+	@Transactional(readOnly = true)
+	public Page<Jugador> findAllJugadoresPageable(Pageable pageable) throws DataAccessException {
+		return playerRepo.findAllPageable(pageable);
+	}
 
 	@Transactional(readOnly = true)
 	public Collection<Jugador> findPlayerByLastName(String lastName) throws DataAccessException {
@@ -67,6 +74,11 @@ public class PlayerService {
 			result = playerRepo.findByKeyword(keyword.toUpperCase());
 		}
 		return result;
+	}
+	
+	@Transactional(readOnly = true)
+	public Page<Achievement> findAchievementsOfUser(String keyword, Pageable pageable) {			
+		return playerRepo.findAchievementsOfUser(keyword.toUpperCase(),pageable);
 	}
 
 	@Transactional
@@ -117,4 +129,6 @@ public class PlayerService {
 		
 		return jugador;
 	}
+	
+	
 }

@@ -68,4 +68,6 @@
         </tbody>
     </table>
 
+	<petclinic:pagination thisPage="${thisPage}" numberOfPages="${numberOfPages}" url="/matches/Finished/"/>
+
 </petclinic:layout>

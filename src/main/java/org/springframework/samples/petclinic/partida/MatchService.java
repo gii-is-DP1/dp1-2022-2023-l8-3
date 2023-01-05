@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.samples.petclinic.disco.Disco;
 import org.springframework.samples.petclinic.disco.DishRepository;
 import org.springframework.samples.petclinic.disco.DishService;
@@ -57,6 +59,16 @@ public class MatchService {
 		return matchRepository.findMatchesByGameWinner(gameWinner);
 	}
 
+	public Page<Match> getMatchesByGameWinnerPageable(GameWinner gameWinner, Pageable pageable){
+		return matchRepository.findMatchesByGameWinnerPageable(gameWinner,pageable);
+	}
+
+	public Page<Match> getMatchesFinishedPageable(Pageable pageable){
+		return matchRepository.findMatchesFinishedPageable(pageable, 
+				GameWinner.FIRST_PLAYER,GameWinner.SECOND_PLAYER,GameWinner.DRAW);
+	}
+
+	
 	public Collection<Match> getMatchesOfAPlayer(Integer id){
 		return matchRepository.findMatchesOfAPlayer(id);
 	}
@@ -69,6 +81,11 @@ public class MatchService {
 	            }}
 	        return res;
 	}
+	
+	public Page<Match> getMatchesOfAPlayerPageable(Integer id, Pageable pageable){
+		return matchRepository.findMatchesOfAPlayerPageable(id,pageable);
+	}
+
 	public Boolean canIplay(Jugador player) {
 	    Boolean res = true;
 	    int contador = 0;

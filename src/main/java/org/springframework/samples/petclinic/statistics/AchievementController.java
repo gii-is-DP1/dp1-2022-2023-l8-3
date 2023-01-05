@@ -7,6 +7,9 @@ import javax.validation.Valid;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.samples.petclinic.jugador.Jugador;
 import org.springframework.samples.petclinic.jugador.PlayerService;
 import org.springframework.samples.petclinic.partida.MatchService;
@@ -43,15 +46,35 @@ public class AchievementController {
 		this.matchService = matchService;
 	}
 	
-	@GetMapping(value = "/")
-	public ModelAndView showAchievements() {
+	@GetMapping(value = "/{page}")
+	public ModelAndView showAchievements(@PathVariable("page") int page) {
+		if(page<1) 
+			return new ModelAndView("redirect:/statistics/achievements/1");
+
 		ModelAndView result = new ModelAndView(ACHIEVEMENTS_LISTING_VIEW);
-		result.addObject("achievements", achievementService.getPublicAchievements());
+		
+		Pageable pageable = PageRequest.of(page-1, 10);
+		Page<Achievement>achievements = achievementService.getPublicAchievementsPageable(pageable);
+		
+		Integer numberOfPages = achievements.getTotalPages();
+		Integer thisPage = page;
+		
+		if(thisPage > numberOfPages) 
+			return new ModelAndView("redirect:/statistics/achievements/admin/"+numberOfPages);
+
+		result.addObject("numberOfPages", numberOfPages);
+		result.addObject("thisPage", thisPage);		
+		result.addObject("url", "/statistics/achievements/");		
+		result.addObject("achievements", achievements.getContent());
+		
 		return result;
 	}
 	
-	@GetMapping(value = "/currentPlayer")
-	public ModelAndView showCurrentPlayerAchievements() {
+	@GetMapping(value = "/currentPlayer/{page}")
+	public ModelAndView showCurrentPlayerAchievements(@PathVariable("page") int page) {
+		if(page<1) 
+			return new ModelAndView("redirect:/statistics/achievements/currentPlayer/1");
+
 		ModelAndView result;
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUser(auth.getName()).get();
@@ -63,16 +86,44 @@ public class AchievementController {
 			result.addObject("message", "Para desbloquear los logros debes jugar una partida");
 		} else {
 			result = new ModelAndView(ACHIEVEMENTS_LISTING_VIEW);
-			result.addObject("achievements", playerService.findPlayerByUsername(username).getLogros());
+			Pageable pageable = PageRequest.of(page-1, 10);
+			Page<Achievement>achievements = playerService.findAchievementsOfUser(username, pageable);
+			System.out.println("pito:1");
+			Integer numberOfPages = achievements.getTotalPages();
+			Integer thisPage = page;
+			
+			if(thisPage > numberOfPages) 
+				return new ModelAndView("redirect:/statistics/achievements/currentPlayer/"+numberOfPages);
+
+			result.addObject("numberOfPages", numberOfPages);
+			result.addObject("thisPage", thisPage);	
+			result.addObject("url", "/statistics/achievements/currentPlayer/");		
+			result.addObject("achievements", achievements.getContent());
 		}
 		
 		return result;
 	}
 	
-	@GetMapping(value = "/admin")
-	public ModelAndView showAchievementsAdmin() {
+	@GetMapping(value = "/admin/{page}")
+	public ModelAndView showAchievementsAdmin(@PathVariable("page") int page) {
+		if(page<1) 
+			return new ModelAndView("redirect:/statistics/achievements/admin/1");
+		
 		ModelAndView result = new ModelAndView(ACHIEVEMENTS_LISTING_VIEW_ADMIN);
-		result.addObject("achievements", achievementService.getAchievements());
+		
+		Pageable pageable = PageRequest.of(page-1, 10);
+		Page<Achievement> achievements = achievementService.getAchievementsPageable(pageable);
+			
+		Integer numberOfPages = achievements.getTotalPages();
+		Integer thisPage = page;
+		
+		if(thisPage > numberOfPages) 
+			return new ModelAndView("redirect:/statistics/achievements/admin/"+numberOfPages);
+
+		result.addObject("numberOfPages", numberOfPages);
+		result.addObject("thisPage", thisPage);		
+		result.addObject("achievements", achievements.getContent());
+		
 		return result;
 	}
 	
@@ -80,7 +131,6 @@ public class AchievementController {
 	public ModelAndView editAchievement(@PathVariable int id, RedirectAttributes ra) {
 		ModelAndView result;
 		Achievement achievement = achievementService.getAchievementById(id);
-		
 		if(achievement.getVisibility().equals(Visibility.EN_BORRADOR)) {
 			result = new ModelAndView(ACHIEVEMENTS_FORM);
 			result.addObject("achievement", achievement);
@@ -89,7 +139,7 @@ public class AchievementController {
 			result.addObject("visibility", List.of(Visibility.values()));
 		} else {
 			result = new ModelAndView(ACHIEVEMENTS_LISTING_VIEW_ADMIN);
-			result.setViewName("redirect:/statistics/achievements/admin");
+			result.setViewName("redirect:/statistics/achievements/admin/1");
 			ra.addFlashAttribute("message", "Cannot edit an achievement that has already been published");
 		}
 		
@@ -98,8 +148,7 @@ public class AchievementController {
 	
 	@PostMapping("/admin/{id}/edit")
 	public ModelAndView saveAchievement(@PathVariable int id, @Valid Achievement achievement, BindingResult br) {
-		ModelAndView result = showAchievements();
-		
+		ModelAndView result = showAchievementsAdmin(1);
 		if(br.hasErrors()) {
 			result = new ModelAndView(ACHIEVEMENTS_FORM, br.getModel());
 		} else {
@@ -138,7 +187,7 @@ public class AchievementController {
 			}
 			if(!isRepeated) {
 				achievementService.saveAchievement(achievement);
-				result = showAchievements();
+				result = showAchievements(1);
 				result.addObject("message", "The achievement was added succesfully");
 			} else {
 				result = newAchievement();
@@ -152,7 +201,7 @@ public class AchievementController {
 	public ModelAndView deleteAchievement(@PathVariable int id) {
 		Achievement achievement = achievementService.getAchievementById(id);
 		achievementService.deleteAchievement(achievement);
-		ModelAndView result = showAchievements();
+		ModelAndView result = showAchievements(1);
 		result.addObject("message", "The achievement was deleted succesfully");
 		return result;
 	}

@@ -9,6 +9,9 @@ import java.util.regex.Pattern;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.samples.petclinic.user.Authorities;
 import org.springframework.samples.petclinic.user.User;
@@ -56,10 +59,26 @@ public class PlayerController {
 	
 	// --------------------------------------------------------------------------------------------------------------------------------------------- //
 
-	@GetMapping(value = "/jugadores")
-	public String showAllPlayers(Map<String, Object> model) {
-		Collection<Jugador> results = this.playerService.findAllJugadores();
-		model.put("selections", results);
+	@GetMapping(value = "/jugadores/list/{page}")
+	public String showAllPlayers(Map<String, Object> model,@PathVariable("page") int page) {
+		
+		if(page<1) 
+			return "redirect:/jugadores/list/1";
+		
+		Pageable pageable = PageRequest.of(page-1, 5);
+		Page<Jugador> results = this.playerService.findAllJugadoresPageable(pageable);
+
+		Integer numberOfPages = results.getTotalPages();
+		Integer thisPage = page;
+
+		if(thisPage > numberOfPages) 
+			return "redirect:/jugadores/list/"+numberOfPages;
+		
+		model.put("numberOfPages", numberOfPages);
+		model.put("thisPage", thisPage);
+		
+		model.put("selections", results.getContent());
+
 		if (results.isEmpty()) {
 			return "redirect:/jugadores/new";
 		}
@@ -222,6 +241,7 @@ public class PlayerController {
 
 	@GetMapping(value = "/jugadores/{jugadorId}/playerMatches")
 	public ModelAndView showMatchesOfAPlayer(@PathVariable("jugadorId") int jugadorId) {
+
 		ModelAndView result = new ModelAndView();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUser(auth.getName()).get();
@@ -246,7 +266,7 @@ public class PlayerController {
 
 		return result;
 	}
-	
+
 	// --------------------------------------------------------------------------------------------------------------------------------------------- //
 
 	@GetMapping(value = "/jugadores/{jugadorId}/playerFriends")
@@ -327,7 +347,7 @@ public class PlayerController {
 		ModelAndView result;
 		String message = "";
 		
-		if(friendRequestService.getFriendRequestByPlayers(player1Id, player2Id) != null) {
+		if(friendRequestService.getFriendRequestByPlayers(player1Id, player2Id) != null) { // cambiar consulta para que solo devuelva las solicitudes con respuesta = null
 			message = "You have already sent a friend request to this player";
 		} else if(friendRequestService.getFriendRequestByPlayers(player2Id, player1Id) != null) {
 			message = "You have a pending friend request from this player";

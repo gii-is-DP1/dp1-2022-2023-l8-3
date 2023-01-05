@@ -6,7 +6,7 @@
 
 <petclinic:layout pageName="jugadores">
 
-    <h2>Información sobre jugadores</h2>
+    <h2>Informacion sobre jugadores</h2>
 
 
     <table class="table table-striped">
@@ -20,7 +20,6 @@
         <tbody>
 	        <c:forEach items="${selections}" var="jugador">
 	            <tr>
-	                
 	                <td>
 	                    <spring:url value="jugadores/{jugadorId}" var="EnlaceUrl">
         					<spring:param name="jugadorId" value="${jugador.id}"/>
@@ -40,7 +39,10 @@
 	  		</c:forEach>
         </tbody>
     </table>
-	<a class="btn btn-default" href='<spring:url value="/jugadores/new" htmlEscape="true"/>'>Añadir Jugador</a>
+	<petclinic:pagination thisPage="${thisPage}" numberOfPages="${numberOfPages}" url="/matches/Finished/"/>
+
+
+	<a class="btn btn-default" href='<spring:url value="/jugadores/new" htmlEscape="true"/>'>Anadir Jugador</a>
    
 
 </petclinic:layout>

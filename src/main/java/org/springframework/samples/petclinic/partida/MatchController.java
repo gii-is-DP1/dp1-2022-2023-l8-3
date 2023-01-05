@@ -11,6 +11,9 @@ import java.util.Set;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.samples.petclinic.invitacion.Invitacion;
 import org.springframework.samples.petclinic.invitacion.InvitationService;
 import org.springframework.samples.petclinic.invitacion.resultadoInvitacion;
@@ -207,6 +210,10 @@ public class MatchController {
 				binaryPhase(match, player1, player2);
 			} else if(match.esFaseContaminacion()) {
 				pollutionPhase(match, player1, player2);
+			} else if(match.esFin()) {
+				match.determineWinner();
+				result = new ModelAndView(MATCH_STATISTICS_VIEW);
+				finishMatch(match);
 			}
 		} else {
 			result = new ModelAndView(MATCH_STATISTICS_VIEW);
@@ -233,7 +240,9 @@ public class MatchController {
 	}
 	
 	/**
-	 * Dependiendo de diferentes factores, refresca o no la pantalla.
+	 * En las fases de fisión binaria y contaminación, la pantalla se recarga cada 3 segundos
+	 * En la fase de propagación, para el jugador al que le toca, la pantalla se recarga cada 6 segundos
+	 * Para el jugador al que no le toca, se recarga cada 3 segundos
 	 * @param user
 	 * @param match
 	 * @param itIsPropagationPhase
@@ -244,10 +253,16 @@ public class MatchController {
         Integer idCurrentPlayer = match.turnoPrimerJugador() ? match.getJugador1().getId() : match.getJugador2().getId();
 		if (itIsPropagationPhase) {
 			if(idLoggedPlayer != idCurrentPlayer) {
-	        	response.addHeader("Refresh", "5");
+//	        	response.addHeader("Refresh", "3");
+	        	response.addHeader("Refresh", "1000000");
+
+	        } else {
+//	        	response.addHeader("Refresh", "6");
+	        	response.addHeader("Refresh", "1000000");
+
 	        }
 		} else {
-			response.addHeader("Refresh", "1");
+			response.addHeader("Refresh", "3");
 		}
 	}
 	
@@ -276,10 +291,6 @@ public class MatchController {
 				match.nextTurn();
 				matchService.saveMatch(match);
 			}
-		} else if(match.esFin()) {
-			match.determineWinner();
-			result = new ModelAndView(MATCH_STATISTICS_VIEW);
-			finishMatch(match);
 		} else {
 			match.nextTurn();
 			matchService.saveMatch(match);
@@ -363,27 +374,53 @@ public class MatchController {
 		return result;
 	}
 	
-	@GetMapping(value = "/InProgress")
-	public String showMatchesInProgress(Map<String, Object> model,Map<String, Object> model2) {
-		List<Match> results = this.matchService.getMatchesByGameWinner(GameWinner.UNDEFINED);
-		Boolean b=false;
-		model.put("selections", results);
-		if(results.isEmpty()) {
-			b=true;
-		}
+	@GetMapping(value = "/InProgress/{page}")
+	public String showMatchesInProgress(Map<String, Object> model,Map<String, Object> model2,
+			@PathVariable("page") int page) {
+		if(page<1) 
+			return "redirect:/matches/InProgress/1";
+		
+		Pageable pageable = PageRequest.of(page-1, 10);
+		Page<Match> results = this.matchService.getMatchesByGameWinnerPageable(GameWinner.UNDEFINED, pageable);
+		
+		Integer numberOfPages = results.getTotalPages();
+		Integer thisPage = page;
+		
+		if(thisPage > numberOfPages) 
+			return "redirect:/matches/InProgress/"+numberOfPages;
+		
+
+		model.put("numberOfPages", numberOfPages);
+		model.put("selections", results.getContent());
+		model.put("thisPage", thisPage);
+		
+		Boolean b=results.isEmpty();
+
 		model2.put("sinPartidas", b);
 		return "matches/listMatchesInProgress";
 	}
 	
-	@GetMapping(value = "/Finished")
-	public String showMatchesFinished(Map<String, Object> model,Map<String, Object> model2,Map<String, Object> model3) {
-		List<Match> results = this.matchService.getMatchesByGameWinner(GameWinner.FIRST_PLAYER);
-		results.addAll(this.matchService.getMatchesByGameWinner(GameWinner.SECOND_PLAYER));
-		Boolean b=false;
-		model.put("selections", results);
-		if(results.isEmpty()) {
-			b=true;
-		}
+	@GetMapping(value = "/Finished/{page}")
+	public String showMatchesFinished(Map<String, Object> model,Map<String, Object> model2,Map<String, Object> model3,
+			@PathVariable("page") int page) {
+		if(page<1) 
+			return "redirect:/matches/Finished/1";
+
+		Pageable pageable = PageRequest.of(page-1, 10);
+		Page<Match> results = this.matchService.getMatchesFinishedPageable(pageable);
+		
+		Integer numberOfPages = results.getTotalPages();
+		Integer thisPage = page;
+
+		if(thisPage > numberOfPages) 
+			return "redirect:/matches/Finished/"+numberOfPages;
+		
+		model.put("numberOfPages", numberOfPages);
+		model.put("selections", results.getContent());
+		model.put("thisPage", thisPage);
+		
+		Boolean b=results.isEmpty();
+
 		model2.put("sinPartidas", b);
 		model3.put("firstPlayer", GameWinner.FIRST_PLAYER);
 		return "matches/listMatchesFinished";
