@@ -16,8 +16,6 @@ import org.springframework.samples.petclinic.partida.MatchController;
 import org.springframework.samples.petclinic.partida.MatchService;
 import org.springframework.samples.petclinic.statistics.AchievementController;
 import org.springframework.samples.petclinic.user.Authorities;
-import org.springframework.samples.petclinic.user.UserController;
-import org.springframework.samples.petclinic.web.WelcomeController;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
@@ -52,12 +50,15 @@ public class MenuController {
 				Jugador jugadorActual=menuService.findPlayerByUsername(user.getName());
 				Collection<Match> partidas = matchService.getMatches();
 				for(Match partida:partidas) {
-				    if(partida.getFinPartida()==null&&(partida.getJugador1()==jugadorActual||partida.getJugador2()==jugadorActual)) {
-				        int id = partida.getId();
+				    if(partida.getFinPartida()==null&&(partida.getJugador1()==jugadorActual||partida.getJugador2()==jugadorActual)) {       
+				    	int id = partida.getId();
 				        model.addAttribute("matchId", id);
-				        model.addAttribute("partidaPendiente", true);
-				    }else {
-                        model.addAttribute("partidaPendiente", false);
+				        if(partida.getJugador2()!=null) {
+				        	model.addAttribute("partidaPendiente", true);
+				        }
+				        else {
+				        	model.addAttribute("jugador2NoUnido",true);
+				        }
 				    }
 				}
 				List<Invitacion> lista=invitacionService.getInvitacionByInvitadoId(jugadorActual.getId());
