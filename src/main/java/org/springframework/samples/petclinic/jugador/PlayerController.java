@@ -116,7 +116,7 @@ public class PlayerController {
 		} catch (Exception e) {
 			throw new Exception("Player Delete Error");
 		}
-		return "redirect:/jugadores";
+		return "redirect:/jugadores/list/1";
 	}
 
 	@GetMapping(value = "/jugadores/new")

@@ -13,6 +13,8 @@ import org.springframework.samples.petclinic.user.AuthoritiesService;
 import org.springframework.samples.petclinic.user.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.samples.petclinic.comentario.Comentario;
+import org.springframework.samples.petclinic.comentario.ComentarioRepository;
 import org.springframework.samples.petclinic.disco.Disco;
 import org.springframework.samples.petclinic.disco.DishRepository;
 import org.springframework.samples.petclinic.partida.Match;
@@ -27,15 +29,19 @@ public class PlayerService {
 	private AuthoritiesService authService;
 	private MatchRepository matchRepo;
 	private DishRepository dishRepo;
+	private FriendRequestRepository friendRepo;
+	private ComentarioRepository commentRepo;
 
 	@Autowired
 	public PlayerService(PlayerRepository playerRepository, UserRepository userRepo, AuthoritiesService authService,
-			MatchRepository matchRepo, DishRepository dishRepo) {
+			MatchRepository matchRepo, DishRepository dishRepo, FriendRequestRepository friendRepo, ComentarioRepository commentRepo) {
 		this.playerRepo = playerRepository;
 		this.authService = authService;
 		this.matchRepo = matchRepo;
 		this.userRepo = userRepo;
 		this.dishRepo = dishRepo;
+		this.friendRepo = friendRepo;
+		this.commentRepo = commentRepo;
 	}
 
 	@Transactional
@@ -83,13 +89,17 @@ public class PlayerService {
 
 	@Transactional
 	public void deletePlayer(Integer id) throws Exception {
-		// TODO: no veo conveniente que se borren todas las partidas en las que haya
-		// participado, se perdería la estadística
-		// Mejor, ponemos a null el atributo jugador1 o jugador2
 		try {
 			playerRepo.findById(id).get().getSentFriendRequests().clear();
 			playerRepo.findById(id).get().getReceivedFriendRequests().clear();
 			playerRepo.save(playerRepo.findById(id).get());
+			
+			for(Comentario c : commentRepo.findByPlayer(id)) {
+				c.setJugador(null);
+			}
+			for(FriendRequest fr : friendRepo.findByPlayer(id)) {
+				friendRepo.delete(fr);
+			}
 			for (Jugador j : playerRepo.findAll()) {
 				for (Integer i = 0; i < j.playerFriends().size(); i++) {
 					if (j.playerFriends().get(i) == playerRepo.findById(id).get())
@@ -97,7 +107,6 @@ public class PlayerService {
 					playerRepo.save(j);
 				}
 			}
-
 			for (Match m : matchRepo.findMatchsWithIdPlayer1(id)) {
 				for (Disco d : dishRepo.findDiscosWithMatchId(m.getId())) {
 					dishRepo.delete(d);
