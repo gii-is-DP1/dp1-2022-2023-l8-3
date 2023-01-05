@@ -81,9 +81,12 @@ public class MatchController {
 	public ModelAndView createNewMatch(@AuthenticationPrincipal Authentication user) {
 		ModelAndView result = new ModelAndView(CREATE_MATCH_VIEW);
 		Jugador jugadorActual=playerService.findPlayerByUsername(user.getName());
+
 		List<Jugador> listaAmigos=new ArrayList<>(jugadorActual.playerFriends());
 		List<Jugador> listaAmigosInvitados=new ArrayList<>();
+
 		listaAmigosInvitados.addAll(jugadorActual.getAmigosInvitados());
+
 		result.addObject("actualPlayer", playerService.findPlayerByUsername(user.getName()));
 		result.addObject("amigosInvitados",listaAmigosInvitados);
 		result.addObject("players",listaAmigos);
@@ -134,7 +137,7 @@ public class MatchController {
 	
 	@GetMapping(value ="/{idMatch}/waitForMatch")
 	public ModelAndView showWait(@PathVariable("idMatch") int matchId, @AuthenticationPrincipal Authentication user, HttpServletResponse response) {
-	    if(matchService.getMatchById(matchId).getJugador2()!=null && matchService.getMatchById(matchId).getJugador1()!=playerService.findPlayerByUsername(user.getName())) {
+		if(matchService.getMatchById(matchId).getJugador2()!=null && matchService.getMatchById(matchId).getJugador1()!=playerService.findPlayerByUsername(user.getName())) {
 	    	Jugador actualUser=playerService.findPlayerByUsername(user.getName());
 	    	ModelAndView result = new ModelAndView("/matches/matchesList");
 	    	result.addObject("partidaLlena",true);
@@ -236,7 +239,9 @@ public class MatchController {
 	public void refresh(Authentication user, Match match, Boolean itIsPropagationPhase, HttpServletResponse response) {
 		Integer idLoggedPlayer = playerService.findPlayerByUsername(user.getName()).getId();
         Integer idCurrentPlayer = match.turnoPrimerJugador() ? match.getJugador1().getId() : match.getJugador2().getId();
-		if (itIsPropagationPhase) {
+
+        if (itIsPropagationPhase) {
+
 			if(idLoggedPlayer != idCurrentPlayer) {
 	        	response.addHeader("Refresh", "3");
 	        } else {
@@ -254,7 +259,7 @@ public class MatchController {
 		Match match = matchService.getMatchById(idMatch);
 		Jugador player1 = match.getJugador1();
 		Jugador player2 = match.getJugador2();
-		
+
 		if(match.esPropagacion()) {
 			match.copyTransientData(auxMatch);
 			//Si es "" es correcto. Si tiene un mensaje es un msg de error
@@ -276,9 +281,10 @@ public class MatchController {
 			match.nextTurn();
 			matchService.saveMatch(match);
 		}
+
 		refresh(user, match, match.itIsPropagationPhase(), response);
 		addDataToTheView(user, result, match);
-		
+
 		return result;
 	}
 
@@ -363,10 +369,10 @@ public class MatchController {
 		
 		Pageable pageable = PageRequest.of(page-1, 10);
 		Page<Match> results = this.matchService.getMatchesByGameWinnerPageable(GameWinner.UNDEFINED, pageable);
-		
+
 		Integer numberOfPages = results.getTotalPages();
 		Integer thisPage = page;
-		
+
 		if(thisPage > numberOfPages) 
 			return "redirect:/matches/InProgress/"+numberOfPages;
 		
@@ -389,7 +395,7 @@ public class MatchController {
 
 		Pageable pageable = PageRequest.of(page-1, 10);
 		Page<Match> results = this.matchService.getMatchesFinishedPageable(pageable);
-		
+
 		Integer numberOfPages = results.getTotalPages();
 		Integer thisPage = page;
 
@@ -399,7 +405,7 @@ public class MatchController {
 		model.put("numberOfPages", numberOfPages);
 		model.put("selections", results.getContent());
 		model.put("thisPage", thisPage);
-		
+
 		Boolean b=results.isEmpty();
 
 		model2.put("sinPartidas", b);
