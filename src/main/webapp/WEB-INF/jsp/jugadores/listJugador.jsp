@@ -39,7 +39,7 @@
 	  		</c:forEach>
         </tbody>
     </table>
-	<petclinic:pagination thisPage="${thisPage}" numberOfPages="${numberOfPages}" url="/matches/Finished/"/>
+	<petclinic:pagination thisPage="${thisPage}" numberOfPages="${numberOfPages}" url="/jugadores/list/"/>
 
 
 	<a class="btn btn-default" href='<spring:url value="/jugadores/new" htmlEscape="true"/>'>Anadir Jugador</a>
