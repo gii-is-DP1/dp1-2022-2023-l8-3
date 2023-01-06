@@ -16,18 +16,18 @@ INSERT INTO users(id,username,password,email,enabled) VALUES (7,'josibocon','jos
 INSERT INTO authorities(id,username,authority) VALUES (7,7,'jugador');
 
 
-INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,contamination_number,number_of_bacteria,number_of_sarcina) 
-VALUES(1,'David','Dana',2,false,0,20,4);
-INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,contamination_number,number_of_bacteria,number_of_sarcina) 
-VALUES(2,'Juan Jesus','Martin',5,false,0,20,4);
-INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,contamination_number,number_of_bacteria,number_of_sarcina) 
-VALUES(3,'Manuel','Ortega',3,false,0,20,4);
-INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,contamination_number,number_of_bacteria,number_of_sarcina)
-VALUES(4,'Yeyo','Peyeyo',4,false,0,20,4);
-INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,contamination_number,number_of_bacteria,number_of_sarcina)
-VALUES(5,'Francisco Jesús','Montero',6,false,0,20,4);
-INSERT INTO jugadores(id, first_name,last_name,username,estado_Online,contamination_number,number_of_bacteria,number_of_sarcina)
-VALUES(6,'José Miguel','Iborra',7,false,0,20,4);
+INSERT INTO jugadores(id, first_name,last_name,username,estado_Online) 
+VALUES(1,'David','Dana',2,false);
+INSERT INTO jugadores(id, first_name,last_name,username,estado_Online) 
+VALUES(2,'Juan Jesus','Martin',5,false);
+INSERT INTO jugadores(id, first_name,last_name,username,estado_Online) 
+VALUES(3,'Manuel','Ortega',3,false);
+INSERT INTO jugadores(id, first_name,last_name,username,estado_Online)
+VALUES(4,'Yeyo','Peyeyo',4,false);
+INSERT INTO jugadores(id, first_name,last_name,username,estado_Online)
+VALUES(5,'Francisco Jesús','Montero',6,false);
+INSERT INTO jugadores(id, first_name,last_name,username,estado_Online)
+VALUES(6,'José Miguel','Iborra',7,false);
 
 INSERT INTO friend_request(id, resultado, jugador1_id, jugador2_id)
 VALUES (1, true, 1, 2);
@@ -41,8 +41,9 @@ INSERT INTO achievements(id,name,metrics,threshold,description,visibility,diffic
 	(2, 'Triunfador', 'GANAR_PARTIDAS', 20.0, 'Si ganas <THRESHOLD> o más partidas es que eres todo un triunfador', 'PUBLICADO', 'PLATA');
 
 
-INSERT INTO matches(id, id_jugador1, id_jugador2, abandonada, es_privada, inicio_de_partida, ganador_de_partida, turn)
-VALUES(1, 1, 2, false, true, '1999-04-12 10:12:12.55', 'UNDEFINED', 0);
+INSERT INTO matches(id, id_jugador1, id_jugador2, abandonada, es_privada, inicio_de_partida, ganador_de_partida, contamination_number_of_player_1,
+contamination_number_of_player_2, number_of_bacteria_of_player_1, number_of_bacteria_of_player_2, number_of_sarcina_of_player_1, number_of_sarcina_of_player_2, turn)
+VALUES(1, 1, 2, false, true, '1999-04-12 10:12:12.55', 'UNDEFINED', 0, 0, 20, 20, 4, 4, 0);
 
 INSERT INTO disco VALUES(1,4,0,0,0,1,1);
 INSERT INTO disco VALUES(2,1,3,0,0,0,1);
@@ -52,13 +53,15 @@ INSERT INTO disco VALUES(5,0,0,0,0,0,1);
 INSERT INTO disco VALUES(6,2,0,0,0,0,1);
 INSERT INTO disco VALUES(7,2,4,0,0,0,1);
 
-INSERT INTO matches(id, id_jugador1, id_jugador2, abandonada, es_privada, inicio_de_partida, fin_de_partida, ganador_de_partida, turn)
-VALUES(2, 3, 4, false, true, '1999-04-12 10:12:12.55', '1999-04-12 11:12:12.55', 'FIRST_PLAYER', 0);
+INSERT INTO matches(id, id_jugador1, id_jugador2, abandonada, es_privada, inicio_de_partida, fin_de_partida, ganador_de_partida, contamination_number_of_player_1,
+contamination_number_of_player_2, number_of_bacteria_of_player_1, number_of_bacteria_of_player_2, number_of_sarcina_of_player_1, number_of_sarcina_of_player_2, turn)
+VALUES(2, 3, 4, false, true, '1999-04-12 10:12:12.55', '1999-04-12 11:12:12.55', 'FIRST_PLAYER', 0, 0, 20, 20, 4, 4, 0);
 
 
 
-INSERT INTO matches(id, id_jugador1, id_jugador2, abandonada, es_privada, inicio_de_partida, fin_de_partida, ganador_de_partida, turn)
-VALUES(3, 1, 2, false, false, '2000-05-17 15:12:07.55', '2000-05-17 15:20:16.43', 'FIRST_PLAYER', 0);
+INSERT INTO matches(id, id_jugador1, id_jugador2, abandonada, es_privada, inicio_de_partida, fin_de_partida, ganador_de_partida, contamination_number_of_player_1,
+contamination_number_of_player_2, number_of_bacteria_of_player_1, number_of_bacteria_of_player_2, number_of_sarcina_of_player_1, number_of_sarcina_of_player_2, turn)
+VALUES(3, 1, 2, false, false, '2000-05-17 15:12:07.55', '2000-05-17 15:20:16.43', 'FIRST_PLAYER', 0, 0, 20, 20, 4, 4, 0);
 
 INSERT INTO disco VALUES(8,1,0,0,0,0,2);
 INSERT INTO disco VALUES(9,0,0,0,0,0,2);

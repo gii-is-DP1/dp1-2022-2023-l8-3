@@ -34,7 +34,11 @@ public class FriendRequestService {
 	}
 
 	public FriendRequest getFriendRequestByPlayers(Integer idJugador1, Integer idJugador2) {
-		return friendRequestRepository.findByPlayers(idJugador1, idJugador2);
+		return friendRequestRepository.findFriendRequestByPlayers(idJugador1, idJugador2);
+	}
+	
+	public FriendRequest getNoReplyFriendRequestByPlayers(Integer idJugador1, Integer idJugador2) {
+		return friendRequestRepository.findNoReplyFriendRequestByPlayers(idJugador1, idJugador2);
 	}
 	
 	public List<FriendRequest> getFriendRequestByPlayer(Integer playerId) {
