@@ -312,7 +312,7 @@ public class PlayerController {
 		} else if(result && playerService.findJugadorById(player1Id).playerFriends().size() >= FRIEND_LIMIT) {
 			message = "That player has reached the friend limit";
 		} else {
-			FriendRequest fr = friendRequestService.getFriendRequestByPlayers(player1Id, player2Id);
+			FriendRequest fr = friendRequestService.getNoReplyFriendRequestByPlayers(player1Id, player2Id);
 			fr.setResultado(result);
 			friendRequestService.saveFriendRequest(fr);
 			message = result ? "Request successfully accepted" : "Request successfully declined";  
@@ -347,9 +347,9 @@ public class PlayerController {
 		ModelAndView result;
 		String message = "";
 		
-		if(friendRequestService.getFriendRequestByPlayers(player1Id, player2Id) != null) { // cambiar consulta para que solo devuelva las solicitudes con respuesta = null
+		if(friendRequestService.getNoReplyFriendRequestByPlayers(player1Id, player2Id) != null) { // cambiar consulta para que solo devuelva las solicitudes con respuesta = null
 			message = "You have already sent a friend request to this player";
-		} else if(friendRequestService.getFriendRequestByPlayers(player2Id, player1Id) != null) {
+		} else if(friendRequestService.getNoReplyFriendRequestByPlayers(player2Id, player1Id) != null) {
 			message = "You have a pending friend request from this player";
 		} else {
 			if(playerService.findJugadorById(player1Id).playerFriends().size() >= FRIEND_LIMIT) {

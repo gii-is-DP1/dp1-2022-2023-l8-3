@@ -219,12 +219,6 @@ public class MatchController {
 
 	private void finishMatch(Match match) {
 		match.setFinPartida(LocalDateTime.now());
-		match.getJugador1().setNumeroDeContaminacion(0);
-		match.getJugador1().setBacterias(20);
-		match.getJugador1().setSarcinas(4);
-		match.getJugador2().setNumeroDeContaminacion(0);
-		match.getJugador2().setBacterias(20);
-		match.getJugador2().setSarcinas(4);
 	}
 	
 	/**

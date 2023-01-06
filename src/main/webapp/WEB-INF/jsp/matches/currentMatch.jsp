@@ -15,8 +15,8 @@
 
 			<div class="jugador1 translateX200">
 				<c:set var="jugador" value="${match.jugador1}"/>
-				<petclinic:seccionJugador usuario="${jugador.user.username}" numeroBacterias="${jugador.bacterias}"
-					 numeroSarcinas="${jugador.sarcinas}" contaminacion="${jugador.numeroDeContaminacion}"/>
+				<petclinic:seccionJugador usuario="${jugador.user.username}" numeroBacterias="${match.numberOfBacteriaOfPlayer1}"
+					 numeroSarcinas="${match.numberOfSarcinaOfPlayer1}" contaminacion="${match.contaminationNumberOfPlayer1}"/>
 			</div>
 			<input type="checkbox" style="display: none;" name="" id="showJugador1">
 			<label class="responsiveButtons" id="labelShowJugador1" for="showJugador1">Jugador 1</label>
@@ -60,8 +60,8 @@
 
 			<div class="jugador2 translateX250">
 				<c:set var="jugador" value="${match.jugador2}"/>
-				<petclinic:seccionJugador usuario="${jugador.user.username}" numeroBacterias="${jugador.bacterias}"
-					 numeroSarcinas="${jugador.sarcinas}" contaminacion="${jugador.numeroDeContaminacion}"/>
+				<petclinic:seccionJugador usuario="${jugador.user.username}" numeroBacterias="${match.numberOfBacteriaOfPlayer2}"
+					 numeroSarcinas="${match.numberOfSarcinaOfPlayer2}" contaminacion="${match.contaminationNumberOfPlayer2}"/>
 			</div>
 
 		</div>

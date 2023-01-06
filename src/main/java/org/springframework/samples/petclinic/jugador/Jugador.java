@@ -30,22 +30,6 @@ public class Jugador extends Person {
 	@Column(name = "estado_Online")
 	private Boolean estadoOnline;
 
-	@Column(name = "contamination_number")
-	private Integer numeroDeContaminacion;
-
-	@Column(name = "number_of_bacteria")
-	private Integer bacterias;
-
-	@Column(name = "number_of_sarcina")
-	private Integer sarcinas;
-	
-
-	@Override
-	public String toString() {
-		return "Jugador [estadoOnline=" + estadoOnline + ", numeroDeContaminacion=" + numeroDeContaminacion
-				+ ", bacterias=" + bacterias + ", sarcinas=" + sarcinas + ", user=" + user + "]";
-	}
-
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "username")
 	private User user;
@@ -59,7 +43,6 @@ public class Jugador extends Person {
 	
 	@ElementCollection
 	private List<String> tipoDeInvitacionPartidaEnviada; //el indice de cada elemento se corresponde con el indice del jugador invitado en la lista amigos invitados
-
 
 	@OneToMany(mappedBy = "jugador1")
 	private List<FriendRequest> sentFriendRequests;
@@ -80,29 +63,10 @@ public class Jugador extends Person {
 		this.lastName = lastName;
 		this.user = user;
 		this.estadoOnline = estadoOnline;
-		this.numeroDeContaminacion = 0;
-		this.bacterias = 20;
-		this.sarcinas = 4;
 		this.invitacionesPartidaRecibidas = new ArrayList<Invitacion>();
 		this.sentFriendRequests = new ArrayList<FriendRequest>();
 		this.receivedFriendRequests = new ArrayList<FriendRequest>();
 		this.logros = new ArrayList<Achievement>();
-	}
-
-	public void addBacteria(Integer numberOfBacteria) {
-		bacterias += numberOfBacteria;
-	}
-
-	public void decreaseBacteria() {
-		bacterias--;
-	}
-
-	public void decreaseSarcinas() {
-		sarcinas--;
-	}
-
-	public void increseContaminationNumber() {
-		numeroDeContaminacion++;
 	}
 
 	public List<Jugador> playerFriends() {

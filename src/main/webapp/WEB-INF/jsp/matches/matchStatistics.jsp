@@ -39,9 +39,9 @@
         		<c:if test="${match.jugador1.user.username == null}">
         			<p><b>Anfitrión:</b></p>
         		</c:if>
-        		<p>Número de contaminación: ${match.jugador1.numeroDeContaminacion}</p>
-        		<p>Número de bacterias en la reserva: ${match.jugador1.bacterias}</p>
-        		<p>Número de sarcinas en la reserva: ${match.jugador1.sarcinas}</p> <br/>
+        		<p>Número de contaminación: ${match.contaminationNumberOfPlayer1}</p>
+        		<p>Número de bacterias en la reserva: ${match.numberOfBacteriaOfPlayer1}</p>
+        		<p>Número de sarcinas en la reserva: ${match.numberOfSarcinaOfPlayer1}</p> <br/>
         	</div>
         	<div>
         		<c:if test="${match.jugador2.user.username != null}">
@@ -50,9 +50,9 @@
         		<c:if test="${match.jugador2.user.username == null}">
         			<p><b>Invitado:</b></p>
         		</c:if>
-        		<p>Número de contaminación: ${match.jugador2.numeroDeContaminacion}</p>
-        		<p>Número de bacterias en la reserva: ${match.jugador2.bacterias}</p>
-        		<p>Número de sarcinas en la reserva: ${match.jugador2.sarcinas}</p> <br/>
+        		<p>Número de contaminación: ${match.contaminationNumberOfPlayer2}</p>
+        		<p>Número de bacterias en la reserva: ${match.numberOfBacteriaOfPlayer2}</p>
+        		<p>Número de sarcinas en la reserva: ${match.numberOfSarcinaOfPlayer2}</p> <br/>
         	</div>
         	<div>
         		<p><b>Algunos datos adicionales de la partida:</b></p>
