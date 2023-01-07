@@ -79,7 +79,7 @@ public class MatchControllerTest {
     	given(this.invitacionService.getInvitacionByInvitadoId(any(Integer.class))).willReturn(lista);
     }
 
-    
+  
     
     @WithMockUser(username = "testUser1", password="testUser1")
     @Test
@@ -166,12 +166,12 @@ public class MatchControllerTest {
 	void testPostShowMatch() throws Exception {
 		config(true,false);
 		given(this.matchService.saveMatch(any(Match.class))).willReturn(null);
-
+		given(this.matchService.canIplay(any(Jugador.class))).willReturn(true);
+		given(this.matchService.imPlaying(any(Jugador.class))).willReturn(true);
 		mockMvc.perform(post("/matches/{idMatch}/waitForMatch", 1)
 					.with(csrf()))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(redirectedUrl("/matches/1/currentMatch"));
-	
     }
     
     @WithMockUser(username = "testUser2", password="testUser2")

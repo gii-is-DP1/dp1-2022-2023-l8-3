@@ -132,6 +132,7 @@ public class Match extends NamedEntity{
 	
 	
 	public Match(Boolean esPrivada, Jugador jugadorAnfitrion) {
+	    this.inicioPartida = LocalDateTime.now();
 		this.esPrivada = esPrivada;
 		this.jugador1 = jugadorAnfitrion;
 		this.espectadores = new HashSet<Jugador>();

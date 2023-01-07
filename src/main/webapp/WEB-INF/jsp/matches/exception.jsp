@@ -8,7 +8,7 @@
     <div class="content">
     <img src="${sarcina}"/>
 	</div>
-    <h2>Lo siento ${jugador.user.username} hoy ya has jugado demasiado descansa la vista, sal a la calle un rato y disfruta de la naturaleza.</h2>
+    <h2>Lo siento ${jugador.user.username}</h2><h2>${ mensaje}</h2>
 
     <p>Podras volver a jugar mañana :)</p>
 
