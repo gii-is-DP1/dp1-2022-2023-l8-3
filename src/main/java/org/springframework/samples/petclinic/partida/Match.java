@@ -574,7 +574,7 @@ public class Match extends NamedEntity{
 	public Integer totalMoves() {
 		Integer result = 0;
 		for(int i = 0; i < discos.size(); i++) {
-			result += discos.get(i).getNumMov();
+			result += discos.get(i).getNumMov1() + discos.get(i).getNumMov2();
 		}
 		return result;
 	}
@@ -583,9 +583,9 @@ public class Match extends NamedEntity{
 	public Integer[] dishWithMoreMovements() {
 		Integer[] result = new Integer[] {0, 0};
 		for (int i = 0; i < discos.size(); i++) {
-			if(discos.get(i).getNumMov() > result[1]) {
+			if(discos.get(i).getNumMov1() + discos.get(i).getNumMov2() > result[1]) {
 				result[0] = i;
-				result[1] = discos.get(i).getNumMov();
+				result[1] = discos.get(i).getNumMov1() + discos.get(i).getNumMov2();
 			}
 		}
 		return result;
