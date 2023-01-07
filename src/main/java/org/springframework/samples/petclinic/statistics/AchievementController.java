@@ -177,7 +177,6 @@ public class AchievementController {
 	
 	@PostMapping("/admin/new")
 	public ModelAndView saveAchievement(@Valid Achievement achievement, BindingResult br) {
-		System.out.println("PIPO");
 		ModelAndView result;
 		Integer i = 0;
 		Boolean isRepeated = false;

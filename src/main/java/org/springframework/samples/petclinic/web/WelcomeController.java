@@ -49,7 +49,6 @@ public class WelcomeController {
 	  public ModelAndView welcome() {	    
 		ModelAndView result=new ModelAndView("welcome");
 		Authentication auth=SecurityContextHolder.getContext().getAuthentication();
-		System.out.println("error2");
 		User user1=new User("testUser1","testUser1");
 		Set<Authorities> conj=new HashSet<Authorities>();
 		Authorities authority=new Authorities(); authority.setUser(user1);authority.setAuthority("admin");

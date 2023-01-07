@@ -71,14 +71,12 @@ public class Jugador extends Person {
 
 	public List<Jugador> playerFriends() {
 		List<Jugador> res = new ArrayList<>();
-		System.out.println("pene1");
 		for (FriendRequest r : sentFriendRequests) {
 			if (r.getResultado() != null && r.getResultado()) {
 				res.add(r.getJugador2());
 			}
 
 		}
-		System.out.println("pene2");
 
 		for (FriendRequest r : receivedFriendRequests) {
 			if (r.getResultado() != null && r.getResultado()) {
@@ -86,7 +84,6 @@ public class Jugador extends Person {
 			}
 
 		}
-		System.out.println("pene3");
 
 		return res;
 	}
