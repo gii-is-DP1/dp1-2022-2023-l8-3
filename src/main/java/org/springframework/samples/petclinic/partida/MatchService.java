@@ -10,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.samples.petclinic.disco.Disco;
 import org.springframework.samples.petclinic.disco.DishRepository;
-import org.springframework.samples.petclinic.disco.DishService;
 import org.springframework.samples.petclinic.jugador.Jugador;
 import org.springframework.stereotype.Service;
 
@@ -68,6 +67,9 @@ public class MatchService {
 				GameWinner.FIRST_PLAYER,GameWinner.SECOND_PLAYER,GameWinner.DRAW);
 	}
 
+	public Collection<Match> getPlayedMatches() {
+		return matchRepository.findPlayedMatches();
+	}
 	
 	public Collection<Match> getMatchesOfAPlayer(Integer id){
 		return matchRepository.findMatchesOfAPlayer(id);
