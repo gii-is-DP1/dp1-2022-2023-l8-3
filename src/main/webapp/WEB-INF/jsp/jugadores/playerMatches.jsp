@@ -7,7 +7,13 @@
 <petclinic:layout pageName="playerMatches">
 
 	<h2>Partidas finalizadas</h2>
-
+	
+	<p>
+		<c:out value="Total de partidas: ${gamesPlayed}" /> <br/>
+		<c:out value="Partidas ganadas: ${gamesWon}" /> <br/>
+		<c:out value="Porcentaje de victorias: ${(gamesWon/gamesPlayed)*100}%" />
+	</p>
+	<br/>
 	<table class="table table-striped">
 		<thead>
 			<tr>

@@ -18,12 +18,10 @@ public interface PlayerRepository extends JpaRepository<Jugador, Integer>{
 	
 	@Query("SELECT jugador FROM Jugador jugador")
 	public Page<Jugador> findAllPageable(Pageable pageable) throws DataAccessException;
-
 	
 	@Query("SELECT jugador FROM Jugador jugador WHERE jugador.id =:id")
 	public Jugador findById(@Param("id") int id);
 	
-
 	@Query("SELECT DISTINCT jugador FROM Jugador jugador WHERE jugador.lastName LIKE :lastName")
 	public Collection<Jugador> findByLastName(@Param("lastName") String lastName);
 	

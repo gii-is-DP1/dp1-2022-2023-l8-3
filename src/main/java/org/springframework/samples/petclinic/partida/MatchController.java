@@ -219,6 +219,8 @@ public class MatchController {
 
 	private void finishMatch(Match match) {
 		match.setFinPartida(LocalDateTime.now());
+		match.getDisco(2).setNumMov1(match.getDisco(2).getNumMov1()-1);
+		match.getDisco(4).setNumMov2(match.getDisco(4).getNumMov2()-1);
 	}
 	
 	/**
@@ -399,6 +401,7 @@ public class MatchController {
 		model.put("numberOfPages", numberOfPages);
 		model.put("selections", results.getContent());
 		model.put("thisPage", thisPage);
+		model.put("gamesPlayed", matchService.getPlayedMatches().size());
 
 		Boolean b=results.isEmpty();
 
