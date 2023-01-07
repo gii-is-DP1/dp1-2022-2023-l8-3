@@ -52,8 +52,11 @@ public class Disco extends BaseEntity{
     @Column(name="num_sarcina_j2")
     private Integer numSarc2;
     
-    @Column(name="num_movimientos")
-    private Integer numMov;
+    @Column(name="num_movimientos_j1")
+    private Integer numMov1;
+    
+    @Column(name="num_movimientos_j2")
+    private Integer numMov2;
     
     @ManyToOne
     @JoinColumn(name="id_match")
@@ -66,7 +69,8 @@ public class Disco extends BaseEntity{
 		this.numBact2 = 0;
 		this.numSarc1 = 0;
 		this.numSarc2 = 0;
-		this.numMov = 0;
+		this.numMov1 = 0;
+		this.numMov2 = 0;
 		this.match = match;
 	}  
 	 
@@ -97,8 +101,10 @@ public class Disco extends BaseEntity{
     public void annadirBacterias(Integer idJugador, Integer numeroDeBacterias) {
     	if(idJugador == 0) {
 			numBact1 += numeroDeBacterias;
+			numMov1++;
 		} else {
 			numBact2 += numeroDeBacterias;
+			numMov2++;
 		}
 	}
 	

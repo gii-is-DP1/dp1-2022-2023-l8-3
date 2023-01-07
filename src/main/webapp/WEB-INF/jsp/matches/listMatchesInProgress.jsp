@@ -15,8 +15,8 @@
         <tr>
             <th style="width: 150px;">Creador de la partida</th>
             <th style="width: 200px;">Invitado</th>
-            <th style="width: 200px;">Contaminación j1</th>
-            <th style="width: 200px;">Contaminación j2</th>
+            <th style="width: 200px;">Contaminacion j1</th>
+            <th style="width: 200px;">Contaminacion j2</th>
             
         </tr>
         </thead>
@@ -39,14 +39,16 @@
 		    					</spring:url>
 		    					<a href="${fn:escapeXml(EnlaceUrl)}"><c:out value="${partida.jugador2.user.username}"/></a>
 			                </td>
-			                <td><c:out value="${partida.jugador1.numeroDeContaminacion}"/></td>
-			                <td><c:out value="${partida.jugador2.numeroDeContaminacion}"/></td>
+			                <td><c:out value="${partida.contaminationNumberOfPlayer1}"/></td>
+			                <td><c:out value="${partida.contaminationNumberOfPlayer2}"/></td>
 			        	</tr>
 			  		</c:forEach>
 			  	</c:otherwise>
 			</c:choose>
         </tbody>
     </table>
-   
+	
+	<petclinic:pagination thisPage="${thisPage}" numberOfPages="${numberOfPages}" url="/matches/InProgress/"/>
+
 
 </petclinic:layout>

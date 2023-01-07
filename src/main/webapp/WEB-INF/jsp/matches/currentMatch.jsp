@@ -13,11 +13,14 @@
 
 		<div class="seccion1">
 
-			<div class="jugador1">
+			<div class="jugador1 translateX200">
 				<c:set var="jugador" value="${match.jugador1}"/>
-				<petclinic:seccionJugador usuario="${jugador.user.username}" numeroBacterias="${jugador.bacterias}"
-					 numeroSarcinas="${jugador.sarcinas}" contaminacion="${jugador.numeroDeContaminacion}"/>
+				<petclinic:seccionJugador usuario="${jugador.user.username}" numeroBacterias="${match.numberOfBacteriaOfPlayer1}"
+					 numeroSarcinas="${match.numberOfSarcinaOfPlayer1}" contaminacion="${match.contaminationNumberOfPlayer1}"/>
 			</div>
+			<input type="checkbox" style="display: none;" name="" id="showJugador1">
+			<label class="responsiveButtons" id="labelShowJugador1" for="showJugador1">Jugador 1</label>
+
 			
 			<form:form class="tablero" modelAttribute="match" onsubmit="return validate()">
 
@@ -52,16 +55,21 @@
 				
 			</form:form>
 
-			<div class="jugador2">
+			<input type="checkbox" style="display: none;" name="" id="showJugador2">
+			<label class="responsiveButtons" id="labelShowJugador2" for="showJugador2">Jugador 2</label>
+
+			<div class="jugador2 translateX250">
 				<c:set var="jugador" value="${match.jugador2}"/>
-				<petclinic:seccionJugador usuario="${jugador.user.username}" numeroBacterias="${jugador.bacterias}"
-					 numeroSarcinas="${jugador.sarcinas}" contaminacion="${jugador.numeroDeContaminacion}"/>
+				<petclinic:seccionJugador usuario="${jugador.user.username}" numeroBacterias="${match.numberOfBacteriaOfPlayer2}"
+					 numeroSarcinas="${match.numberOfSarcinaOfPlayer2}" contaminacion="${match.contaminationNumberOfPlayer2}"/>
 			</div>
 
 		</div>
 
 
-		<div class="seccion2">
+		<div class="seccion2 translateY">
+			<input type="checkbox" style="display: none;" name="" id="showChat">
+			<label class="responsiveButtons" id="labelShowChat" for="showChat">Chat e Informacion</label>
 			<div class="chat">
 				<div class="msgs">
 					<c:forEach items="${match.getComentarios()}" var="c">
@@ -223,25 +231,58 @@
 		chatBox.scrollTo(0, chatBox.scrollHeight);
 	}
 
+		//Funcionalidad boton de chat
+	const seccion2 = document.getElementsByClassName("seccion2")[0];
+	var checkShowChat = document.getElementById('showChat');
+	checkShowChat.onclick = function() {
+		if(checkShowChat.checked){
+			seccion2.classList.remove("translateY");
+		}
+		else{
+			seccion2.classList.add("translateY");
+		}
+	}
+
+		//Funcionalidad boton de jugador 1
+	const jugador1 = document.getElementsByClassName("jugador1")[0];
+	var checkShowJug1 = document.getElementById('showJugador1');
+	checkShowJug1.onclick = function() {
+		if(checkShowJug1.checked){
+			jugador1.classList.remove("translateX200");
+		}
+		else{
+			jugador1.classList.add("translateX200");
+		}
+	}
+
+			//Funcionalidad boton de jugador 2
+	const jugador2 = document.getElementsByClassName("jugador2")[0];
+	var checkShowJug2 = document.getElementById('showJugador2');
+	checkShowJug2.onclick = function() {
+		if(checkShowJug2.checked){
+			jugador2.classList.remove("translateX250");
+		}
+		else{
+			jugador2.classList.add("translateX250");
+		}
+	}
+
+
 </script>
 
 <style type="text/css">
 	:root{
 		--discos-vw:40vw;
 		--discos-vh:45vh;
-		--color-disco:#878787;
+		--color-disco:#c1ddf5;
 		--color-background-divs:rgba(22, 22, 26,0.2);
 		--jugadores:min(calc(100vw - var(--discos-vw))/2, calc(100vh - var(--discos-vh))/2);
 		--color-j1:#B00B13;
 		--color-j2:SlateBlue;
 
+		--disco-vw: min(calc(var(--discos-vw)/3.2),calc(var(--discos-vh)/3.2));
+		--disco-vh: min(calc(var(--discos-vw)/3.2),calc(var(--discos-vh)/3.2));
 	}
-	.button:hover {
-		text-decoration: none;
-		background-color: rgba(25, 25, 30, 0.05);
-		color: green;
-	}
-
 	.button {
 		text-decoration: none;
 		background-color: #EEEEEE;
@@ -267,20 +308,20 @@
 	 display: initial;
 	}
 
-	input:checked + label {
-	  border: solid 2px purple;
-	  background-color: purple;
-		color: purple;
-		opacity: 20%;
+	input:active + label {
+		filter: brightness(60%);
+	}
+	label:hover{
+		filter: brightness(80%);
 	}
 	.discoLabel{
 		position: absolute ;
-	  top: 0;
-	  bottom: 0;
-	  left: 0;
-	  right: 0;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
 		height: 100%;
-  	width: 100%;
+  		width: 100%;
 		border-radius: 50%;
 	}
 	.taLabel{
@@ -304,6 +345,7 @@
 	.seccion1, .seccion2{
 		text-align: center;
 		display: flex;
+
 	}
 	.seccion2{
 		height: min(calc(var(--discos-vw)/1.5),calc(var(--discos-vh)/1.5));
@@ -327,8 +369,9 @@
 		padding-bottom: 100px;
 		padding-left: 10px;
 		padding-right: 10px;
-		border-radius: 10px;
-		background-color: var(--color-background-divs);
+		border-radius: 20px;
+		z-index: 4;
+		transition: transform 350ms ease-in-out 0s;
 	}
 
 	.bacterias, .sarcinas{
@@ -344,16 +387,28 @@
 		column-gap: min(calc(var(--discos-vw)/50),calc(var(--discos-vh)/50));
 		justify-content: center;
 		padding: 1em;
-		border-radius: 10px;
-		background-color: var(--color-background-divs);
+		border-radius: 20px;
+		background-color: #6495edb3;
+		box-shadow: 2px 2px 10px 3px rgb(0 0 0 / 15%);
+
+	}
+	.discos, .seccion2, .jugador1, .jugador2{
+		box-shadow: 2px 2px 10px 3px rgb(0 0 0 / 15%);
+		border-radius: 20px;
+	}
+	.jugador1, .jugador2{
+		background-color: 	#d1f9b0;
+	}
+	.seccion2{
+		background-color: #c5a9fd;
 	}
 
 	.disco {
-		width: min(calc(var(--discos-vw)/3.2),calc(var(--discos-vh)/3.2));
-		height: min(calc(var(--discos-vw)/3.2),calc(var(--discos-vh)/3.2));
+		width: var(--disco-vw);
+		height: var(--disco-vh);
 
 		background-color: var(--color-disco);
-		border: 1px solid black;
+		border: 2px solid rgba(0, 0, 0, 0.6);
 		border-radius: 50%;
 		display: flex;
 		align-items: center;
@@ -426,12 +481,10 @@
 		border-radius: 20%;
 		border: none;
 	}
-	.seccion2 div{
-		border: 1px solid black;
-	}
 
-	.seccion2 .chat, .seccion2 .informacion{
-		width: 40vw;
+
+	.chat, .informacion{
+		 width: 50%;
 	}
 	.formmsg{
 		display: flex;
@@ -449,8 +502,126 @@
 	.comentario > *{
 		margin: 5px;
 	}
-	.jugadorActual{
 
+	.responsiveButtons{
+		display: none;
+		z-index: 5;
 	}
+	.botones{
+		z-index: 3;
+		position: relative;
+	}
+
+	
+	.botones > *{
+		padding: 5px;
+		background-color: cornflowerblue;
+		border-radius: 20px;
+		border: 1px solid rgb(0, 0, 0);
+	}
+
+	.botones > *:hover{
+		filter: brightness(80%);
+		text-decoration: none;
+		color: black;
+	}
+	.botones > *:active{
+		filter: brightness(60%);
+	}
+
+
+	@media (max-width: 767px) {
+		.translateY{
+			transform: translateY(300px);
+		}
+		.translateX250{
+			transform: translateX(250px);
+		}
+		.translateX200{
+			transform: translateX(-200px);
+		}
+
+		.jugador2 {
+			position: absolute;
+			right: 0;
+			color: black;
+		}
+
+		.jugador1 {
+			position: absolute;
+			left: 0;		
+		}
+
+		.tablero{
+			width: 100%;
+		}
+
+		.seccion2{
+			position: absolute;
+			bottom: 0;
+			width: 95vw;
+			height: 300px;
+			padding: 12px;
+			transition: transform 350ms ease-in-out 0s;
+			z-index: 4;
+		}
+		.discos{
+			width: initial;
+		}
+		.responsiveButtons{
+			display: initial;
+			position: absolute;
+			background-color: cornflowerblue;
+			padding: 10px;
+			border-radius: 18px;
+			cursor: pointer;
+		}
+		#labelShowChat{
+			bottom: 300px;
+		}
+		#labelShowJugador1{
+			left: 10px;
+		}
+		#labelShowJugador2{
+			right: 10px;
+
+		}
+
+		html{
+			overflow:hidden;
+		}
+		:root{
+			--discos-vw: 60vw;
+    		--discos-vh: 60vh;
+			--disco-vw: min(calc(var(--discos-vw)/2),calc(var(--discos-vh)/2));
+			--disco-vh: min(calc(var(--discos-vw)/2),calc(var(--discos-vh)/2));
+		}
+	}
+	@media (max-width: 600px) {
+		.seccion2{
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;		
+		}
+		.chat, .informacion{
+			width: 100%;
+		}
+		.chat{
+			height: 70%;
+		}
+		.informacion{
+			height: 20%;
+		}
+		.informacion::before{
+			height: 2px;
+			width: 95%;
+			background-color: #33333385;
+			content: '';
+			position: absolute;
+			bottom: 83px;
+			left: 2.5%;
+		}
+	}
+
 
 </style>

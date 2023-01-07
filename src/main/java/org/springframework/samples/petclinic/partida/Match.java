@@ -75,6 +75,24 @@ public class Match extends NamedEntity{
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss.69")
     @Column(name = "fin_de_partida")
 	private LocalDateTime finPartida;
+    
+    @Column(name = "contamination_number_of_player_1")
+	private Integer contaminationNumberOfPlayer1;
+
+    @Column(name = "contamination_number_of_player_2")
+	private Integer contaminationNumberOfPlayer2;
+    
+	@Column(name = "number_of_bacteria_of_player_1")
+	private Integer numberOfBacteriaOfPlayer1;
+
+	@Column(name = "number_of_bacteria_of_player_2")
+	private Integer numberOfBacteriaOfPlayer2;
+	
+	@Column(name = "number_of_sarcina_of_player_1")
+	private Integer numberOfSarcinaOfPlayer1;
+	
+	@Column(name = "number_of_sarcina_of_player_2")
+	private Integer numberOfSarcinaOfPlayer2;
 
 	@Column(name = "es_privada")
 	private Boolean esPrivada;
@@ -111,9 +129,8 @@ public class Match extends NamedEntity{
 	
 	@Column(name = "abandonada")
 	private Boolean abandonada;
-
 	
-	// Constructor para cuando se crea una partida desde la aplicación
+	
 	public Match(Boolean esPrivada, Jugador jugadorAnfitrion) {
 	    this.inicioPartida = LocalDateTime.now();
 		this.esPrivada = esPrivada;
@@ -124,19 +141,29 @@ public class Match extends NamedEntity{
 		this.abandonada = false;
 		this.ganadorPartida = GameWinner.UNDEFINED;
 		this.turn = 0;
-		
+		this.contaminationNumberOfPlayer1 = 0;
+		this.contaminationNumberOfPlayer2 = 0;
+		this.numberOfBacteriaOfPlayer1 = 20;
+		this.numberOfBacteriaOfPlayer2 = 20;
+		this.numberOfSarcinaOfPlayer1 = 4;
+		this.numberOfSarcinaOfPlayer2 = 4;
 		createDisks();
 		createTurns();
 		initializateMap();
 	}
 	
-	// Constructor para cuando se crea una partida en el script SQL
 	public Match() {
 		this.espectadores = new HashSet<Jugador>();
 		this.invitaciones = new ArrayList<Invitacion>();
 		this.comentarios = new ArrayList<Comentario>();
 		this.abandonada = false;
 		this.turn = 0;
+		this.contaminationNumberOfPlayer1 = 0;
+		this.contaminationNumberOfPlayer2 = 0;
+		this.numberOfBacteriaOfPlayer1 = 20;
+		this.numberOfBacteriaOfPlayer2 = 20;
+		this.numberOfSarcinaOfPlayer1 = 4;
+		this.numberOfSarcinaOfPlayer2 = 4;
 		createDisks();
 		createTurns();
 		initializateMap();
@@ -178,6 +205,22 @@ public class Match extends NamedEntity{
 	}
 	
 	// ----------------------------------------------------------------------------------------------- //
+	
+	public Integer getNumberOfBacteria(Integer playerId) {
+		return playerId == 0 ? numberOfBacteriaOfPlayer1 : numberOfBacteriaOfPlayer2;
+	}
+	
+	public Integer getNumberOfSarcina(Integer playerId) {
+		return playerId == 0 ? numberOfSarcinaOfPlayer1 : numberOfSarcinaOfPlayer2;
+	}
+	
+	public void addBacteria(Integer playerId, Integer numberOfBacteria) {
+		if(playerId == 0) {
+			numberOfBacteriaOfPlayer1 += numberOfBacteria;
+		} else {
+			numberOfBacteriaOfPlayer2 += numberOfBacteria;
+		}
+	}
 	
 	public Jugador getPlayer(Integer id) {
 		return id == 0 ? jugador1 : jugador2;
@@ -368,11 +411,16 @@ public class Match extends NamedEntity{
 	private String checkToAddSarcina(Integer idPlayerMatch, Jugador player, Integer diskId) {
 		String message = "";
 		if(getDisco(diskId).getNumeroDeBacterias(idPlayerMatch+1) == 5) {
-			if(player.getSarcinas() > 0) {
+			Integer playerId = player.getUser().getUsername().equals(jugador1.getUser().getUsername()) ? 0 : 1;
+			if(getNumberOfSarcina(playerId) > 0) {
 				getDisco(diskId).eliminarBacterias(idPlayerMatch, 5);
-				player.addBacteria(5);
+				addBacteria(playerId, 5);
 				getDisco(diskId).annadirSarcina(idPlayerMatch);
-				player.decreaseSarcinas();
+				if(playerId == 0) {
+					numberOfSarcinaOfPlayer1--;
+				} else {
+					numberOfSarcinaOfPlayer2--;
+				}
 			} else {
 				if(ganadorPartida == GameWinner.UNDEFINED) {
 					ganadorPartida = player.getId() == jugador1.getId() ? GameWinner.SECOND_PLAYER : GameWinner.FIRST_PLAYER;
@@ -396,12 +444,12 @@ public class Match extends NamedEntity{
 			if(numberOfBacteriaOfPlayer1>0 && (numberOfBacteriaOfPlayer1-numberOfBacteriaOfPlayer2 == numberOfBacteriaOfPlayer1)
 					&& numberOfSarcinaOfPlayer2 == 0) { // solo hay bacterias del jugador 1
 				getDiscos().get(i).annadirBacterias(PRIMER_JUGADOR-1, 1);
-				jugador1.decreaseBacteria();
+				this.numberOfBacteriaOfPlayer1--;
 				checkToAddSarcina(PRIMER_JUGADOR-1, player1, i);
 			} else if(numberOfBacteriaOfPlayer2>0 && numberOfBacteriaOfPlayer2-numberOfBacteriaOfPlayer1 == numberOfBacteriaOfPlayer2
 					&& numberOfSarcinaOfPlayer1 == 0) { // solo hay bacterias del jugador 2
 				getDiscos().get(i).annadirBacterias(SEGUNDO_JUGADOR-1, 1);
-				jugador2.decreaseBacteria();
+				this.numberOfBacteriaOfPlayer2--;
 				checkToAddSarcina(SEGUNDO_JUGADOR-1, player2, i);
 			}
 		}
@@ -416,22 +464,22 @@ public class Match extends NamedEntity{
 			Integer numberOfSarcinaOfPlayer1 = getDiscos().get(i).getNumSarc1();
 			Integer numberOfSarcinaOfPlayer2 = getDiscos().get(i).getNumSarc2();
 			if((numberOfSarcinaOfPlayer1*5 + numberOfBacteriaOfPlayer1)>(numberOfSarcinaOfPlayer2*5 + numberOfBacteriaOfPlayer2)) {
-				if(player1.getNumeroDeContaminacion() < 9) {
-					player1.increseContaminationNumber();
+				if(contaminationNumberOfPlayer1 < 9) {
+					contaminationNumberOfPlayer1++;
 				}
 				
 			} else if((numberOfSarcinaOfPlayer1*5 + numberOfBacteriaOfPlayer1)<(numberOfSarcinaOfPlayer2*5 + numberOfBacteriaOfPlayer2)) {
-				if(player2.getNumeroDeContaminacion() < 9) {
-					player2.increseContaminationNumber();
+				if(contaminationNumberOfPlayer2 < 9) {
+					contaminationNumberOfPlayer2++;
 				}
 			}
 			i++;
 		}
-		if(player1.getNumeroDeContaminacion() == 9 || player2.getNumeroDeContaminacion() == 9) {
-			if(player1.getNumeroDeContaminacion() > player2.getNumeroDeContaminacion()) {
+		if(contaminationNumberOfPlayer1 == 9 || contaminationNumberOfPlayer2 == 9) {
+			if(contaminationNumberOfPlayer1 > contaminationNumberOfPlayer2) {
 				ganadorPartida = GameWinner.SECOND_PLAYER;
 				message = "The number of contamination has determined the winner";
-			} else if(player2.getNumeroDeContaminacion() > player1.getNumeroDeContaminacion()) {
+			} else if(contaminationNumberOfPlayer2 > contaminationNumberOfPlayer1) {
 				ganadorPartida = GameWinner.FIRST_PLAYER;
 				message = "The number of contamination has determined the winner";
 			} else {
@@ -443,10 +491,10 @@ public class Match extends NamedEntity{
 	
 	public String determineWinner() {
 		String message = "";
-		if(jugador1.getNumeroDeContaminacion() > jugador2.getNumeroDeContaminacion()) {
+		if(contaminationNumberOfPlayer1 > contaminationNumberOfPlayer2) {
 			ganadorPartida = GameWinner.SECOND_PLAYER;
 			message = "The number of contamination has determined the winner";
-		} else if (jugador2.getNumeroDeContaminacion() > jugador1.getNumeroDeContaminacion()) {
+		} else if (contaminationNumberOfPlayer2 > contaminationNumberOfPlayer1) {
 			ganadorPartida = GameWinner.FIRST_PLAYER;
 			message = "The number of contamination has determined the winner";
 		} else {
@@ -527,7 +575,7 @@ public class Match extends NamedEntity{
 	public Integer totalMoves() {
 		Integer result = 0;
 		for(int i = 0; i < discos.size(); i++) {
-			result += discos.get(i).getNumMov();
+			result += discos.get(i).getNumMov1() + discos.get(i).getNumMov2();
 		}
 		return result;
 	}
@@ -536,9 +584,9 @@ public class Match extends NamedEntity{
 	public Integer[] dishWithMoreMovements() {
 		Integer[] result = new Integer[] {0, 0};
 		for (int i = 0; i < discos.size(); i++) {
-			if(discos.get(i).getNumMov() > result[1]) {
+			if(discos.get(i).getNumMov1() + discos.get(i).getNumMov2() > result[1]) {
 				result[0] = i;
-				result[1] = discos.get(i).getNumMov();
+				result[1] = discos.get(i).getNumMov1() + discos.get(i).getNumMov2();
 			}
 		}
 		return result;

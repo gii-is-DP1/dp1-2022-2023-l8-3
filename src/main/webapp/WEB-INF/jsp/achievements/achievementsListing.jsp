@@ -31,5 +31,7 @@
         </c:forEach>
         </tbody>
     </table>
+    <petclinic:pagination thisPage="${thisPage}" numberOfPages="${numberOfPages}" url="${url}"/>
+
     
 </petclinic:layout>
