@@ -15,6 +15,8 @@
             <th>Difficulty</th>
             <th>Metrics</th>
             <th>Threshold</th>
+            <th></th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
