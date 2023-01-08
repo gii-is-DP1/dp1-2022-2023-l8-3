@@ -25,6 +25,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.samples.petclinic.configuration.SecurityConfiguration;
 import org.springframework.samples.petclinic.invitacion.Invitacion;
 import org.springframework.samples.petclinic.invitacion.InvitationService;
@@ -77,7 +79,7 @@ public class MatchControllerTest {
     	given(this.invitacionService.getInvitacionByInvitadoId(any(Integer.class))).willReturn(lista);
     }
 
-    
+  
     
     @WithMockUser(username = "testUser1", password="testUser1")
     @Test
@@ -91,16 +93,16 @@ public class MatchControllerTest {
 				.andExpect(view().name("/matches/matchesList"));
 	}
     
-//    @WithMockUser(username = "testUser1", password="testUser1")
-//    @Test
-//	void testGetCreateMatch() throws Exception {
-//		given(this.playerService.findAllJugadores()).willReturn(new ArrayList<>());
-//		
-//		mockMvc.perform(get("/matches/createMatch"))
-//				.andExpect(status().isOk())
-//				.andExpect(model().attributeExists("players"))
-//				.andExpect(view().name("/matches/createMatch"));
-//	}
+    @WithMockUser(username = "testUser1", password="testUser1")
+    @Test
+	void testGetCreateMatch() throws Exception {
+    	config(false,false);
+    	
+		mockMvc.perform(get("/matches/createMatch"))
+				.andExpect(status().isOk())
+				.andExpect(model().attributeExists("players"))
+				.andExpect(view().name("/matches/createMatch"));
+	}
     
     
   
@@ -109,7 +111,7 @@ public class MatchControllerTest {
 	    Jugador jugador2 = new Jugador("test2", "test2", new User("testUser2","testUser2"), false);
 	    jugador1.setId(5);
 	    jugador2.setId(6);
-
+	    jugador1.setAmigosInvitados(new ArrayList<>());
         Match match = new Match(false, jugador1);
         match.setName("GameName");
         
@@ -148,28 +150,28 @@ public class MatchControllerTest {
 				.andExpect(model().attributeExists("match"))
 				.andExpect(view().name("/matches/waitForMatch"));
 	}
-    /*
+    
     @WithMockUser(username = "testUser1", password="testUser1")
     @Test
 	void testGetShowWaitConJugador2() throws Exception {
 		config(true,false);
     	
 		mockMvc.perform(get("/matches/{idMatch}/waitForMatch", 1))
-				.andExpect(status().isOk())
-				.andExpect(view().name("/matches/matchesList"));
+				.andExpect(status().is3xxRedirection())
+				.andExpect(view().name("redirect:/matches/1/currentMatch"));
 	}
-    */
+    
     @WithMockUser(username = "testUser2", password="testUser2")
     @Test
 	void testPostShowMatch() throws Exception {
 		config(true,false);
 		given(this.matchService.saveMatch(any(Match.class))).willReturn(null);
-
+		given(this.matchService.canIplay(any(Jugador.class))).willReturn(true);
+		given(this.matchService.imPlaying(any(Jugador.class))).willReturn(true);
 		mockMvc.perform(post("/matches/{idMatch}/waitForMatch", 1)
 					.with(csrf()))
 				.andExpect(status().is3xxRedirection())
 				.andExpect(redirectedUrl("/matches/1/currentMatch"));
-	
     }
     
     @WithMockUser(username = "testUser2", password="testUser2")
@@ -249,16 +251,16 @@ public class MatchControllerTest {
 				.andExpect(model().attributeExists("error"))
 				.andExpect(view().name("/matches/currentMatch"));
 	}
-    /*
+    
     @WithMockUser(username = "testUser1", password="testUser1")
     @Test
 	void testNextPhaseFin() throws Exception {
 		config2(true,true,40);
-		mockMvc.perform(post("/matches/{idMatch}/currentMatch", 1)
-					.with(csrf()))
+		mockMvc.perform(get("/matches/{idMatch}/currentMatch", 1)
+						.with(csrf()))
 				.andExpect(status().isOk())
 				.andExpect(view().name("/matches/matchStatistics"));
-	}*/
+	}
 
     @WithMockUser(username = "testUser1", password="testUser1")
     @Test
@@ -282,18 +284,18 @@ public class MatchControllerTest {
     @WithMockUser(username = "testUser1", password="testUser1")
     @Test
 	void testShowMatchesInProgress() throws Exception {
-		given(this.matchService.getMatchesByGameWinner(any(GameWinner.class))).willReturn(new ArrayList<>());
+		given(this.matchService.getMatchesByGameWinnerPageable(any(GameWinner.class),any(Pageable.class))).willReturn(Page.empty());
 
-    	mockMvc.perform(get("/matches/InProgress"))
+    	mockMvc.perform(get("/matches/InProgress/1"))
 				.andExpect(status().isOk())
 				.andExpect(view().name("matches/listMatchesInProgress"));
 	}
     @WithMockUser(username = "testUser1", password="testUser1")
     @Test
 	void testShowMatchesFinished() throws Exception {
-		given(this.matchService.getMatchesByGameWinner(any(GameWinner.class))).willReturn(new ArrayList<>());
+		given(this.matchService.getMatchesFinishedPageable(any(Pageable.class))).willReturn(Page.empty());
 
-    	mockMvc.perform(get("/matches/Finished"))
+    	mockMvc.perform(get("/matches/Finished/1"))
 				.andExpect(status().isOk())
 				.andExpect(view().name("matches/listMatchesFinished"));
 	}

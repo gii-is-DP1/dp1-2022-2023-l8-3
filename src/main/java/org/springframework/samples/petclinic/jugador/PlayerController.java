@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -37,6 +38,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class PlayerController {
 
+	private static final int RESULTS_LIMIT = 20;
 	private static final int FRIEND_LIMIT = 150;
 	private PlayerService playerService;
 	private UserService userService;
@@ -65,7 +67,7 @@ public class PlayerController {
 		if(page<1) 
 			return "redirect:/jugadores/list/1";
 		
-		Pageable pageable = PageRequest.of(page-1, 5);
+		Pageable pageable = PageRequest.of(page-1, 2);
 		Page<Jugador> results = this.playerService.findAllJugadoresPageable(pageable);
 
 		Integer numberOfPages = results.getTotalPages();
@@ -116,7 +118,7 @@ public class PlayerController {
 		} catch (Exception e) {
 			throw new Exception("Player Delete Error");
 		}
-		return "redirect:/jugadores";
+		return "redirect:/jugadores/list/1";
 	}
 
 	@GetMapping(value = "/jugadores/new")
@@ -259,7 +261,9 @@ public class PlayerController {
 					result = new ModelAndView("/jugadores/playerMatches");
 					Collection<Match> m = matchService.getMatchesOfAPlayer(jugadorId);
 					m.removeAll(matchService.getMatchesByGameWinner(GameWinner.UNDEFINED));
-					result.addObject("playerMatches", m);
+					result.addObject("playerMatches", m.stream().limit(RESULTS_LIMIT).collect(Collectors.toList()));
+					result.addObject("gamesPlayed", m.size());
+					result.addObject("gamesWon", player.getNumberOfGamesWon());
 				}
 			}
 		}
@@ -312,7 +316,7 @@ public class PlayerController {
 		} else if(result && playerService.findJugadorById(player1Id).playerFriends().size() >= FRIEND_LIMIT) {
 			message = "That player has reached the friend limit";
 		} else {
-			FriendRequest fr = friendRequestService.getFriendRequestByPlayers(player1Id, player2Id);
+			FriendRequest fr = friendRequestService.getNoReplyFriendRequestByPlayers(player1Id, player2Id);
 			fr.setResultado(result);
 			friendRequestService.saveFriendRequest(fr);
 			message = result ? "Request successfully accepted" : "Request successfully declined";  
@@ -347,10 +351,13 @@ public class PlayerController {
 		ModelAndView result;
 		String message = "";
 		
-		if(friendRequestService.getFriendRequestByPlayers(player1Id, player2Id) != null) { // cambiar consulta para que solo devuelva las solicitudes con respuesta = null
+		if(friendRequestService.getNoReplyFriendRequestByPlayers(player1Id, player2Id) != null) { 
 			message = "You have already sent a friend request to this player";
-		} else if(friendRequestService.getFriendRequestByPlayers(player2Id, player1Id) != null) {
+		} else if(friendRequestService.getNoReplyFriendRequestByPlayers(player2Id, player1Id) != null) {
 			message = "You have a pending friend request from this player";
+		} else if(friendRequestService.getFriendshipByPlayers(player1Id, player2Id) != null || 
+				friendRequestService.getFriendshipByPlayers(player2Id, player1Id) != null) {
+			message = "You are already friends with this player";
 		} else {
 			if(playerService.findJugadorById(player1Id).playerFriends().size() >= FRIEND_LIMIT) {
 				message = "You have reached the limit number of friends";

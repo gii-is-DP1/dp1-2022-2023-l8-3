@@ -16,6 +16,8 @@ import org.springframework.samples.petclinic.invitacion.InvitationService;
 import org.springframework.samples.petclinic.jugador.Jugador;
 import org.springframework.samples.petclinic.jugador.PlayerService;
 import org.springframework.samples.petclinic.menu.MenuService;
+import org.springframework.samples.petclinic.partida.Match;
+import org.springframework.samples.petclinic.partida.MatchService;
 import org.springframework.samples.petclinic.user.Authorities;
 import org.springframework.samples.petclinic.user.User;
 import org.springframework.security.core.Authentication;
@@ -32,12 +34,15 @@ public class WelcomeController {
 	private InvitationService invitacionService;
 	private MenuService menuService;
 	private PlayerService playerService;
+	private MatchService matchService;
 	
 	@Autowired
-	public WelcomeController(InvitationService invitacionService,MenuService menuService,PlayerService playerService) {
+	public WelcomeController(InvitationService invitacionService,MenuService menuService,PlayerService playerService,MatchService matchService) {
 		this.playerService = playerService;
 		this.menuService=menuService;
 		this.invitacionService=invitacionService;
+		this.matchService=matchService;
+		
 	}
 
 	@GetMapping("/")
@@ -52,17 +57,28 @@ public class WelcomeController {
     	user1.setAuthorities(conj);
 		
 		if(auth!=null) {
-			System.out.println("error1");
 			Boolean b=true;
 			for(Authorities a:menuService.findUser(auth.getName()).orElse(user1).getAuthorities()) {
-				System.out.println("error4");
 				if(a.getAuthority().equals("admin")) {
 					b=false;
 				}
 			}
 			if(b) {
-				System.out.println("error5");
 				Jugador jugadorActual=menuService.findPlayerByUsername(auth.getName());
+				Collection<Match> partidas = matchService.getMatches();
+				for(Match partida:partidas) {
+				    if(partida.getFinPartida()==null&&(partida.getJugador1()==jugadorActual||partida.getJugador2()==jugadorActual)) {       
+				    	int id = partida.getId();
+				        result.addObject("matchId", id);
+				        if(partida.getJugador2()!=null) {
+				        	result.addObject("partidaPendiente", true);
+				        }
+				        else {
+				        	result.addObject("jugador2NoUnido",true);
+				        }
+				    }
+				}
+				
 				List<Invitacion> lista=invitacionService.getInvitacionByInvitadoId(jugadorActual.getId());
 				if(lista.isEmpty()) {
 					result.addObject("tengoInvitaciones",false);
@@ -74,7 +90,6 @@ public class WelcomeController {
 			}
 		}
 		else {
-			System.out.println("error3");
 			result.addObject("tengoInvitaciones",false);
 			result.addObject("mensaje","este mensaje no vale para nada");
 		}

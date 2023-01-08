@@ -11,10 +11,20 @@
         <thead>
         <tr>
         	<c:if test="${match.ganadorPartida == 'FIRST_PLAYER'}">
-            	<h3>¡HA GANADO ${match.jugador1.user.username}!</h3> <br/>
+        		<c:if test="${match.jugador1.user.username != null}">
+        			<h3>¡HA GANADO ${match.jugador1.user.username}!</h3> <br/>
+        		</c:if>
+        		<c:if test="${match.jugador1.user.username == null}">
+        			<h3>¡HA GANADO EL JUGADOR ANFITRIÓN!</h3> <br/>
+        		</c:if>
             </c:if>
             <c:if test="${match.ganadorPartida == 'SECOND_PLAYER'}">
-            	<h3>¡HA GANADO ${match.jugador2.user.username}!</h3> <br/>
+            	<c:if test="${match.jugador2.user.username != null}">
+        			<h3>¡HA GANADO ${match.jugador2.user.username}!</h3> <br/>
+        		</c:if>
+            	<c:if test="${match.jugador2.user.username == null}">
+        			<h3>¡HA GANADO EL JUGADOR INVITADO!</h3> <br/>
+        		</c:if>
             </c:if>
             <c:if test="${match.ganadorPartida == 'DRAW'}">
             	<h3>¡EMPATE!</h3> <br/>
@@ -23,16 +33,26 @@
         </thead>
         <tbody>
         	<div>
-        		<p><b>${match.jugador1.user.username}:</b></p>
-        		<p>Número de contaminación: ${match.jugador1.numeroDeContaminacion}</p>
-        		<p>Número de bacterias en la reserva: ${match.jugador1.bacterias}</p>
-        		<p>Número de sarcinas en la reserva: ${match.jugador1.sarcinas}</p> <br/>
+        		<c:if test="${match.jugador1.user.username != null}">
+        			<p><b>${match.jugador1.user.username}:</b></p>
+        		</c:if>
+        		<c:if test="${match.jugador1.user.username == null}">
+        			<p><b>Anfitrión:</b></p>
+        		</c:if>
+        		<p>Número de contaminación: ${match.contaminationNumberOfPlayer1}</p>
+        		<p>Número de bacterias en la reserva: ${match.numberOfBacteriaOfPlayer1}</p>
+        		<p>Número de sarcinas en la reserva: ${match.numberOfSarcinaOfPlayer1}</p> <br/>
         	</div>
         	<div>
-        		<p><b>${match.jugador2.user.username}:</b></p>
-        		<p>Número de contaminación: ${match.jugador2.numeroDeContaminacion}</p>
-        		<p>Número de bacterias en la reserva: ${match.jugador2.bacterias}</p>
-        		<p>Número de sarcinas en la reserva: ${match.jugador2.sarcinas}</p> <br/>
+        		<c:if test="${match.jugador2.user.username != null}">
+        			<p><b>${match.jugador2.user.username}:</b></p>
+        		</c:if>
+        		<c:if test="${match.jugador2.user.username == null}">
+        			<p><b>Invitado:</b></p>
+        		</c:if>
+        		<p>Número de contaminación: ${match.contaminationNumberOfPlayer2}</p>
+        		<p>Número de bacterias en la reserva: ${match.numberOfBacteriaOfPlayer2}</p>
+        		<p>Número de sarcinas en la reserva: ${match.numberOfSarcinaOfPlayer2}</p> <br/>
         	</div>
         	<div>
         		<p><b>Algunos datos adicionales de la partida:</b></p>

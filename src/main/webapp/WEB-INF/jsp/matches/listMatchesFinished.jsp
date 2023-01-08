@@ -8,8 +8,11 @@
 	
 	
     <h2>Partidas finalizadas</h2>
-
-
+    
+    <p>
+		<c:out value="Total de partidas: ${gamesPlayed}" /> <br/>
+	</p>
+	<br/>
     <table class="table table-striped">
         <thead>
         <tr>

@@ -39,8 +39,8 @@
 		    					</spring:url>
 		    					<a href="${fn:escapeXml(EnlaceUrl)}"><c:out value="${partida.jugador2.user.username}"/></a>
 			                </td>
-			                <td><c:out value="${partida.jugador1.numeroDeContaminacion}"/></td>
-			                <td><c:out value="${partida.jugador2.numeroDeContaminacion}"/></td>
+			                <td><c:out value="${partida.contaminationNumberOfPlayer1}"/></td>
+			                <td><c:out value="${partida.contaminationNumberOfPlayer2}"/></td>
 			        	</tr>
 			  		</c:forEach>
 			  	</c:otherwise>
