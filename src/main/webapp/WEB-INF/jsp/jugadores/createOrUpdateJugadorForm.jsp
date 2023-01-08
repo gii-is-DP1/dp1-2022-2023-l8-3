@@ -12,9 +12,19 @@
 	
 				
 	
-	<div class="WelcomeNuevoUsu">
+	
+	<c:choose>
+		<c:when test="${jugador['new']}">
+			<div class="WelcomeNuevoUsu">
 		<h1>Bienvenido<p class="letras">JUGADOR</p>que tal si nos registramos</h1>
 	</div>
+		</c:when>
+		<c:otherwise>
+			<div class="WelcomeNuevoUsu">
+		<p class="letras">ACTUALIZA TU PERFIL</p>
+	</div>
+		</c:otherwise>
+	</c:choose>
 	<br>
 	<c:if test="${contraseñaIncorrecta}">
 		<div class="alert alert-info">
@@ -74,10 +84,13 @@ position: relative;
 }
 @keyframes anim{
     0% {color: blue;} /*Amarillo*/
-   25% {color: purple;} /*Naranja*/
-   50% {color: red;} /*Negro*/
-   75% {color: black;} /*Otra vez naranja*/
-  100% {color: blue;} /*Otra vez amarillo*/
+   16.5% {color: purple;} /*Naranja*/
+   33% {color: red;} /*Negro*/
+   50% {color:#FFCD00;}
+   66% {color: #DEF400;} 
+   82.5% {color: GREEN;} /*Otra vez naranja*/
+   100% {color:#00A2FF;} /*Otra vez amarillo*/
+  
 }
 
 </style>
