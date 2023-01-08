@@ -129,7 +129,7 @@ public class PlayerController {
 		if (c.isEmpty()) {
 			model2.put("sinJugadores", true);
 		}
-		return "jugadores/createOrUpdateJugadorForm";
+		return "jugadores/createOrUpdateJugadorFormAdmin";
 	}
 
 	@PostMapping(value = "/jugadores/new")
@@ -138,12 +138,12 @@ public class PlayerController {
 		ModelAndView resul;
 		
 		if (br.hasErrors()) {
-			resul = new ModelAndView("jugadores/createOrUpdateJugadorForm", br.getModel());
+			resul = new ModelAndView("jugadores/createOrUpdateJugadorFormAdmin", br.getModel());
 		} else {
 			List<Jugador> lista = playerService.findAllJugadores();
 			
 			if(isRegisteredEmail(jugador, model, lista) || !isValidEmail(model, jugador) || !isCorrectPassword(jugador, model, correctPassword)) {
-				resul = new ModelAndView("jugadores/createOrUpdateJugadorForm");
+				resul = new ModelAndView("jugadores/createOrUpdateJugadorFormAdmin");
 			} else {
 				jugador.setEstadoOnline(false);
 				this.playerService.saveJugador(jugador);

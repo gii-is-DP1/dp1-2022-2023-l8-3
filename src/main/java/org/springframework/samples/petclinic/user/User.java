@@ -11,6 +11,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.springframework.samples.petclinic.jugador.Jugador;
 
 import lombok.Getter;
@@ -19,6 +21,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@Audited
 @Table(name = "users")
 public class User{
 	
@@ -37,6 +40,7 @@ public class User{
 	
 	boolean enabled;
 	
+	@NotAudited
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
 	private Set<Authorities> authorities;
 	
