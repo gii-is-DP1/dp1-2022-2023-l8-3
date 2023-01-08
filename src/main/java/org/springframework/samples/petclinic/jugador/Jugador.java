@@ -15,6 +15,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.springframework.samples.petclinic.statistics.Achievement;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.springframework.samples.petclinic.invitacion.Invitacion;
 import org.springframework.samples.petclinic.model.Person;
 import org.springframework.samples.petclinic.partida.GameWinner;
@@ -27,6 +29,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@Audited
 @Table(name = "jugadores")
 public class Jugador extends Person {
 	@Column(name = "estado_Online")
@@ -36,6 +39,7 @@ public class Jugador extends Person {
 	@JoinColumn(name = "username")
 	private User user;
 
+	@NotAudited
 	@ManyToMany(cascade = CascadeType.ALL,mappedBy = "jugador")
 	private List<Invitacion> invitacionesPartidaRecibidas;
 
@@ -45,19 +49,24 @@ public class Jugador extends Person {
 	
 	@ElementCollection
 	private List<String> tipoDeInvitacionPartidaEnviada; //el indice de cada elemento se corresponde con el indice del jugador invitado en la lista amigos invitados
-
+	
+	@NotAudited
 	@OneToMany(mappedBy = "jugador1")
 	private List<FriendRequest> sentFriendRequests;
 
+	@NotAudited
 	@OneToMany(mappedBy = "jugador2")
 	private List<FriendRequest> receivedFriendRequests;
 	
+	@NotAudited
 	@OneToMany(mappedBy = "jugador1")
 	private List<Match> gamesAsHost;
-
+	
+	@NotAudited
 	@OneToMany(mappedBy = "jugador2")
 	private List<Match> gamesAsGuest;
 	
+	@NotAudited
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "achievements_players", joinColumns = @JoinColumn(name = "players_id"), inverseJoinColumns = @JoinColumn(name = "achievement_id"))
 	private List<Achievement> logros;
