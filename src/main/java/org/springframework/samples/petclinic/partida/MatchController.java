@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -38,6 +39,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @RequestMapping("/matches")
 public class MatchController {
 	
+	private static final int MINUTES_OF_AN_HOUR = 60;
 	private static final String MATCH_STATISTICS_VIEW = "/matches/matchStatistics";
 	private static final String CURRENT_MATCH_VIEW = "/matches/currentMatch";
 	private static final String CREATE_MATCH_VIEW = "/matches/createMatch";
@@ -417,6 +419,8 @@ public class MatchController {
 		model.put("selections", results.getContent());
 		model.put("thisPage", thisPage);
 		model.put("gamesPlayed", matchService.getPlayedMatches().size());
+		model.put("totalPlayingGame", getTotalPlayingGame());
+		model.put("durationOfTheLongestGame", getDurationOfTheLongestGame());
 
 		Boolean b=results.isEmpty();
 
@@ -424,8 +428,32 @@ public class MatchController {
 		model3.put("firstPlayer", GameWinner.FIRST_PLAYER);
 		return "matches/listMatchesFinished";
 	}
-	
-	
+
+	private String getTotalPlayingGame() {
+		Long minutes = 0l;
+		List<Match> matches = new ArrayList<Match>(matchService.getMatches());
+		for (Match match : matches) {
+			if(!match.getGanadorPartida().equals(GameWinner.UNDEFINED)) {
+				minutes += match.durationInMinutes();
+			}
+		}
+		Long hours = TimeUnit.MINUTES.toHours(minutes);
+		return String.format("%2d horas y %1d minutos", hours, minutes-(hours*MINUTES_OF_AN_HOUR));
+	}
+
+	private Long getDurationOfTheLongestGame() {
+		Long result = 0l;
+		List<Match> matches = new ArrayList<Match>(matchService.getMatches());
+		for (Match match : matches) {
+			if(!match.getGanadorPartida().equals(GameWinner.UNDEFINED)) {
+				if(match.durationInMinutes() > result) {
+					result = match.durationInMinutes();
+				}
+			}
+		}
+		return result;
+	}
+
 	@GetMapping(value = "/{idMatch}/currentMatchSpectated")
 	public ModelAndView showCurrentMatchSpectated(@PathVariable int idMatch, @AuthenticationPrincipal Authentication user,HttpServletResponse response) {
 		ModelAndView result;

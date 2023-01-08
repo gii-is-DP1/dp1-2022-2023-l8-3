@@ -11,6 +11,8 @@
     
     <p>
 		<c:out value="Total de partidas: ${gamesPlayed}" /> <br/>
+		<c:out value="Tiempo total de juego: ${totalPlayingGame}" /> <br/>
+		<c:out value="Duración de la partida más larga: ${durationOfTheLongestGame} minutos" />
 	</p>
 	<br/>
     <table class="table table-striped">
