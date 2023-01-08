@@ -7,9 +7,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.samples.petclinic.statistics.Achievement;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface PlayerRepository extends JpaRepository<Jugador, Integer>{
 	
@@ -33,5 +35,10 @@ public interface PlayerRepository extends JpaRepository<Jugador, Integer>{
 
 	@Query("SELECT j.logros FROM Jugador j WHERE UPPER(j.user.username) LIKE %?1%")
 	public Page<Achievement> findAchievementsOfUser(String keyword, Pageable pageable);
+	
+	@Modifying
+	@Transactional
+	@Query(value = "INSERT INTO achievements_players VALUES (:achievementId, :playerId)", nativeQuery = true)
+	public void saveAchievement(@Param("achievementId") Integer achievementId, @Param("playerId") Integer playerId);
 
 }

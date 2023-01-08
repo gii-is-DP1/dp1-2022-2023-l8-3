@@ -11,7 +11,9 @@
 	<p>
 		<c:out value="Total de partidas: ${gamesPlayed}" /> <br/>
 		<c:out value="Partidas ganadas: ${gamesWon}" /> <br/>
-		<c:out value="Porcentaje de victorias: ${(gamesWon/gamesPlayed)*100}%" />
+		<c:out value="Porcentaje de victorias: ${(gamesWon/gamesPlayed)*100}%" /> <br/>
+		<c:out value="Tiempo total de juego: ${totalPlayingGame}" /> <br/>
+		<c:out value="Duración de la partida más larga: ${durationOfTheLongestGame} minutos" />
 	</p>
 	<br/>
 	<table class="table table-striped">

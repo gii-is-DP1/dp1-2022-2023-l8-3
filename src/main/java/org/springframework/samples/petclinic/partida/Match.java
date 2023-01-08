@@ -596,7 +596,11 @@ public class Match extends NamedEntity{
 		return inicioPartida.until(finPartida, ChronoUnit.MINUTES);
 	}
 	
-	public long getMatchTime() {
+	public long timeSinceTheStartOfTheGameInMinutes() {
+		return inicioPartida.until(LocalDateTime.now(), ChronoUnit.MINUTES);
+	}
+	
+	public long timeSinceTheStartOfTheGameInSeconds() {
 		return inicioPartida.until(LocalDateTime.now(), ChronoUnit.SECONDS);
 	}
 	

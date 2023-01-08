@@ -139,5 +139,9 @@ public class PlayerService {
 		return jugador;
 	}
 	
+	public void saveAchievement(Integer achievementId, Integer playerId) {
+		playerRepo.saveAchievement(achievementId, playerId);
+	}
+	
 	
 }

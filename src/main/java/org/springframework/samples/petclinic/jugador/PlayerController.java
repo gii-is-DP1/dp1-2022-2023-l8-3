@@ -264,6 +264,8 @@ public class PlayerController {
 					result.addObject("playerMatches", m.stream().limit(RESULTS_LIMIT).collect(Collectors.toList()));
 					result.addObject("gamesPlayed", m.size());
 					result.addObject("gamesWon", player.getNumberOfGamesWon());
+					result.addObject("totalPlayingGame", player.getTotalPlayingGame());
+					result.addObject("durationOfTheLongestGame", player.getDurationOfTheLongestGame());
 				}
 			}
 		}

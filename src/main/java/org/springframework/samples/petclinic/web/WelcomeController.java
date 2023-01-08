@@ -1,6 +1,8 @@
 package org.springframework.samples.petclinic.web;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,8 @@ import org.springframework.samples.petclinic.jugador.PlayerService;
 import org.springframework.samples.petclinic.menu.MenuService;
 import org.springframework.samples.petclinic.partida.Match;
 import org.springframework.samples.petclinic.partida.MatchService;
+import org.springframework.samples.petclinic.statistics.Achievement;
+import org.springframework.samples.petclinic.statistics.AchievementService;
 import org.springframework.samples.petclinic.user.Authorities;
 import org.springframework.samples.petclinic.user.User;
 import org.springframework.security.core.Authentication;
@@ -31,30 +35,32 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class WelcomeController {
 	
+	private static final int NUMBER_OF_PLAYERS_IN_GLOBAL_RANKING = 10;
 	private InvitationService invitacionService;
 	private MenuService menuService;
 	private PlayerService playerService;
 	private MatchService matchService;
+	private AchievementService achievementService;
 	
 	@Autowired
-	public WelcomeController(InvitationService invitacionService,MenuService menuService,PlayerService playerService,MatchService matchService) {
+	public WelcomeController(InvitationService invitacionService,MenuService menuService,PlayerService playerService,MatchService matchService,AchievementService achievementService) {
 		this.playerService = playerService;
 		this.menuService=menuService;
 		this.invitacionService=invitacionService;
 		this.matchService=matchService;
-		
+		this.achievementService=achievementService;
 	}
 
 	@GetMapping("/")
 	  public ModelAndView welcome() {	    
 		ModelAndView result=new ModelAndView("welcome");
 		Authentication auth=SecurityContextHolder.getContext().getAuthentication();
-		System.out.println("error2");
 		User user1=new User("testUser1","testUser1");
 		Set<Authorities> conj=new HashSet<Authorities>();
 		Authorities authority=new Authorities(); authority.setUser(user1);authority.setAuthority("admin");
 		conj.add(authority);
     	user1.setAuthorities(conj);
+    	result.addObject("players", playerService.findAllJugadores().stream().sorted(Comparator.comparing(Jugador::getNumberOfGamesWon).reversed()).limit(NUMBER_OF_PLAYERS_IN_GLOBAL_RANKING).toList());
 		
 		if(auth!=null) {
 			Boolean b=true;
@@ -65,6 +71,7 @@ public class WelcomeController {
 			}
 			if(b) {
 				Jugador jugadorActual=menuService.findPlayerByUsername(auth.getName());
+				checkAchievements(jugadorActual);
 				Collection<Match> partidas = matchService.getMatches();
 				for(Match partida:partidas) {
 				    if(partida.getFinPartida()==null&&(partida.getJugador1()==jugadorActual||partida.getJugador2()==jugadorActual)) {       
@@ -78,7 +85,6 @@ public class WelcomeController {
 				        }
 				    }
 				}
-				
 				List<Invitacion> lista=invitacionService.getInvitacionByInvitadoId(jugadorActual.getId());
 				if(lista.isEmpty()) {
 					result.addObject("tengoInvitaciones",false);
@@ -94,6 +100,34 @@ public class WelcomeController {
 			result.addObject("mensaje","este mensaje no vale para nada");
 		}
 		return result;
+	}
+	
+	public void checkAchievements(Jugador actualPlayer) {
+		List<Achievement> achievements = new ArrayList<>(achievementService.getAchievements());
+		for (Achievement achievement : achievements) {
+			switch (achievement.getMetrics()) {
+				case JUGAR_PARTIDAS:
+					if(!actualPlayer.getLogros().contains(achievement) && actualPlayer.getNumberOfGames() >= achievement.getThreshold()) {
+						playerService.saveAchievement(achievement.getId(), actualPlayer.getId());
+					}
+					break;
+				case GANAR_PARTIDAS:
+					if(!actualPlayer.getLogros().contains(achievement) && actualPlayer.getNumberOfGamesWon() >= achievement.getThreshold()) {
+						playerService.saveAchievement(achievement.getId(), actualPlayer.getId());
+					}
+					break;
+				case COLOCAR_SARCINAS:
+					if(!actualPlayer.getLogros().contains(achievement) && actualPlayer.getNumberOfSarcinasPlaced() >= achievement.getThreshold()) {
+						playerService.saveAchievement(achievement.getId(), actualPlayer.getId());
+					}
+					break;
+				case AMIGOS:
+					if(!actualPlayer.getLogros().contains(achievement) && actualPlayer.getNumberOfFriends() >= achievement.getThreshold()) {
+						playerService.saveAchievement(achievement.getId(), actualPlayer.getId());
+					}
+					break;
+			}
+		}
 	}
 	
 	@GetMapping(value = "/registerNewJugador")
