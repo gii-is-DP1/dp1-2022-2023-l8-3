@@ -597,7 +597,7 @@ public class Match extends NamedEntity{
 	}
 	
 	public long getMatchTime() {
-		return inicioPartida.until(LocalDateTime.now(), ChronoUnit.MINUTES);
+		return inicioPartida.until(LocalDateTime.now(), ChronoUnit.SECONDS);
 	}
 	
 }
