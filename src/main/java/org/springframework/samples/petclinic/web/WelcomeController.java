@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -60,8 +61,7 @@ public class WelcomeController {
 		Authorities authority=new Authorities(); authority.setUser(user1);authority.setAuthority("admin");
 		conj.add(authority);
     	user1.setAuthorities(conj);
-    	result.addObject("players", playerService.findAllJugadores().stream().sorted(Comparator.comparing(Jugador::getNumberOfGamesWon).reversed()).limit(NUMBER_OF_PLAYERS_IN_GLOBAL_RANKING).toList());
-		
+    	result.addObject("players", playerService.findAllJugadores().stream().sorted(Comparator.comparing(Jugador::getNumberOfGamesWon).reversed()).limit(NUMBER_OF_PLAYERS_IN_GLOBAL_RANKING).collect(Collectors.toList()));		
 		if(auth!=null) {
 			Boolean b=true;
 			for(Authorities a:menuService.findUser(auth.getName()).orElse(user1).getAuthorities()) {
