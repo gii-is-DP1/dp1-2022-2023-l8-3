@@ -159,10 +159,12 @@ public class PlayerController {
 		User user = userService.findUser(auth.getName()).get();
 		ModelAndView mav = new ModelAndView();
 		for (Authorities authority : user.getAuthorities()) {
-			if (authority.getAuthority().equals("admin")
-					|| playerService.findPlayerByUsername(auth.getName()).getId() == jugadorId) {
-				mav = new ModelAndView("jugadores/createOrUpdateJugadorForm");
+			if (authority.getAuthority().equals("admin")) {
+				mav = new ModelAndView("jugadores/createOrUpdateJugadorFormAdmin");
 				mav.addObject(this.playerService.findJugadorById(jugadorId));
+			}else if(playerService.findPlayerByUsername(auth.getName()).getId() == jugadorId){
+			    mav = new ModelAndView("jugadores/createOrUpdateJugadorForm");
+                mav.addObject(this.playerService.findJugadorById(jugadorId));
 			}
 		}
 		return mav;
@@ -175,12 +177,12 @@ public class PlayerController {
 		ModelAndView resul;
 		
 		if (br.hasErrors()) {
-			resul = new ModelAndView("jugadores/createOrUpdateJugadorForm", br.getModel());
+			resul = new ModelAndView("jugadores/createOrUpdateJugadorFormAdmin", br.getModel());
 		} else {
 			List<Jugador> lista = playerService.findAllJugadores();
 			
 			if((!isYourEmail(jugador, jugadorId) && isRegisteredEmail(jugador, model, lista)) || !isValidEmail(model, jugador) || !isCorrectPassword(jugador, model, correctPassword)) {
-				resul = new ModelAndView("jugadores/createOrUpdateJugadorForm");
+				resul = new ModelAndView("jugadores/createOrUpdateJugadorFormAdmin");
 				resul.addObject(this.playerService.findJugadorById(jugadorId));
 			} else {
 				jugador.setId(jugadorId);

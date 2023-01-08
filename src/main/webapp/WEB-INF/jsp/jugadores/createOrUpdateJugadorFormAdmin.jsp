@@ -13,6 +13,7 @@
 	<h2>
 		<c:choose>
 			<c:when test="${jugador['new']}">Nuevo </c:when>
+			<c:otherwise>Actualizar </c:otherwise>
 		</c:choose>
 		Jugador
 	</h2>
