@@ -15,7 +15,6 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
@@ -28,6 +27,7 @@ import org.springframework.samples.petclinic.jugador.PlayerService;
 import org.springframework.samples.petclinic.menu.MenuService;
 import org.springframework.samples.petclinic.partida.Match;
 import org.springframework.samples.petclinic.partida.MatchService;
+import org.springframework.samples.petclinic.user.Authorities;
 import org.springframework.samples.petclinic.user.User;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -62,7 +62,7 @@ public class ComentarioControllerTest {
 
     	User user=new User("testUser1","testUser1");
     	
-    	user.setAuthorities(new HashSet());
+    	user.setAuthorities(new HashSet<Authorities>());
     	
     	Optional<User>userr=Optional.of(user);
 
