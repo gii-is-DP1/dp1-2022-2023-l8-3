@@ -136,12 +136,10 @@ public class PlayerController {
 	public ModelAndView processCreationForm(@Valid Jugador jugador, BindingResult br, Map<String, Object> model) {
 		Boolean correctPassword = false;
 		ModelAndView resul;
-		
 		if (br.hasErrors()) {
 			resul = new ModelAndView("jugadores/createOrUpdateJugadorFormAdmin", br.getModel());
 		} else {
 			List<Jugador> lista = playerService.findAllJugadores();
-			
 			if(isRegisteredEmail(jugador, model, lista) || !isValidEmail(model, jugador) || !isCorrectPassword(jugador, model, correctPassword)) {
 				resul = new ModelAndView("jugadores/createOrUpdateJugadorFormAdmin");
 			} else {
@@ -180,7 +178,6 @@ public class PlayerController {
 			resul = new ModelAndView("jugadores/createOrUpdateJugadorFormAdmin", br.getModel());
 		} else {
 			List<Jugador> lista = playerService.findAllJugadores();
-			
 			if((!isYourEmail(jugador, jugadorId) && isRegisteredEmail(jugador, model, lista)) || !isValidEmail(model, jugador) || !isCorrectPassword(jugador, model, correctPassword)) {
 				resul = new ModelAndView("jugadores/createOrUpdateJugadorFormAdmin");
 				resul.addObject(this.playerService.findJugadorById(jugadorId));
@@ -314,19 +311,22 @@ public class PlayerController {
 			@PathVariable("result") boolean result, RedirectAttributes ra) {
 		ModelAndView mv;
 		String message = "";
-		
+		System.out.println("prueba1");
 		if(result && playerService.findJugadorById(player2Id).playerFriends().size() >= FRIEND_LIMIT) {
 			message = "You have reached the limit number of friends";
+			System.out.println("prueba2");
 		} else if(result && playerService.findJugadorById(player1Id).playerFriends().size() >= FRIEND_LIMIT) {
 			message = "That player has reached the friend limit";
+			System.out.println("prueba3");
 		} else {
+			System.out.println("prueba4");
 			FriendRequest fr = friendRequestService.getNoReplyFriendRequestByPlayers(player1Id, player2Id);
 			fr.setResultado(result);
 			friendRequestService.saveFriendRequest(fr);
 			message = result ? "Request successfully accepted" : "Request successfully declined";  
 		}
 		
-		
+		System.out.println("prueba5");
 		mv = new ModelAndView("/jugadores/friendRequests");
 		mv.setViewName("redirect:/jugadores/friendRequests");
 		ra.addFlashAttribute("message", message);

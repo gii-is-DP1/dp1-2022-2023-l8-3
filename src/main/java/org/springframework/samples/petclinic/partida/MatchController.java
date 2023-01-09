@@ -346,6 +346,9 @@ public class MatchController {
 	public RedirectView abandonedWaitMatch(@PathVariable int idMatch, Authentication user) {
 		RedirectView result = new RedirectView("/matches/createMatch");
 		Match match = matchService.getMatchById(idMatch);
+		for(Invitacion i:match.getInvitaciones()) {
+			invitacionService.delete(i);
+		}
 		matchService.deleteMatch(match);
 		return result;
 	}
