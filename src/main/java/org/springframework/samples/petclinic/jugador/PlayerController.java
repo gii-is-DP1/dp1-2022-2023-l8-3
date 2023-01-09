@@ -20,6 +20,8 @@ import org.springframework.samples.petclinic.user.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.samples.petclinic.dto.JugadorDTO;
+import org.springframework.samples.petclinic.dto.ManualJugadorMapper;
 import org.springframework.samples.petclinic.partida.GameWinner;
 import org.springframework.samples.petclinic.partida.Match;
 import org.springframework.samples.petclinic.partida.MatchService;
@@ -38,6 +40,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 public class PlayerController {
 
+	private static final String CREATE_OR_UPDATE_PLAYER_VIEW = "jugadores/createOrUpdateJugadorFormAdmin";
 	private static final int RESULTS_LIMIT = 20;
 	private static final int FRIEND_LIMIT = 150;
 	private PlayerService playerService;
@@ -129,21 +132,23 @@ public class PlayerController {
 		if (c.isEmpty()) {
 			model2.put("sinJugadores", true);
 		}
-		return "jugadores/createOrUpdateJugadorFormAdmin";
+		return CREATE_OR_UPDATE_PLAYER_VIEW;
 	}
 
 	@PostMapping(value = "/jugadores/new")
-	public ModelAndView processCreationForm(@Valid Jugador jugador, BindingResult br, Map<String, Object> model) {
+	public ModelAndView processCreationForm(@Valid JugadorDTO jugadorDto, BindingResult br, Map<String, Object> model) {
 		Boolean correctPassword = false;
 		ModelAndView resul;
 		
-		if (br.hasErrors()) {
-			resul = new ModelAndView("jugadores/createOrUpdateJugadorFormAdmin", br.getModel());
+		if (Boolean.TRUE.equals(br.hasErrors())) {
+			resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW, br.getModel());
 		} else {
 			List<Jugador> lista = playerService.findAllJugadores();
+			ManualJugadorMapper m = new ManualJugadorMapper();
+			Jugador jugador = m.convertJugadorDTOToEntity(jugadorDto);
 			
 			if(isRegisteredEmail(jugador, model, lista) || !isValidEmail(model, jugador) || !isCorrectPassword(jugador, model, correctPassword)) {
-				resul = new ModelAndView("jugadores/createOrUpdateJugadorFormAdmin");
+				resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW);
 			} else {
 				jugador.setEstadoOnline(false);
 				this.playerService.saveJugador(jugador);
@@ -154,15 +159,15 @@ public class PlayerController {
 	}
 
 	@GetMapping(value = "/jugadores/{jugadorId}/edit")
-	public ModelAndView initUpdateOwnerForm(@PathVariable("jugadorId") int jugadorId) {
+	public ModelAndView initUpdateJugadorForm(@PathVariable("jugadorId") int jugadorId) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUser(auth.getName()).get();
 		ModelAndView mav = new ModelAndView();
 		for (Authorities authority : user.getAuthorities()) {
 			if (authority.getAuthority().equals("admin")) {
-				mav = new ModelAndView("jugadores/createOrUpdateJugadorFormAdmin");
+				mav = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW);
 				mav.addObject(this.playerService.findJugadorById(jugadorId));
-			}else if(playerService.findPlayerByUsername(auth.getName()).getId() == jugadorId){
+			}else if(playerService.findPlayerByUsername(auth.getName()).getId().equals(jugadorId)){
 			    mav = new ModelAndView("jugadores/createOrUpdateJugadorForm");
                 mav.addObject(this.playerService.findJugadorById(jugadorId));
 			}
@@ -171,18 +176,21 @@ public class PlayerController {
 	}
 
 	@PostMapping(value = "/jugadores/{jugadorId}/edit")
-	public ModelAndView processUpdateOwnerForm(@Valid Jugador jugador, BindingResult br,
+	public ModelAndView processUpdateJugadorForm(@Valid JugadorDTO jugadorDto, BindingResult br,
 			@PathVariable("jugadorId") int jugadorId, Map<String, Object> model) {
 		Boolean correctPassword = false;
 		ModelAndView resul;
 		
-		if (br.hasErrors()) {
-			resul = new ModelAndView("jugadores/createOrUpdateJugadorFormAdmin", br.getModel());
+		if (Boolean.TRUE.equals(br.hasErrors())) {
+			resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW, br.getModel());
 		} else {
 			List<Jugador> lista = playerService.findAllJugadores();
+			ManualJugadorMapper m = new ManualJugadorMapper();
+			Jugador jugador = m.convertJugadorDTOToEntity(jugadorDto);
 			
-			if((!isYourEmail(jugador, jugadorId) && isRegisteredEmail(jugador, model, lista)) || !isValidEmail(model, jugador) || !isCorrectPassword(jugador, model, correctPassword)) {
-				resul = new ModelAndView("jugadores/createOrUpdateJugadorFormAdmin");
+			if((Boolean.FALSE.equals(isYourEmail(jugador, jugadorId)) && Boolean.TRUE.equals(isRegisteredEmail(jugador, model, lista))) 
+					|| Boolean.FALSE.equals(isValidEmail(model, jugador)) || Boolean.FALSE.equals(isCorrectPassword(jugador, model, correctPassword))) {
+				resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW);
 				resul.addObject(this.playerService.findJugadorById(jugadorId));
 			} else {
 				jugador.setId(jugadorId);
@@ -217,7 +225,7 @@ public class PlayerController {
 		Pattern pattern = Pattern.compile(emailPattern);
 		Matcher matcher = pattern.matcher(player.getUser().getEmail());
 		
-		if (!matcher.matches()) {
+		if (Boolean.FALSE.equals(matcher.matches())) {
 			model.put("emailIncorrecto2", true);
 			result = false;
 		}
@@ -229,14 +237,14 @@ public class PlayerController {
 		Integer i = 0;
 		
 		if(player.getUser().getPassword().length() >= 10 && player.getUser().getPassword().length() <= 50) {
-			while(!correctPassword && i < 10) {
+			while(Boolean.FALSE.equals(correctPassword) && i < 10) {
 				if (player.getUser().getPassword().contains(i.toString())) {
 					correctPassword = true;
 				}
 				i++;
 			}
 		}
-		if(!correctPassword) {
+		if(Boolean.FALSE.equals(correctPassword)) {
 			model.put("contraseñaIncorrecta", true);
 		}
 		
@@ -402,7 +410,7 @@ public class PlayerController {
 		
 		result.setViewName("redirect:/jugadores/{jugadorId1}/playerFriends");
 		
-		if (hasDeletedFriend) {
+		if (Boolean.TRUE.equals(hasDeletedFriend)) {
 			ra.addFlashAttribute("message", "Friend was deleted succesfully");
 		}
 

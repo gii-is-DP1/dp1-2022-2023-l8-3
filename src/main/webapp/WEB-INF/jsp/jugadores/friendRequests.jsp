@@ -16,10 +16,10 @@
 				<caption>Friend requests received by the player</caption>
 				<thead>
 					<tr>
-						<td>First name</td>
-						<td>Last name</td>
-						<td>Username</td>
-						<td></td>
+						<th>First name</th>
+						<th>Last name</th>
+						<th>Username</th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>

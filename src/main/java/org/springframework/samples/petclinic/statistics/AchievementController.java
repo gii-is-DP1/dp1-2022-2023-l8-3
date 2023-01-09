@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.samples.petclinic.dto.AchievementDTO;
+import org.springframework.samples.petclinic.dto.ManualAchievementMapper;
 import org.springframework.samples.petclinic.jugador.Jugador;
 import org.springframework.samples.petclinic.jugador.PlayerService;
 import org.springframework.samples.petclinic.partida.MatchService;
@@ -38,6 +40,7 @@ public class AchievementController {
 	private UserService userService;
 	private PlayerService playerService;
 	private MatchService matchService;
+	private ManualAchievementMapper m;
 	
 	@Autowired
 	public AchievementController(AchievementService achievementService, UserService userService, PlayerService playerService, MatchService matchService) {
@@ -45,6 +48,7 @@ public class AchievementController {
 		this.userService = userService;
 		this.playerService = playerService;
 		this.matchService = matchService;
+		m = new ManualAchievementMapper();
 	}
 	
 	@GetMapping(value = "/{page}")
@@ -148,12 +152,13 @@ public class AchievementController {
 	}
 	
 	@PostMapping("/admin/{id}/edit")
-	public ModelAndView saveAchievement(@PathVariable int id, @Valid Achievement achievement, BindingResult br) {
+	public ModelAndView saveAchievement(@PathVariable int id, @Valid AchievementDTO achievementDto, BindingResult br) {
 		ModelAndView result = showAchievementsAdmin(1);
 
-		if(br.hasErrors()) {
+		if(Boolean.TRUE.equals(br.hasErrors())) {
 			result = new ModelAndView(ACHIEVEMENTS_FORM, br.getModel());
 		} else {
+			Achievement achievement = m.convertAchievementDTOToEntity(achievementDto);
 			Achievement achievementToBeUpdated = achievementService.getAchievementById(id);
 			BeanUtils.copyProperties(achievement, achievementToBeUpdated, "id");
 
@@ -176,21 +181,21 @@ public class AchievementController {
 	}
 	
 	@PostMapping("/admin/new")
-	public ModelAndView saveAchievement(@Valid Achievement achievement, BindingResult br) {
-		System.out.println("PIPO");
+	public ModelAndView saveAchievement(@Valid AchievementDTO achievementDto, BindingResult br) {
 		ModelAndView result;
 		Integer i = 0;
 		Boolean isRepeated = false;
 		List<Achievement> achievements = (List<Achievement>) achievementService.getAchievements();
 		
-		if(br.hasErrors()) {
+		if(Boolean.TRUE.equals(br.hasErrors())) {
 			result = new ModelAndView(ACHIEVEMENTS_FORM, br.getModel());
 		} else {
-			while(!isRepeated && i < achievements.size()) {
+			Achievement achievement = m.convertAchievementDTOToEntity(achievementDto);
+			while(Boolean.FALSE.equals(isRepeated) && i < achievements.size()) {
 				isRepeated = achievement.getMetrics().equals(achievements.get(i).getMetrics()) && achievement.getThreshold().equals(achievements.get(i).getThreshold());
 				i++;
 			}
-			if(!isRepeated) {
+			if(Boolean.FALSE.equals(isRepeated)) {
 				achievementService.saveAchievement(achievement);
 				result = showAchievements(1);
 				result.addObject("message", "The achievement was added succesfully");
