@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.samples.petclinic.dto.ManualMatchMapper;
+import org.springframework.samples.petclinic.dto.MatchDTO;
 import org.springframework.samples.petclinic.invitacion.Invitacion;
 import org.springframework.samples.petclinic.invitacion.InvitationService;
 import org.springframework.samples.petclinic.invitacion.resultadoInvitacion;
@@ -33,12 +35,11 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 
-
-
 @Controller
 @RequestMapping("/matches")
 public class MatchController {
 	
+	private static final String INVITATION_TYPE_AS_PLAYER = "jugador";
 	private static final int MINUTES_OF_AN_HOUR = 60;
 	private static final String MATCH_STATISTICS_VIEW = "/matches/matchStatistics";
 	private static final String CURRENT_MATCH_VIEW = "/matches/currentMatch";
@@ -58,8 +59,6 @@ public class MatchController {
 		this.playerService = playerService;
 		this.invitacionService=invitacionService;
 	}
-	
-	
 	
 	@GetMapping(value = "/matchesList")
     public ModelAndView listingMatch(@AuthenticationPrincipal Authentication user) {
@@ -94,11 +93,12 @@ public class MatchController {
 		result.addObject("players",listaAmigos);
 		return result;
 	}
+	
 	@PostMapping(value = "/createMatch")
 	public ModelAndView createMatch(@RequestParam String nombre,@RequestParam Boolean tipoPartida, @AuthenticationPrincipal Authentication user) {
 	        ModelAndView result =  new ModelAndView();
 	        Jugador player = playerService.findPlayerByUsername(user.getName());
-	        if(matchService.canIplay(player)&&matchService.imPlaying(player)) {
+	        if(Boolean.TRUE.equals(matchService.canIplay(player)) && Boolean.TRUE.equals(matchService.imPlaying(player))) {
 	        Match match = new Match(false, player);
 	        match.setName(nombre);
 	        match.setEsPrivada(tipoPartida);
@@ -116,7 +116,7 @@ public class MatchController {
 		    	i.setJugador(j);
 		    	i.setMatch(match);
 		    	i.setResultado(resultadoInvitacion.SIN_RESPONDER);
-		    	if(player.getTipoDeInvitacionPartidaEnviada().get(h).equals("jugador")) {
+		    	if(player.getTipoDeInvitacionPartidaEnviada().get(h).equals(INVITATION_TYPE_AS_PLAYER)) {
 		    		i.setTipo(tipoInvitacion.JUGADOR);
 		    	}
 		    	else {
@@ -132,12 +132,12 @@ public class MatchController {
 		    result = new ModelAndView("redirect:/matches/"+matchId+"/waitForMatch");
 		    }else {
 		        result = new ModelAndView("/matches/exception");
-		        if(!matchService.canIplay(player)) {
+		        if(Boolean.FALSE.equals(matchService.canIplay(player))) {
 		            result.addObject("mensaje", "hoy ya has jugado demasiado descansa la vista, sal a la calle un rato y disfruta de la naturaleza.");
-		        }else if(!matchService.imPlaying(player)){
+		        }else if(Boolean.FALSE.equals(matchService.imPlaying(player))){
 		            result.addObject("mensaje", "Ya estas jugando a otra partida en estos momentos. Termínala para poder comenzar otra.");
 		        }
-		        result.addObject("jugador", player);
+		        result.addObject(INVITATION_TYPE_AS_PLAYER, player);
 		    }
 		    return result;
 	}
@@ -146,7 +146,7 @@ public class MatchController {
 	public ModelAndView showWait(@PathVariable("idMatch") int matchId, @AuthenticationPrincipal Authentication user, HttpServletResponse response) {
 		if(matchService.getMatchById(matchId).getJugador2()!=null && matchService.getMatchById(matchId).getJugador1()!=playerService.findPlayerByUsername(user.getName())) {
 	    	Jugador actualUser=playerService.findPlayerByUsername(user.getName());
-	    	ModelAndView result = new ModelAndView("/matches/matchesList");
+	    	ModelAndView result = new ModelAndView(LIST_MATCHES);
 	    	result.addObject("partidaLlena",true);
 	    	result.addObject("match_list", matchService.getMatchesWithoutPlayer2());
 	    	List<Match> matches=new ArrayList<Match>();
@@ -183,7 +183,7 @@ public class MatchController {
 	public ModelAndView post(@PathVariable("idMatch") Integer matchId, @AuthenticationPrincipal Authentication user) {
         ModelAndView result =  new ModelAndView();
         Jugador player = playerService.findPlayerByUsername(user.getName());
-        if(matchService.canIplay(player)&&matchService.imPlaying(player)) {
+        if(Boolean.TRUE.equals(matchService.canIplay(player)) && Boolean.TRUE.equals(matchService.imPlaying(player))) {
 	        Match match = matchService.getMatchById(matchId);
 	        match.setJugador2(player);
 	        this.matchService.saveMatch(match);
@@ -191,12 +191,12 @@ public class MatchController {
 	        result =new ModelAndView("redirect:/matches/"+id+"/currentMatch");
         }else {
             result = new ModelAndView("/matches/exception");
-            if(!matchService.canIplay(player)) {
+            if(Boolean.FALSE.equals(matchService.canIplay(player))) {
                 result.addObject("mensaje", "hoy ya has jugado demasiado descansa la vista, sal a la calle un rato y disfruta de la naturaleza.");
-            }else if(!matchService.imPlaying(player)){
+            }else if(Boolean.FALSE.equals(matchService.imPlaying(player))){
                 result.addObject("mensaje", "Ya estas jugando a otra partida en estos momentos. Termínala para poder comenzar otra.");
             }
-            result.addObject("jugador", player);
+            result.addObject(INVITATION_TYPE_AS_PLAYER, player);
         }
         return result;
         
@@ -211,11 +211,11 @@ public class MatchController {
 		Jugador player2 = match.getJugador2();
 		if(match.getGanadorPartida() == GameWinner.UNDEFINED) {
 			result = new ModelAndView(CURRENT_MATCH_VIEW);
-			if(match.esFaseBinaria()) {
+			if(Boolean.TRUE.equals(match.esFaseBinaria())) {
 				binaryPhase(match, player1, player2);
-			} else if(match.esFaseContaminacion()) {
+			} else if(Boolean.TRUE.equals(match.esFaseContaminacion())) {
 				pollutionPhase(match, player1, player2);
-			} else if(match.esFin()) {
+			} else if(Boolean.TRUE.equals(match.esFin())) {
 				match.determineWinner();
 				result = new ModelAndView(MATCH_STATISTICS_VIEW);
 				finishMatch(match);
@@ -251,11 +251,10 @@ public class MatchController {
 	 */
 	public void refresh(Authentication user, Match match, Boolean itIsPropagationPhase, HttpServletResponse response) {
 		Integer idLoggedPlayer = playerService.findPlayerByUsername(user.getName()).getId();
-        Integer idCurrentPlayer = match.turnoPrimerJugador() ? match.getJugador1().getId() : match.getJugador2().getId();
+        Integer idCurrentPlayer = Boolean.TRUE.equals(match.turnoPrimerJugador()) ? match.getJugador1().getId() : match.getJugador2().getId();
 
-        if (itIsPropagationPhase) {
-
-			if(idLoggedPlayer != idCurrentPlayer) {
+        if (Boolean.TRUE.equals(itIsPropagationPhase)) {
+			if(!idLoggedPlayer.equals(idCurrentPlayer)) {
 	        	response.addHeader("Refresh", "3");
 	        } else {
 	        	response.addHeader("Refresh", "6");
@@ -266,21 +265,23 @@ public class MatchController {
 	}
 	
 
-	@RequestMapping("/{idMatch}/currentMatch")
-	public ModelAndView nextPhase(@PathVariable int idMatch, Match auxMatch, @AuthenticationPrincipal Authentication user, HttpServletResponse response) {
+	@PostMapping("/{idMatch}/currentMatch")
+	public ModelAndView nextPhase(@PathVariable int idMatch, MatchDTO matchDto, @AuthenticationPrincipal Authentication user, HttpServletResponse response) {
 		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
 		Match match = matchService.getMatchById(idMatch);
 		Jugador player1 = match.getJugador1();
 		Jugador player2 = match.getJugador2();
 
-		if(match.esPropagacion()) {
+		if(Boolean.TRUE.equals(match.esPropagacion())) {
+			ManualMatchMapper m = new ManualMatchMapper();
+			Match auxMatch = m.convertMatchDTOToEntity(matchDto);
 			match.copyTransientData(auxMatch);
 			//Si es "" es correcto. Si tiene un mensaje es un msg de error
 			String validacion = match.validateMove();
 			result.addObject("error", validacion);
 
 			if(validacion.length()==0) {
-				if(match.turnoPrimerJugador()) { // Realizar movimiento
+				if(Boolean.TRUE.equals(match.turnoPrimerJugador())) { // Realizar movimiento
 					movingBacteria(0, player1, auxMatch, match);
 					playerService.saveJugador(player1);
 				} else {
@@ -303,10 +304,10 @@ public class MatchController {
 
 	private void addDataToTheView(Authentication user, ModelAndView result, Match match) {
 		Integer idLoggedPlayer = playerService.findPlayerByUsername(user.getName()).getId();
-        Integer idCurrentPlayer = match.turnoPrimerJugador() ? match.getJugador1().getId() : match.getJugador2().getId();
+        Integer idCurrentPlayer = Boolean.TRUE.equals(match.turnoPrimerJugador()) ? match.getJugador1().getId() : match.getJugador2().getId();
         result.addObject("idLoggedPlayer", idLoggedPlayer);
 		result.addObject("idCurrentPlayer", idCurrentPlayer);
-		result.addObject("isYourTurn", idLoggedPlayer == idCurrentPlayer);
+		result.addObject("isYourTurn", idLoggedPlayer.equals(idCurrentPlayer));
 		result.addObject("match", match);
 	}
 	
@@ -331,7 +332,7 @@ public class MatchController {
 		match.nextTurn();
 	}
 	
-	@RequestMapping("/{idMatch}/abandonedMatch")
+	@GetMapping("/{idMatch}/abandonedMatch")
 	public RedirectView abandonedMatch(@PathVariable int idMatch, Authentication user) {
 		RedirectView result = new RedirectView("/matches/"+idMatch+"/currentMatch");
 		Match match = matchService.getMatchById(idMatch);
@@ -342,9 +343,9 @@ public class MatchController {
 		return result;
 	}
 	
-	@RequestMapping("/{idMatch}/abandonedWaitMatch")
+	@GetMapping("/{idMatch}/abandonedWaitMatch")
 	public RedirectView abandonedWaitMatch(@PathVariable int idMatch, Authentication user) {
-		RedirectView result = new RedirectView("/matches/createMatch");
+		RedirectView result = new RedirectView(CREATE_MATCH_VIEW);
 		Match match = matchService.getMatchById(idMatch);
 		for(Invitacion i:match.getInvitaciones()) {
 			invitacionService.delete(i);
@@ -447,10 +448,8 @@ public class MatchController {
 		Long result = 0l;
 		List<Match> matches = new ArrayList<Match>(matchService.getMatches());
 		for (Match match : matches) {
-			if(!match.getGanadorPartida().equals(GameWinner.UNDEFINED)) {
-				if(match.durationInMinutes() > result) {
-					result = match.durationInMinutes();
-				}
+			if(!match.getGanadorPartida().equals(GameWinner.UNDEFINED) && match.durationInMinutes() > result) {
+				result = match.durationInMinutes();
 			}
 		}
 		return result;
@@ -475,11 +474,11 @@ public class MatchController {
 	        matchService.saveMatch(match);
 		}
 		else {
-			result=new ModelAndView("/matches/matchesList");
+			result=new ModelAndView(LIST_MATCHES);
 			result.addObject("match_list", matchService.getMatchesWithoutPlayer2());
 	        List<Match> matches=new ArrayList<Match>();
 	        for(Match m:matchService.getMatches()) {
-	        	if(m.getJugador2()!=null && m.getAbandonada()==false && m.getFinPartida()==null && 
+	        	if(m.getJugador2()!=null && Boolean.FALSE.equals(m.getAbandonada()) && m.getFinPartida()==null && 
 	        			m.getEspectadores().size()<4 && m.getGanadorPartida()==GameWinner.UNDEFINED && 
 	        			m.getJugador1()!=actualUser && m.getJugador2()!=actualUser) {
 	        		matches.add(m);
