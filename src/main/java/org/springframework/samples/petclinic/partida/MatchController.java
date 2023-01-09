@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.samples.petclinic.dto.ManualMatchMapper;
+import org.springframework.samples.petclinic.dto.MatchDTO;
 import org.springframework.samples.petclinic.invitacion.Invitacion;
 import org.springframework.samples.petclinic.invitacion.InvitationService;
 import org.springframework.samples.petclinic.invitacion.resultadoInvitacion;
@@ -31,11 +33,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-
-import dto.ManualMatchMapper;
-import dto.MatchDTO;
-
-
 
 
 @Controller
@@ -62,8 +59,6 @@ public class MatchController {
 		this.playerService = playerService;
 		this.invitacionService=invitacionService;
 	}
-	
-	
 	
 	@GetMapping(value = "/matchesList")
     public ModelAndView listingMatch(@AuthenticationPrincipal Authentication user) {
@@ -98,6 +93,7 @@ public class MatchController {
 		result.addObject("players",listaAmigos);
 		return result;
 	}
+	
 	@PostMapping(value = "/createMatch")
 	public ModelAndView createMatch(@RequestParam String nombre,@RequestParam Boolean tipoPartida, @AuthenticationPrincipal Authentication user) {
 	        ModelAndView result =  new ModelAndView();
@@ -258,7 +254,7 @@ public class MatchController {
         Integer idCurrentPlayer = Boolean.TRUE.equals(match.turnoPrimerJugador()) ? match.getJugador1().getId() : match.getJugador2().getId();
 
         if (Boolean.TRUE.equals(itIsPropagationPhase)) {
-			if(idLoggedPlayer != idCurrentPlayer) {
+			if(!idLoggedPlayer.equals(idCurrentPlayer)) {
 	        	response.addHeader("Refresh", "3");
 	        } else {
 	        	response.addHeader("Refresh", "6");
@@ -269,7 +265,7 @@ public class MatchController {
 	}
 	
 
-	@RequestMapping("/{idMatch}/currentMatch")
+	@PostMapping("/{idMatch}/currentMatch")
 	public ModelAndView nextPhase(@PathVariable int idMatch, MatchDTO matchDto, @AuthenticationPrincipal Authentication user, HttpServletResponse response) {
 		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
 		Match match = matchService.getMatchById(idMatch);
@@ -336,7 +332,7 @@ public class MatchController {
 		match.nextTurn();
 	}
 	
-	@RequestMapping("/{idMatch}/abandonedMatch")
+	@GetMapping("/{idMatch}/abandonedMatch")
 	public RedirectView abandonedMatch(@PathVariable int idMatch, Authentication user) {
 		RedirectView result = new RedirectView("/matches/"+idMatch+"/currentMatch");
 		Match match = matchService.getMatchById(idMatch);
@@ -347,7 +343,7 @@ public class MatchController {
 		return result;
 	}
 	
-	@RequestMapping("/{idMatch}/abandonedWaitMatch")
+	@GetMapping("/{idMatch}/abandonedWaitMatch")
 	public RedirectView abandonedWaitMatch(@PathVariable int idMatch, Authentication user) {
 		RedirectView result = new RedirectView(CREATE_MATCH_VIEW);
 		Match match = matchService.getMatchById(idMatch);
@@ -475,7 +471,7 @@ public class MatchController {
 	        matchService.saveMatch(match);
 		}
 		else {
-			result=new ModelAndView("/matches/matchesList");
+			result=new ModelAndView(LIST_MATCHES);
 			result.addObject("match_list", matchService.getMatchesWithoutPlayer2());
 	        List<Match> matches=new ArrayList<Match>();
 	        for(Match m:matchService.getMatches()) {

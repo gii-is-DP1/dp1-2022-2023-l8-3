@@ -1,4 +1,4 @@
-package dto;
+package org.springframework.samples.petclinic.dto;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.samples.petclinic.partida.Match;

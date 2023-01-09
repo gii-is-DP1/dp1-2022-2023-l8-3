@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.dto.JugadorDTO;
+import org.springframework.samples.petclinic.dto.ManualJugadorMapper;
 import org.springframework.samples.petclinic.invitacion.Invitacion;
 import org.springframework.samples.petclinic.invitacion.InvitationService;
 import org.springframework.samples.petclinic.jugador.Jugador;
@@ -36,6 +38,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class WelcomeController {
 	
+	private static final String CREATE_OR_UPDATE_PLAYER_VIEW = "jugadores/createOrUpdateJugadorForm";
 	private static final int NUMBER_OF_PLAYERS_IN_GLOBAL_RANKING = 10;
 	private InvitationService invitacionService;
 	private MenuService menuService;
@@ -69,7 +72,7 @@ public class WelcomeController {
 					b=false;
 				}
 			}
-			if(b) {
+			if(Boolean.TRUE.equals(b)) {
 				Jugador jugadorActual=menuService.findPlayerByUsername(auth.getName());
 				checkAchievements(jugadorActual);
 				Collection<Match> partidas = matchService.getMatches();
@@ -107,22 +110,22 @@ public class WelcomeController {
 		for (Achievement achievement : achievements) {
 			switch (achievement.getMetrics()) {
 				case JUGAR_PARTIDAS:
-					if(!actualPlayer.getLogros().contains(achievement) && actualPlayer.getNumberOfGames() >= achievement.getThreshold()) {
+					if(Boolean.FALSE.equals(actualPlayer.getLogros().contains(achievement)) && actualPlayer.getNumberOfGames() >= achievement.getThreshold()) {
 						playerService.saveAchievement(achievement.getId(), actualPlayer.getId());
 					}
 					break;
 				case GANAR_PARTIDAS:
-					if(!actualPlayer.getLogros().contains(achievement) && actualPlayer.getNumberOfGamesWon() >= achievement.getThreshold()) {
+					if(Boolean.FALSE.equals(actualPlayer.getLogros().contains(achievement)) && actualPlayer.getNumberOfGamesWon() >= achievement.getThreshold()) {
 						playerService.saveAchievement(achievement.getId(), actualPlayer.getId());
 					}
 					break;
 				case COLOCAR_SARCINAS:
-					if(!actualPlayer.getLogros().contains(achievement) && actualPlayer.getNumberOfSarcinasPlaced() >= achievement.getThreshold()) {
+					if(Boolean.FALSE.equals(actualPlayer.getLogros().contains(achievement)) && actualPlayer.getNumberOfSarcinasPlaced() >= achievement.getThreshold()) {
 						playerService.saveAchievement(achievement.getId(), actualPlayer.getId());
 					}
 					break;
 				case AMIGOS:
-					if(!actualPlayer.getLogros().contains(achievement) && actualPlayer.getNumberOfFriends() >= achievement.getThreshold()) {
+					if(Boolean.FALSE.equals(actualPlayer.getLogros().contains(achievement)) && actualPlayer.getNumberOfFriends() >= achievement.getThreshold()) {
 						playerService.saveAchievement(achievement.getId(), actualPlayer.getId());
 					}
 					break;
@@ -138,21 +141,24 @@ public class WelcomeController {
 		if (c.isEmpty()) {
 			model2.put("sinJugadores", true);
 		}
-		return "jugadores/createOrUpdateJugadorForm";
+		return CREATE_OR_UPDATE_PLAYER_VIEW;
 	}
 
 	@PostMapping(value = "/registerNewJugador")
-	public ModelAndView postRegisterNewPlayer(@Valid Jugador jugador, BindingResult br, Map<String, Object> model) {
+	public ModelAndView postRegisterNewPlayer(@Valid JugadorDTO jugadorDto, BindingResult br, Map<String, Object> model) {
 		Boolean correctPassword = false;
 		ModelAndView resul;
 		
-		if (br.hasErrors()) {
-			resul = new ModelAndView("jugadores/createOrUpdateJugadorForm", br.getModel());
+		if (Boolean.TRUE.equals(br.hasErrors())) {
+			resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW, br.getModel());
 		} else {
 			List<Jugador> lista = playerService.findAllJugadores();
+			ManualJugadorMapper m = new ManualJugadorMapper();
+			Jugador jugador = m.convertJugadorDTOToEntity(jugadorDto);
 			
-			if(isRegisteredEmail(jugador, model, lista) || !isValidEmail(model, jugador) || !isCorrectPassword(jugador, model, correctPassword)) {
-				resul = new ModelAndView("jugadores/createOrUpdateJugadorForm");
+			if(Boolean.TRUE.equals(isRegisteredEmail(jugador, model, lista)) || Boolean.FALSE.equals(isValidEmail(model, jugador)) 
+					|| Boolean.FALSE.equals(isCorrectPassword(jugador, model, correctPassword))) {
+				resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW);
 			} else {
 				jugador.setEstadoOnline(false);
 				this.playerService.saveJugador(jugador);
@@ -193,14 +199,14 @@ public class WelcomeController {
 		Integer i = 0;
 		
 		if(player.getUser().getPassword().length() >= 10 && player.getUser().getPassword().length() <= 50) {
-			while(!correctPassword && i < 10) {
+			while(Boolean.FALSE.equals(correctPassword) && i < 10) {
 				if (player.getUser().getPassword().contains(i.toString())) {
 					correctPassword = true;
 				}
 				i++;
 			}
 		}
-		if(!correctPassword) {
+		if(Boolean.FALSE.equals(correctPassword)) {
 			model.put("contraseñaIncorrecta", true);
 		}
 		

@@ -312,21 +312,17 @@ public class Match extends NamedEntity{
 
 		//Si disco destino tiene sarcina tuya el mov es ilegal
 		if(dDestino.getNumeroDeSarcinas(jugador)!=0){ 
-			String msg = "Disco destino con sarcina aliada";
-			return msg;
+			return "Disco destino con sarcina aliada";
 		}
 		//Si quedan mismo numero de bacterias enemigas que aliadas el mov es ilegal 
 		int i = dDestino.getNumeroDeBacterias(jugador)+valor;
 		if(i != 0 && i == dDestino.getNumeroDeBacterias(enemigo)){ 
-			String msg = "Mismo numero de bacterias enemigas que aliadas en disco: "+discoDestino;
-			return msg;
+			return "Mismo numero de bacterias enemigas que aliadas en disco: "+discoDestino;
 		}
-
 
 		//Si quedan mas de 5 bacterias en disco destino el mov es ilegal
 		if((dDestino.getNumeroDeBacterias(jugador)+valor > 5)) { 
-			String msg = "Mas de 5 bacterias en disco destino";
-			return msg;
+			return "Mas de 5 bacterias en disco destino";
 		}
 		return "";
 	}
@@ -377,16 +373,14 @@ public class Match extends NamedEntity{
 
 		//Si quedan bacterias negativas en origen el mov es ilegal
 		if((dOrigen.getNumeroDeBacterias(jugador)-sumaValores)<0) { 
-			String msg = "Bacterias negativas en origen:"+origen;
-			return msg;
+			return "Bacterias negativas en origen:"+origen;
 		}
 		
 		//Si mismo n de bacterias enemigas y aliadas en origen es ilegal
 		Integer bacteriasAlidasOrigen = dOrigen.getNumeroDeBacterias(jugador)-sumaValores;
 		if(bacteriasAlidasOrigen != 0 &&
 				bacteriasAlidasOrigen == dOrigen.getNumeroDeBacterias(enemigo)){ 
-			String msg = "Mismo numero de bacterias enemigas que aliadas en disco: "+origen;
-			return msg;
+			return "Mismo numero de bacterias enemigas que aliadas en disco: "+origen;
 		}
 		
 		return "";
@@ -453,15 +447,12 @@ public class Match extends NamedEntity{
 			Integer numberOfBacteriaOfPlayer2OnTheDisk = getDiscos().get(i).getNumBact2();
 			Integer numberOfSarcinaOfPlayer1OnTheDisk = getDiscos().get(i).getNumSarc1();
 			Integer numberOfSarcinaOfPlayer2OnTheDisk = getDiscos().get(i).getNumSarc2();
-			if((numberOfSarcinaOfPlayer1OnTheDisk*5 + numberOfBacteriaOfPlayer1OnTheDisk)>(numberOfSarcinaOfPlayer2OnTheDisk*5 + numberOfBacteriaOfPlayer2OnTheDisk)) {
-				if(contaminationNumberOfPlayer1 < 9) {
-					contaminationNumberOfPlayer1++;
-				}
-				
-			} else if((numberOfSarcinaOfPlayer1OnTheDisk*5 + numberOfBacteriaOfPlayer1OnTheDisk)<(numberOfSarcinaOfPlayer2OnTheDisk*5 + numberOfBacteriaOfPlayer2OnTheDisk)) {
-				if(contaminationNumberOfPlayer2 < 9) {
-					contaminationNumberOfPlayer2++;
-				}
+			if((numberOfSarcinaOfPlayer1OnTheDisk*5 + numberOfBacteriaOfPlayer1OnTheDisk)>(numberOfSarcinaOfPlayer2OnTheDisk*5 + numberOfBacteriaOfPlayer2OnTheDisk)
+					&& contaminationNumberOfPlayer1 < 9) {
+				contaminationNumberOfPlayer1++;
+			} else if((numberOfSarcinaOfPlayer1OnTheDisk*5 + numberOfBacteriaOfPlayer1OnTheDisk)<(numberOfSarcinaOfPlayer2OnTheDisk*5 + numberOfBacteriaOfPlayer2OnTheDisk)
+					&& contaminationNumberOfPlayer2 < 9) {
+				contaminationNumberOfPlayer2++;
 			}
 			i++;
 		}
