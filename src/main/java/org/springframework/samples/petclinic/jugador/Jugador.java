@@ -17,6 +17,8 @@ import javax.persistence.Table;
 import org.springframework.samples.petclinic.statistics.Achievement;
 import org.springframework.samples.petclinic.invitacion.Invitacion;
 import org.springframework.samples.petclinic.model.Person;
+import org.springframework.samples.petclinic.partida.GameWinner;
+import org.springframework.samples.petclinic.partida.Match;
 import org.springframework.samples.petclinic.user.User;
 
 import lombok.Getter;
@@ -29,7 +31,7 @@ import lombok.Setter;
 public class Jugador extends Person {
 	@Column(name = "estado_Online")
 	private Boolean estadoOnline;
-
+	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "username")
 	private User user;
@@ -49,7 +51,13 @@ public class Jugador extends Person {
 
 	@OneToMany(mappedBy = "jugador2")
 	private List<FriendRequest> receivedFriendRequests;
+	
+	@OneToMany(mappedBy = "jugador1")
+	private List<Match> gamesAsHost;
 
+	@OneToMany(mappedBy = "jugador2")
+	private List<Match> gamesAsGuest;
+	
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "achievements_players", joinColumns = @JoinColumn(name = "players_id"), inverseJoinColumns = @JoinColumn(name = "achievement_id"))
 	private List<Achievement> logros;
@@ -68,6 +76,21 @@ public class Jugador extends Person {
 		this.receivedFriendRequests = new ArrayList<FriendRequest>();
 		this.logros = new ArrayList<Achievement>();
 	}
+	
+	public Integer getNumberOfGamesWon() {
+		Integer result = 0;
+		for (Match match : gamesAsHost) {
+			if(match.getGanadorPartida().equals(GameWinner.FIRST_PLAYER)) {
+				result++;
+			}
+		}
+		for (Match match : gamesAsGuest) {
+			if(match.getGanadorPartida().equals(GameWinner.SECOND_PLAYER)) {
+				result++;
+			}
+		}
+		return result;
+	}
 
 	public List<Jugador> playerFriends() {
 		List<Jugador> res = new ArrayList<>();
@@ -75,14 +98,11 @@ public class Jugador extends Person {
 			if (r.getResultado() != null && r.getResultado()) {
 				res.add(r.getJugador2());
 			}
-
 		}
-
 		for (FriendRequest r : receivedFriendRequests) {
 			if (r.getResultado() != null && r.getResultado()) {
 				res.add(r.getJugador1());
 			}
-
 		}
 
 		return res;

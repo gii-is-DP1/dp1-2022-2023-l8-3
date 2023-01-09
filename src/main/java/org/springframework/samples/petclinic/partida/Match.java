@@ -143,8 +143,8 @@ public class Match extends NamedEntity{
 		this.turn = 0;
 		this.contaminationNumberOfPlayer1 = 0;
 		this.contaminationNumberOfPlayer2 = 0;
-		this.numberOfBacteriaOfPlayer1 = 20;
-		this.numberOfBacteriaOfPlayer2 = 20;
+		this.numberOfBacteriaOfPlayer1 = 19;
+		this.numberOfBacteriaOfPlayer2 = 19;
 		this.numberOfSarcinaOfPlayer1 = 4;
 		this.numberOfSarcinaOfPlayer2 = 4;
 		createDisks();
@@ -160,8 +160,8 @@ public class Match extends NamedEntity{
 		this.turn = 0;
 		this.contaminationNumberOfPlayer1 = 0;
 		this.contaminationNumberOfPlayer2 = 0;
-		this.numberOfBacteriaOfPlayer1 = 20;
-		this.numberOfBacteriaOfPlayer2 = 20;
+		this.numberOfBacteriaOfPlayer1 = 19;
+		this.numberOfBacteriaOfPlayer2 = 19;
 		this.numberOfSarcinaOfPlayer1 = 4;
 		this.numberOfSarcinaOfPlayer2 = 4;
 		createDisks();
