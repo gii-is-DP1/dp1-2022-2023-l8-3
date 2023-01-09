@@ -37,6 +37,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 public class PlayerController {
 
@@ -118,7 +121,9 @@ public class PlayerController {
 	public String deletePlayer(@PathVariable("jugadorId") int id) throws Exception {
 		try {
 			playerService.deletePlayer(id);
+			log.info("Player deleted succesfully");
 		} catch (Exception e) {
+			log.warn("Not existing player");
 			throw new Exception("Player Delete Error");
 		}
 		return "redirect:/jugadores/list/1";
@@ -141,6 +146,7 @@ public class PlayerController {
 		ModelAndView resul;
 		
 		if (Boolean.TRUE.equals(br.hasErrors())) {
+			log.error("Input error");
 			resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW, br.getModel());
 		} else {
 			List<Jugador> lista = playerService.findAllJugadores();
@@ -182,6 +188,7 @@ public class PlayerController {
 		ModelAndView resul;
 		
 		if (Boolean.TRUE.equals(br.hasErrors())) {
+			log.error("Input error");
 			resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW, br.getModel());
 		} else {
 			List<Jugador> lista = playerService.findAllJugadores();
