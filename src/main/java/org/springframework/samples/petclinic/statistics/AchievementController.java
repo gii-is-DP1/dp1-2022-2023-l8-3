@@ -28,6 +28,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 @RequestMapping("/statistics/achievements")
 public class AchievementController {
@@ -155,14 +158,16 @@ public class AchievementController {
 	public ModelAndView saveAchievement(@PathVariable int id, @Valid AchievementDTO achievementDto, BindingResult br) {
 		ModelAndView result = showAchievementsAdmin(1);
 
-		if(Boolean.TRUE.equals(br.hasErrors())) {
-			result = new ModelAndView(ACHIEVEMENTS_FORM, br.getModel());
+		if(br.hasErrors()) {
+			log.error("Input error");
+      result = new ModelAndView(ACHIEVEMENTS_FORM, br.getModel());
 		} else {
 			Achievement achievement = m.convertAchievementDTOToEntity(achievementDto);
 			Achievement achievementToBeUpdated = achievementService.getAchievementById(id);
 			BeanUtils.copyProperties(achievement, achievementToBeUpdated, "id");
 
 			achievementService.saveAchievement(achievementToBeUpdated);
+			log.info("Achievement updated");
 			result.addObject("message", "The achievement was updated succesfully");
 
 		}
@@ -181,13 +186,16 @@ public class AchievementController {
 	}
 	
 	@PostMapping("/admin/new")
-	public ModelAndView saveAchievement(@Valid AchievementDTO achievementDto, BindingResult br) {
+	public ModelAndView saveAchievement(@Valid Achievement achievement, BindingResult br) {
+  
 		ModelAndView result;
 		Integer i = 0;
 		Boolean isRepeated = false;
 		List<Achievement> achievements = (List<Achievement>) achievementService.getAchievements();
 		
-		if(Boolean.TRUE.equals(br.hasErrors())) {
+		if(br.hasErrors()) {
+			log.error("Input error");
+
 			result = new ModelAndView(ACHIEVEMENTS_FORM, br.getModel());
 		} else {
 			Achievement achievement = m.convertAchievementDTOToEntity(achievementDto);
@@ -211,6 +219,7 @@ public class AchievementController {
 	public ModelAndView deleteAchievement(@PathVariable int id) {
 		Achievement achievement = achievementService.getAchievementById(id);
 		achievementService.deleteAchievement(achievement);
+		log.info("Achievement deleted");
 		ModelAndView result = showAchievements(1);
 		result.addObject("message", "The achievement was deleted succesfully");
 		return result;
