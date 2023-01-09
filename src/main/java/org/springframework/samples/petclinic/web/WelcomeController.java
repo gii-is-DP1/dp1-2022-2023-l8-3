@@ -35,9 +35,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 public class WelcomeController {
-	
+
 	private static final String CREATE_OR_UPDATE_PLAYER_VIEW = "jugadores/createOrUpdateJugadorForm";
 	private static final int NUMBER_OF_PLAYERS_IN_GLOBAL_RANKING = 10;
 	private InvitationService invitacionService;
@@ -45,94 +48,103 @@ public class WelcomeController {
 	private PlayerService playerService;
 	private MatchService matchService;
 	private AchievementService achievementService;
-	
+
 	@Autowired
-	public WelcomeController(InvitationService invitacionService,MenuService menuService,PlayerService playerService,MatchService matchService,AchievementService achievementService) {
+	public WelcomeController(InvitationService invitacionService, MenuService menuService, PlayerService playerService,
+			MatchService matchService, AchievementService achievementService) {
 		this.playerService = playerService;
-		this.menuService=menuService;
-		this.invitacionService=invitacionService;
-		this.matchService=matchService;
-		this.achievementService=achievementService;
+		this.menuService = menuService;
+		this.invitacionService = invitacionService;
+		this.matchService = matchService;
+		this.achievementService = achievementService;
 	}
 
 	@GetMapping("/")
-	  public ModelAndView welcome() {	    
-		ModelAndView result=new ModelAndView("welcome");
-		Authentication auth=SecurityContextHolder.getContext().getAuthentication();
-		User user1=new User("testUser1","testUser1");
-		Set<Authorities> conj=new HashSet<Authorities>();
-		Authorities authority=new Authorities(); authority.setUser(user1);authority.setAuthority("admin");
+	public ModelAndView welcome() {
+		ModelAndView result = new ModelAndView("welcome");
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		User user1 = new User("testUser1", "testUser1");
+		Set<Authorities> conj = new HashSet<Authorities>();
+		Authorities authority = new Authorities();
+		authority.setUser(user1);
+		authority.setAuthority("admin");
 		conj.add(authority);
-    	user1.setAuthorities(conj);
-    	result.addObject("players", playerService.findAllJugadores().stream().sorted(Comparator.comparing(Jugador::getNumberOfGamesWon).reversed()).limit(NUMBER_OF_PLAYERS_IN_GLOBAL_RANKING).collect(Collectors.toList()));		
-		if(auth!=null) {
-			Boolean b=true;
-			for(Authorities a:menuService.findUser(auth.getName()).orElse(user1).getAuthorities()) {
-				if(a.getAuthority().equals("admin")) {
-					b=false;
+		user1.setAuthorities(conj);
+		result.addObject("players",
+				playerService.findAllJugadores().stream()
+						.sorted(Comparator.comparing(Jugador::getNumberOfGamesWon).reversed())
+						.limit(NUMBER_OF_PLAYERS_IN_GLOBAL_RANKING).collect(Collectors.toList()));
+		if (auth != null) {
+			Boolean b = true;
+			for (Authorities a : menuService.findUser(auth.getName()).orElse(user1).getAuthorities()) {
+				if (a.getAuthority().equals("admin")) {
+					b = false;
 				}
 			}
-			if(Boolean.TRUE.equals(b)) {
-				Jugador jugadorActual=menuService.findPlayerByUsername(auth.getName());
+			if (Boolean.TRUE.equals(b)) {
+				Jugador jugadorActual = menuService.findPlayerByUsername(auth.getName());
 				checkAchievements(jugadorActual);
 				Collection<Match> partidas = matchService.getMatches();
-				for(Match partida:partidas) {
-				    if(partida.getFinPartida()==null&&(partida.getJugador1()==jugadorActual||partida.getJugador2()==jugadorActual)) {       
-				    	int id = partida.getId();
-				        result.addObject("matchId", id);
-				        if(partida.getJugador2()!=null) {
-				        	result.addObject("partidaPendiente", true);
-				        }
-				        else {
-				        	result.addObject("jugador2NoUnido",true);
-				        }
-				    }
+				for (Match partida : partidas) {
+					if (partida.getFinPartida() == null
+							&& (partida.getJugador1() == jugadorActual || partida.getJugador2() == jugadorActual)) {
+						int id = partida.getId();
+						result.addObject("matchId", id);
+						if (partida.getJugador2() != null) {
+							result.addObject("partidaPendiente", true);
+						} else {
+							result.addObject("jugador2NoUnido", true);
+						}
+					}
 				}
-				List<Invitacion> lista=invitacionService.getInvitacionByInvitadoId(jugadorActual.getId());
-				if(lista.isEmpty()) {
-					result.addObject("tengoInvitaciones",false);
-				}
-				else {
-				result.addObject("tengoInvitaciones",true);
-				result.addObject("mensaje","Ha recibido una invitaci&oacute;n a una partida, acceda a trav&eacute;s de la campana del menu");
+				List<Invitacion> lista = invitacionService.getInvitacionByInvitadoId(jugadorActual.getId());
+				if (lista.isEmpty()) {
+					result.addObject("tengoInvitaciones", false);
+				} else {
+					result.addObject("tengoInvitaciones", true);
+					result.addObject("mensaje",
+							"Ha recibido una invitaci&oacute;n a una partida, acceda a trav&eacute;s de la campana del menu");
 				}
 			}
-		}
-		else {
-			result.addObject("tengoInvitaciones",false);
-			result.addObject("mensaje","este mensaje no vale para nada");
+		} else {
+			result.addObject("tengoInvitaciones", false);
+			result.addObject("mensaje", "este mensaje no vale para nada");
 		}
 		return result;
 	}
-	
+
 	public void checkAchievements(Jugador actualPlayer) {
 		List<Achievement> achievements = new ArrayList<>(achievementService.getAchievements());
 		for (Achievement achievement : achievements) {
 			switch (achievement.getMetrics()) {
-				case JUGAR_PARTIDAS:
-					if(Boolean.FALSE.equals(actualPlayer.getLogros().contains(achievement)) && actualPlayer.getNumberOfGames() >= achievement.getThreshold()) {
-						playerService.saveAchievement(achievement.getId(), actualPlayer.getId());
-					}
-					break;
-				case GANAR_PARTIDAS:
-					if(Boolean.FALSE.equals(actualPlayer.getLogros().contains(achievement)) && actualPlayer.getNumberOfGamesWon() >= achievement.getThreshold()) {
-						playerService.saveAchievement(achievement.getId(), actualPlayer.getId());
-					}
-					break;
-				case COLOCAR_SARCINAS:
-					if(Boolean.FALSE.equals(actualPlayer.getLogros().contains(achievement)) && actualPlayer.getNumberOfSarcinasPlaced() >= achievement.getThreshold()) {
-						playerService.saveAchievement(achievement.getId(), actualPlayer.getId());
-					}
-					break;
-				case AMIGOS:
-					if(Boolean.FALSE.equals(actualPlayer.getLogros().contains(achievement)) && actualPlayer.getNumberOfFriends() >= achievement.getThreshold()) {
-						playerService.saveAchievement(achievement.getId(), actualPlayer.getId());
-					}
-					break;
+			case JUGAR_PARTIDAS:
+				if (Boolean.FALSE.equals(actualPlayer.getLogros().contains(achievement))
+						&& actualPlayer.getNumberOfGames() >= achievement.getThreshold()) {
+					playerService.saveAchievement(achievement.getId(), actualPlayer.getId());
+				}
+				break;
+			case GANAR_PARTIDAS:
+				if (Boolean.FALSE.equals(actualPlayer.getLogros().contains(achievement))
+						&& actualPlayer.getNumberOfGamesWon() >= achievement.getThreshold()) {
+					playerService.saveAchievement(achievement.getId(), actualPlayer.getId());
+				}
+				break;
+			case COLOCAR_SARCINAS:
+				if (Boolean.FALSE.equals(actualPlayer.getLogros().contains(achievement))
+						&& actualPlayer.getNumberOfSarcinasPlaced() >= achievement.getThreshold()) {
+					playerService.saveAchievement(achievement.getId(), actualPlayer.getId());
+				}
+				break;
+			case AMIGOS:
+				if (Boolean.FALSE.equals(actualPlayer.getLogros().contains(achievement))
+						&& actualPlayer.getNumberOfFriends() >= achievement.getThreshold()) {
+					playerService.saveAchievement(achievement.getId(), actualPlayer.getId());
+				}
+				break;
 			}
 		}
 	}
-	
+
 	@GetMapping(value = "/registerNewJugador")
 	public String getRegisterNewPlayer(Map<String, Object> model, Map<String, Object> model2) {
 		Jugador jugador = new Jugador();
@@ -145,33 +157,37 @@ public class WelcomeController {
 	}
 
 	@PostMapping(value = "/registerNewJugador")
-	public ModelAndView postRegisterNewPlayer(@Valid JugadorDTO jugadorDto, BindingResult br, Map<String, Object> model) {
+	public ModelAndView postRegisterNewPlayer(@Valid JugadorDTO jugadorDto, BindingResult br,
+			Map<String, Object> model) {
 		Boolean correctPassword = false;
 		ModelAndView resul;
-		
+
 		if (Boolean.TRUE.equals(br.hasErrors())) {
+			log.error("Input error");
 			resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW, br.getModel());
 		} else {
 			List<Jugador> lista = playerService.findAllJugadores();
 			ManualJugadorMapper m = new ManualJugadorMapper();
 			Jugador jugador = m.convertJugadorDTOToEntity(jugadorDto);
-			
-			if(Boolean.TRUE.equals(isRegisteredEmail(jugador, model, lista)) || Boolean.FALSE.equals(isValidEmail(model, jugador)) 
+
+			if (Boolean.TRUE.equals(isRegisteredEmail(jugador, model, lista))
+					|| Boolean.FALSE.equals(isValidEmail(model, jugador))
 					|| Boolean.FALSE.equals(isCorrectPassword(jugador, model, correctPassword))) {
 				resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW);
 			} else {
 				jugador.setEstadoOnline(false);
 				this.playerService.saveJugador(jugador);
+				log.info("Player created");
 				resul = new ModelAndView("redirect:/login");
 			}
 		}
 		return resul;
 	}
-	
+
 	private Boolean isRegisteredEmail(Jugador jugador, Map<String, Object> model, List<Jugador> lista) {
 		Boolean result = false;
 		Integer i = 0;
-		while(!result && i < lista.size()) {
+		while (!result && i < lista.size()) {
 			if (lista.get(i).getUser().getEmail().equals(jugador.getUser().getEmail())) {
 				model.put("emailIncorrecto1", true);
 				result = true;
@@ -180,36 +196,36 @@ public class WelcomeController {
 		}
 		return result;
 	}
-	
+
 	private Boolean isValidEmail(Map<String, Object> model, Jugador player) {
 		Boolean result = true;
-		String emailPattern = "^[_a-z0-9-]+(\\.[_a-z0-9-]+)*@" +"[a-z0-9-]+(\\.[a-z0-9-]+)*(\\.[a-z]{2,4})$";
+		String emailPattern = "^[_a-z0-9-]+(\\.[_a-z0-9-]+)*@" + "[a-z0-9-]+(\\.[a-z0-9-]+)*(\\.[a-z]{2,4})$";
 		Pattern pattern = Pattern.compile(emailPattern);
 		Matcher matcher = pattern.matcher(player.getUser().getEmail());
-		
+
 		if (!matcher.matches()) {
 			model.put("emailIncorrecto2", true);
 			result = false;
 		}
-		
+
 		return result;
 	}
 
 	private Boolean isCorrectPassword(Jugador player, Map<String, Object> model, Boolean correctPassword) {
 		Integer i = 0;
-		
-		if(player.getUser().getPassword().length() >= 10 && player.getUser().getPassword().length() <= 50) {
-			while(Boolean.FALSE.equals(correctPassword) && i < 10) {
+
+		if (player.getUser().getPassword().length() >= 10 && player.getUser().getPassword().length() <= 50) {
+			while (Boolean.FALSE.equals(correctPassword) && i < 10) {
 				if (player.getUser().getPassword().contains(i.toString())) {
 					correctPassword = true;
 				}
 				i++;
 			}
 		}
-		if(Boolean.FALSE.equals(correctPassword)) {
+		if (Boolean.FALSE.equals(correctPassword)) {
 			model.put("contraseñaIncorrecta", true);
 		}
-		
+
 		return correctPassword;
 	}
 }
