@@ -386,16 +386,15 @@ public class MatchController {
 		Integer numberOfPages = results.getTotalPages();
 		Integer thisPage = page;
 
-		if(thisPage > numberOfPages) 
+		if(thisPage > numberOfPages && numberOfPages != 0) 
 			return "redirect:/matches/InProgress/"+numberOfPages;
-		
 
 		model.put("numberOfPages", numberOfPages);
 		model.put("selections", results.getContent());
 		model.put("thisPage", thisPage);
 		
 		Boolean b=results.isEmpty();
-
+		
 		model2.put("sinPartidas", b);
 		return "matches/listMatchesInProgress";
 	}
@@ -411,8 +410,8 @@ public class MatchController {
 
 		Integer numberOfPages = results.getTotalPages();
 		Integer thisPage = page;
-
-		if(thisPage > numberOfPages) 
+		
+		if(thisPage > numberOfPages && numberOfPages != 0) 
 			return "redirect:/matches/Finished/"+numberOfPages;
 		
 		model.put("numberOfPages", numberOfPages);

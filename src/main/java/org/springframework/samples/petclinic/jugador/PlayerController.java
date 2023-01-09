@@ -73,7 +73,7 @@ public class PlayerController {
 		Integer numberOfPages = results.getTotalPages();
 		Integer thisPage = page;
 
-		if(thisPage > numberOfPages) 
+		if(thisPage > numberOfPages && numberOfPages != 0) 
 			return "redirect:/jugadores/list/"+numberOfPages;
 		
 		model.put("numberOfPages", numberOfPages);
