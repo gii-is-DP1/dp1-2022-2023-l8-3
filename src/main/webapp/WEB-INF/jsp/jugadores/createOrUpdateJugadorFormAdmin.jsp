@@ -5,26 +5,18 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags"%>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');</style>
 
 <petclinic:layout pageName="jugadorForm">
 	
 				
 	
-	
-	<c:choose>
-		<c:when test="${jugador['new']}">
-			<div class="WelcomeNuevoUsu">
-		<h1>Bienvenido<p class="letras">JUGADOR</p>que tal si nos registramos</h1>
-	</div>
-		</c:when>
-		<c:otherwise>
-			<div class="WelcomeNuevoUsu">
-		<p class="letras">ACTUALIZA TU PERFIL</p>
-	</div>
-		</c:otherwise>
-	</c:choose>
+	<h2>
+		<c:choose>
+			<c:when test="${jugador['new']}">Nuevo </c:when>
+			<c:otherwise>Actualizar </c:otherwise>
+		</c:choose>
+		Jugador
+	</h2>
 	<br>
 	<c:if test="${contraseñaIncorrecta}">
 		<div class="alert alert-info">
@@ -55,43 +47,15 @@
 			<div class="col-sm-offset-2 col-sm-10">
 				<c:choose>
 					<c:when test="${jugador['new']}">
-						<button class="btn btn-default btn-block" type="submit">Únete a nosotros</button>
+						<button class="btn btn-default" type="submit">A&ntilde;adir
+							jugador</button>
 					</c:when>
 					<c:otherwise>
-						<button class="btn btn-default btn-block" type="submit">Actualizar información</button>
+						<button class="btn btn-default" type="submit">Actualizar
+							Jugador</button>
 					</c:otherwise>
 				</c:choose>
 			</div>
 		</div>
 	</form:form>
 </petclinic:layout>
-<style type="text/css">
-
-.WelcomeNuevoUsu{
-
-text-align: center;
-
-}
-
-.letras{
-position: relative;
-	text-align: center;
-	font-size: xx-large;
-	font-family: 'Press Start 2P', cursive;
-	animation-name: anim;
-	animation-duration: 5s;
-	animation-iteration-count: infinite;
-}
-@keyframes anim{
-    0% {color: blue;} /*Amarillo*/
-   16.5% {color: purple;} /*Naranja*/
-   33% {color: red;} /*Negro*/
-   50% {color:#FFCD00;}
-   66% {color: #DEF400;} 
-   82.5% {color: GREEN;} /*Otra vez naranja*/
-   100% {color:#00A2FF;} /*Otra vez amarillo*/
-  
-}
-
-</style>
-

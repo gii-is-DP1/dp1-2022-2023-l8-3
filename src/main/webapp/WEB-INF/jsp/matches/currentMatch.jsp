@@ -38,11 +38,11 @@
 								</c:when>
 						</c:choose>
 						<c:choose>
-								<c:when test="${match.getMatchTime()>=2}">
+								<c:when test="${match.timeSinceTheStartOfTheGameInMinutes()>=2}">
 									<a class="button" href="<c:url value="/matches/${match.id}/abandonedMatch" />">Abandonar partida </a>
 								</c:when>
 								<c:otherwise>
-									<a class="button" href="<c:url value="#"/>" onclick="alert('Debes esperar 2 minutos para abandonar te quedan ${match.getMatchTime()} segundos');">Abandonar partida </a>
+									<a class="button" href="<c:url value="#"/>" onclick="alert('Debes esperar 2 minutos para abandonar, solo quedan ${120-match.timeSinceTheStartOfTheGameInSeconds()} segundos');">Abandonar partida </a>
 								</c:otherwise>
 						</c:choose>
 						

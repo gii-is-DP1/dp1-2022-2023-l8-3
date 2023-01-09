@@ -73,7 +73,7 @@ public class PlayerController {
 		Integer numberOfPages = results.getTotalPages();
 		Integer thisPage = page;
 
-		if(thisPage > numberOfPages) 
+		if(thisPage > numberOfPages && numberOfPages != 0) 
 			return "redirect:/jugadores/list/"+numberOfPages;
 		
 		model.put("numberOfPages", numberOfPages);
@@ -129,7 +129,7 @@ public class PlayerController {
 		if (c.isEmpty()) {
 			model2.put("sinJugadores", true);
 		}
-		return "jugadores/createOrUpdateJugadorForm";
+		return "jugadores/createOrUpdateJugadorFormAdmin";
 	}
 
 	@PostMapping(value = "/jugadores/new")
@@ -138,12 +138,12 @@ public class PlayerController {
 		ModelAndView resul;
 		
 		if (br.hasErrors()) {
-			resul = new ModelAndView("jugadores/createOrUpdateJugadorForm", br.getModel());
+			resul = new ModelAndView("jugadores/createOrUpdateJugadorFormAdmin", br.getModel());
 		} else {
 			List<Jugador> lista = playerService.findAllJugadores();
 			
 			if(isRegisteredEmail(jugador, model, lista) || !isValidEmail(model, jugador) || !isCorrectPassword(jugador, model, correctPassword)) {
-				resul = new ModelAndView("jugadores/createOrUpdateJugadorForm");
+				resul = new ModelAndView("jugadores/createOrUpdateJugadorFormAdmin");
 			} else {
 				jugador.setEstadoOnline(false);
 				this.playerService.saveJugador(jugador);
@@ -159,10 +159,12 @@ public class PlayerController {
 		User user = userService.findUser(auth.getName()).get();
 		ModelAndView mav = new ModelAndView();
 		for (Authorities authority : user.getAuthorities()) {
-			if (authority.getAuthority().equals("admin")
-					|| playerService.findPlayerByUsername(auth.getName()).getId() == jugadorId) {
-				mav = new ModelAndView("jugadores/createOrUpdateJugadorForm");
+			if (authority.getAuthority().equals("admin")) {
+				mav = new ModelAndView("jugadores/createOrUpdateJugadorFormAdmin");
 				mav.addObject(this.playerService.findJugadorById(jugadorId));
+			}else if(playerService.findPlayerByUsername(auth.getName()).getId() == jugadorId){
+			    mav = new ModelAndView("jugadores/createOrUpdateJugadorForm");
+                mav.addObject(this.playerService.findJugadorById(jugadorId));
 			}
 		}
 		return mav;
@@ -175,12 +177,12 @@ public class PlayerController {
 		ModelAndView resul;
 		
 		if (br.hasErrors()) {
-			resul = new ModelAndView("jugadores/createOrUpdateJugadorForm", br.getModel());
+			resul = new ModelAndView("jugadores/createOrUpdateJugadorFormAdmin", br.getModel());
 		} else {
 			List<Jugador> lista = playerService.findAllJugadores();
 			
 			if((!isYourEmail(jugador, jugadorId) && isRegisteredEmail(jugador, model, lista)) || !isValidEmail(model, jugador) || !isCorrectPassword(jugador, model, correctPassword)) {
-				resul = new ModelAndView("jugadores/createOrUpdateJugadorForm");
+				resul = new ModelAndView("jugadores/createOrUpdateJugadorFormAdmin");
 				resul.addObject(this.playerService.findJugadorById(jugadorId));
 			} else {
 				jugador.setId(jugadorId);
@@ -264,6 +266,8 @@ public class PlayerController {
 					result.addObject("playerMatches", m.stream().limit(RESULTS_LIMIT).collect(Collectors.toList()));
 					result.addObject("gamesPlayed", m.size());
 					result.addObject("gamesWon", player.getNumberOfGamesWon());
+					result.addObject("totalPlayingGame", player.getTotalPlayingGame());
+					result.addObject("durationOfTheLongestGame", player.getDurationOfTheLongestGame());
 				}
 			}
 		}

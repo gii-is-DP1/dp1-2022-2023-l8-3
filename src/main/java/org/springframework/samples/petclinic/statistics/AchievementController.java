@@ -60,7 +60,7 @@ public class AchievementController {
 		Integer numberOfPages = achievements.getTotalPages();
 		Integer thisPage = page;
 
-		if(thisPage > numberOfPages) 
+		if(thisPage > numberOfPages && numberOfPages != 0) 
 			return new ModelAndView("redirect:/statistics/achievements/"+numberOfPages);
 
 		result.addObject("numberOfPages", numberOfPages);
@@ -118,7 +118,7 @@ public class AchievementController {
 		Integer numberOfPages = achievements.getTotalPages();
 		Integer thisPage = page;
 		
-		if(thisPage > numberOfPages) 
+		if(thisPage > numberOfPages && numberOfPages != 0) 
 			return new ModelAndView("redirect:/statistics/achievements/admin/"+numberOfPages);
 
 		result.addObject("numberOfPages", numberOfPages);

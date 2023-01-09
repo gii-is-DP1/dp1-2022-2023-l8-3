@@ -34,7 +34,7 @@ public interface MatchRepository extends JpaRepository<Match, Integer> {
 	@Query("SELECT m FROM Match m WHERE m.ganadorPartida != 'UNDEFINED'")
 	public Collection<Match> findPlayedMatches();
 	
-	@Query("SELECT m FROM Match m WHERE m.jugador1.id = :idJugador OR m.jugador2.id = :idJugador ORDER BY m.finPartida")
+	@Query("SELECT m FROM Match m WHERE m.jugador1.id = :idJugador OR m.jugador2.id = :idJugador ORDER BY m.finPartida DESC")
 	public Collection<Match> findMatchesOfAPlayer(Integer idJugador);
 	
 	@Query("SELECT m FROM Match m WHERE m.jugador1.id = :idJugador OR m.jugador2.id = :idJugador")
@@ -42,6 +42,5 @@ public interface MatchRepository extends JpaRepository<Match, Integer> {
 
 	@Query("SELECT m FROM Match m WHERE m.ganadorPartida =:gm1 OR m.ganadorPartida =:gm2 OR m.ganadorPartida =:gm3")
 	Page<Match> findMatchesFinishedPageable(Pageable pageable, GameWinner gm1, GameWinner gm2, GameWinner gm3);
-
 	
 }

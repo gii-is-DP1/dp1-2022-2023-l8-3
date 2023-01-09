@@ -2,6 +2,7 @@ package org.springframework.samples.petclinic.jugador;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,6 +16,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.springframework.samples.petclinic.statistics.Achievement;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.springframework.samples.petclinic.invitacion.Invitacion;
 import org.springframework.samples.petclinic.model.Person;
 import org.springframework.samples.petclinic.partida.GameWinner;
@@ -27,8 +30,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@Audited
 @Table(name = "jugadores")
 public class Jugador extends Person {
+
+	private static final int MINUTES_OF_AN_HOUR = 60;
+
+	private static final int MAXIMUM_OF_SARCINAS = 4;
+
 	@Column(name = "estado_Online")
 	private Boolean estadoOnline;
 	
@@ -36,6 +45,7 @@ public class Jugador extends Person {
 	@JoinColumn(name = "username")
 	private User user;
 
+	@NotAudited
 	@ManyToMany(cascade = CascadeType.ALL,mappedBy = "jugador")
 	private List<Invitacion> invitacionesPartidaRecibidas;
 
@@ -45,19 +55,24 @@ public class Jugador extends Person {
 	
 	@ElementCollection
 	private List<String> tipoDeInvitacionPartidaEnviada; //el indice de cada elemento se corresponde con el indice del jugador invitado en la lista amigos invitados
-
+	
+	@NotAudited
 	@OneToMany(mappedBy = "jugador1")
 	private List<FriendRequest> sentFriendRequests;
 
+	@NotAudited
 	@OneToMany(mappedBy = "jugador2")
 	private List<FriendRequest> receivedFriendRequests;
 	
+	@NotAudited
 	@OneToMany(mappedBy = "jugador1")
 	private List<Match> gamesAsHost;
-
+	
+	@NotAudited
 	@OneToMany(mappedBy = "jugador2")
 	private List<Match> gamesAsGuest;
 	
+	@NotAudited
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "achievements_players", joinColumns = @JoinColumn(name = "players_id"), inverseJoinColumns = @JoinColumn(name = "achievement_id"))
 	private List<Achievement> logros;
@@ -77,6 +92,21 @@ public class Jugador extends Person {
 		this.logros = new ArrayList<Achievement>();
 	}
 	
+	public Integer getNumberOfGames() {
+		Integer result = 0;
+		for (Match match : gamesAsHost) {
+			if(!match.getGanadorPartida().equals(GameWinner.UNDEFINED)) {
+				result++;
+			}
+		}
+		for (Match match : gamesAsGuest) {
+			if(!match.getGanadorPartida().equals(GameWinner.UNDEFINED)) {
+				result++;
+			}
+		}
+		return result;
+	}
+	
 	public Integer getNumberOfGamesWon() {
 		Integer result = 0;
 		for (Match match : gamesAsHost) {
@@ -87,6 +117,56 @@ public class Jugador extends Person {
 		for (Match match : gamesAsGuest) {
 			if(match.getGanadorPartida().equals(GameWinner.SECOND_PLAYER)) {
 				result++;
+			}
+		}
+		return result;
+	}
+	
+	public Integer getNumberOfSarcinasPlaced() {
+		Integer result = 0;
+		for (Match match : gamesAsGuest) {
+			result += MAXIMUM_OF_SARCINAS-match.getNumberOfSarcinaOfPlayer1();
+		}
+		for (Match match : gamesAsHost) {
+			result += MAXIMUM_OF_SARCINAS-match.getContaminationNumberOfPlayer2();
+		}
+		return result;
+	}
+	
+	public Integer getNumberOfFriends() {
+		return playerFriends().size();
+	}
+	
+	public String getTotalPlayingGame() {
+		Long minutes = 0l;
+		for (Match match : gamesAsHost) {
+			if(!match.getGanadorPartida().equals(GameWinner.UNDEFINED)) {
+				minutes +=  match.durationInMinutes();
+			}
+		}
+		for (Match match : gamesAsGuest) {
+			if(!match.getGanadorPartida().equals(GameWinner.UNDEFINED)) {
+				minutes +=  match.durationInMinutes();
+			}
+		}
+		Long hours = TimeUnit.MINUTES.toHours(minutes);
+		return String.format("%2d horas y %1d minutos", hours, minutes-(hours*MINUTES_OF_AN_HOUR));
+	}
+	
+	public Long getDurationOfTheLongestGame() {
+		Long result = 0l;
+		for (Match match : gamesAsHost) {
+			if(!match.getGanadorPartida().equals(GameWinner.UNDEFINED)) {
+				if(match.durationInMinutes() > result) {
+					result = match.durationInMinutes();
+				}
+			}
+		}
+		for (Match match : gamesAsGuest) {
+			if(!match.getGanadorPartida().equals(GameWinner.UNDEFINED)) {
+				if(match.durationInMinutes() > result) {
+					result = match.durationInMinutes();
+				}
 			}
 		}
 		return result;
