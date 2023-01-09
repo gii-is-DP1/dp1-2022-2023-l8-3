@@ -23,15 +23,6 @@ public class MenuService {
 		this.menuUserRepo=menuUserRepo;
 	}
 	
-//	private PlayerRepository playerRepo;
-//	private UserRepository userRepo;
-//	
-//	@Autowired
-//	public MenuService(PlayerRepository playerRepo,UserRepository userRepo) {
-//		this.playerRepo=playerRepo;
-//		this.userRepo=userRepo;
-//	}
-	
 	
 	@Transactional(readOnly = true)
 	public Jugador findPlayerByUsername(String username) throws DataAccessException {

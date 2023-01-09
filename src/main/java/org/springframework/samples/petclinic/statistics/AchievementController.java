@@ -202,11 +202,13 @@ public class AchievementController {
 				i++;
 			}
 			if(Boolean.FALSE.equals(isRepeated)) {
+				System.out.println("prueba1");
 				achievementService.saveAchievement(achievement);
 				result = showAchievements(1);
 				log.info("Achievement updated");
 				result.addObject("message", "The achievement was added succesfully");
 			} else {
+				System.out.println("prueba2");
 				result = newAchievement();
 				result.addObject("message", "La metrica y limite coinciden con un logro existente");
 			}

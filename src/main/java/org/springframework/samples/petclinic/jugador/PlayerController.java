@@ -108,7 +108,7 @@ public class PlayerController {
 		ModelAndView mav = new ModelAndView();
 		for (Authorities authority : user.getAuthorities()) {
 			if (authority.getAuthority().equals("admin")
-					|| playerService.findPlayerByUsername(auth.getName()).getId() == id) {
+					|| playerService.findPlayerByUsername(user.getUsername()).getId() == id) {
 				mav = new ModelAndView("jugadores/showJugador");
 				mav.addObject(this.playerService.findJugadorById(id));
 			}
@@ -144,7 +144,6 @@ public class PlayerController {
 	public ModelAndView processCreationForm(@Valid JugadorDTO jugadorDto, BindingResult br, Map<String, Object> model) {
 		Boolean correctPassword = false;
 		ModelAndView resul;
-		
 		if (Boolean.TRUE.equals(br.hasErrors())) {
 			log.error("Input error");
 			resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW, br.getModel());
@@ -329,19 +328,22 @@ public class PlayerController {
 			@PathVariable("result") boolean result, RedirectAttributes ra) {
 		ModelAndView mv;
 		String message = "";
-		
+		System.out.println("prueba1");
 		if(result && playerService.findJugadorById(player2Id).playerFriends().size() >= FRIEND_LIMIT) {
 			message = "You have reached the limit number of friends";
+			System.out.println("prueba2");
 		} else if(result && playerService.findJugadorById(player1Id).playerFriends().size() >= FRIEND_LIMIT) {
 			message = "That player has reached the friend limit";
+			System.out.println("prueba3");
 		} else {
+			System.out.println("prueba4");
 			FriendRequest fr = friendRequestService.getNoReplyFriendRequestByPlayers(player1Id, player2Id);
 			fr.setResultado(result);
 			friendRequestService.saveFriendRequest(fr);
 			message = result ? "Request successfully accepted" : "Request successfully declined";  
 		}
 		
-		
+		System.out.println("prueba5");
 		mv = new ModelAndView("/jugadores/friendRequests");
 		mv.setViewName("redirect:/jugadores/friendRequests");
 		ra.addFlashAttribute("message", message);
