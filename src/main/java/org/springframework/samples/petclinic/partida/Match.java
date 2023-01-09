@@ -37,6 +37,15 @@ import lombok.Setter;
 @Table(name = "matches")
 @DynamicUpdate
 public class Match extends NamedEntity{
+	private static final String DRAW_END_OF_GAME = "No winner can be determined";
+	private static final String NUMBER_OF_SARCINAS_END_OF_GAME = "The total number of sarcinas has determined the winner.";
+	private static final String NUMBER_OF_TOKENS_END_OF_GAME = "The total number of tokens has determined the winner.";
+	private static final String CONTAMINATION_NUMBER_END_OF_GAME = "The number of contamination has determined the winner";
+	private static final String FIN = "FIN";
+	private static final String POLLUTION = "POLLUTION";
+	private static final String BINARY = "BINARY";
+	private static final String PROPAGATION_BLUE_PLAYER = "PROPAGATION_BLUE_PLAYER";
+	private static final String PROPAGATION_RED_PLAYER = "PROPAGATION_RED_PLAYER";
 	private static final int NUMBER_OF_TURNS = 4;
 	private static final int NUMBER_OF_DISKS = 7;
 	private static final int PRIMER_JUGADOR = 1;
@@ -135,24 +144,21 @@ public class Match extends NamedEntity{
 	    this.inicioPartida = LocalDateTime.now();
 		this.esPrivada = esPrivada;
 		this.jugador1 = jugadorAnfitrion;
-		this.espectadores = new HashSet<Jugador>();
-		this.invitaciones = new ArrayList<Invitacion>();
-		this.comentarios = new ArrayList<Comentario>();
-		this.abandonada = false;
 		this.ganadorPartida = GameWinner.UNDEFINED;
-		this.turn = 0;
-		this.contaminationNumberOfPlayer1 = 0;
-		this.contaminationNumberOfPlayer2 = 0;
-		this.numberOfBacteriaOfPlayer1 = 19;
-		this.numberOfBacteriaOfPlayer2 = 19;
-		this.numberOfSarcinaOfPlayer1 = 4;
-		this.numberOfSarcinaOfPlayer2 = 4;
+		initializeData();
 		createDisks();
 		createTurns();
 		initializateMap();
 	}
 	
 	public Match() {
+		initializeData();
+		createDisks();
+		createTurns();
+		initializateMap();
+	}
+	
+	private void initializeData() {
 		this.espectadores = new HashSet<Jugador>();
 		this.invitaciones = new ArrayList<Invitacion>();
 		this.comentarios = new ArrayList<Comentario>();
@@ -164,9 +170,6 @@ public class Match extends NamedEntity{
 		this.numberOfBacteriaOfPlayer2 = 19;
 		this.numberOfSarcinaOfPlayer1 = 4;
 		this.numberOfSarcinaOfPlayer2 = 4;
-		createDisks();
-		createTurns();
-		initializateMap();
 	}
 	
 	private void initializateMap() {		
@@ -190,18 +193,18 @@ public class Match extends NamedEntity{
 	private void createTurns() {
 		turns = new ArrayList<String>();
 		for(int i=0; i<NUMBER_OF_TURNS; i++) {
-			turns.add("PROPAGATION_RED_PLAYER");
-			turns.add("PROPAGATION_BLUE_PLAYER");
-			turns.add("BINARY");
-			turns.add("PROPAGATION_RED_PLAYER");
-			turns.add("PROPAGATION_BLUE_PLAYER");
-			turns.add("BINARY");
-			turns.add("PROPAGATION_RED_PLAYER");
-			turns.add("PROPAGATION_BLUE_PLAYER");
-			turns.add("BINARY");
-			turns.add("POLLUTION");
+			turns.add(PROPAGATION_RED_PLAYER);
+			turns.add(PROPAGATION_BLUE_PLAYER);
+			turns.add(BINARY);
+			turns.add(PROPAGATION_RED_PLAYER);
+			turns.add(PROPAGATION_BLUE_PLAYER);
+			turns.add(BINARY);
+			turns.add(PROPAGATION_RED_PLAYER);
+			turns.add(PROPAGATION_BLUE_PLAYER);
+			turns.add(BINARY);
+			turns.add(POLLUTION);
 		}
-		turns.add("FIN");
+		turns.add(FIN);
 	}
 	
 	// ----------------------------------------------------------------------------------------------- //
@@ -243,7 +246,7 @@ public class Match extends NamedEntity{
 	}
 	
 	public Boolean itIsFirstPlayerTurn() {
-		return getTurns().get(getTurn()).equals("PROPAGATION_RED_PLAYER");
+		return getTurns().get(getTurn()).equals(PROPAGATION_RED_PLAYER);
 	}
 	
 	public void nextTurn() {
@@ -261,8 +264,7 @@ public class Match extends NamedEntity{
 		else return "error";
 	}
 	private Integer[] getDiskMoves() {
-		Integer[] res = {disco1, disco2, disco3, disco4, disco5, disco6, disco7};
-		return res;
+		return new Integer[] {disco1, disco2, disco3, disco4, disco5, disco6, disco7};
 	}
 	
 	public List<List<Integer>> getTargetDiskAndNumberOfBacteria() {
@@ -305,21 +307,18 @@ public class Match extends NamedEntity{
 	}
 	
 	//Valida que un movimiento (con datos correctos) sea legal o no
-	// TODO: te falta tener en cuenta que en el disco origen no haya el mismo número de bacterias de ambos jugadores
 	private String legalMove(Integer discoDestino, Integer valor,Integer jugador, Integer enemigo) {
 		Disco dDestino = getDisco(discoDestino-1);
 
 		//Si disco destino tiene sarcina tuya el mov es ilegal
 		if(dDestino.getNumeroDeSarcinas(jugador)!=0){ 
 			String msg = "Disco destino con sarcina aliada";
-			System.out.println(msg);
 			return msg;
 		}
 		//Si quedan mismo numero de bacterias enemigas que aliadas el mov es ilegal 
-		Integer i = dDestino.getNumeroDeBacterias(jugador)+valor;
+		int i = dDestino.getNumeroDeBacterias(jugador)+valor;
 		if(i != 0 && i == dDestino.getNumeroDeBacterias(enemigo)){ 
 			String msg = "Mismo numero de bacterias enemigas que aliadas en disco: "+discoDestino;
-			System.out.println(msg);
 			return msg;
 		}
 
@@ -327,13 +326,12 @@ public class Match extends NamedEntity{
 		//Si quedan mas de 5 bacterias en disco destino el mov es ilegal
 		if((dDestino.getNumeroDeBacterias(jugador)+valor > 5)) { 
 			String msg = "Mas de 5 bacterias en disco destino";
-			System.out.println(msg);
 			return msg;
 		}
 		return "";
 	}
 	
-	//Valida movimiento y devuelve "" si todo correcto o un msg si ha habido un error.
+	//Valida movimiento y devuelve una cadena vacía si todo correcto o un msg si ha habido un error
 	public String validateMove() {
 		Integer[] disks = getDiskMoves();
 
@@ -345,24 +343,19 @@ public class Match extends NamedEntity{
 		Integer enemigo = jugador==PRIMER_JUGADOR ? SEGUNDO_JUGADOR : PRIMER_JUGADOR;
 
 		Integer origen =  getDeDisco()[0];
-//		Integer numDiscosOrigen = 0; //Numero de discos a donde hay movimiento posible
-//		Integer numDiscosOrigenConCero = 0;//Numero de discos a donde hay movimiento posible con mov=0 (no es movimiento)
 		Integer sumaValores = 0;//Numero total de bacterias a quitar de origen
 
 		for(int destino=1; destino <= NUMBER_OF_DISKS; destino++) {
-			if(diskINextToDiskJ(origen,destino)) {
+			if(Boolean.TRUE.equals(diskINextToDiskJ(origen,destino))) {
 				Integer valor = disks[destino-1];//valor = numero bacterias a sumar a disco destino
 
 				//Valores permitidos [0,4]
 				if(valor<0 || valor>=5) { 
-					System.out.println("Valor distinto de [0,4]");
 					return "Valor de bacterias no permitido";
 				}
 
-				if(valor != 0) { /*numDiscosOrigenConCero++;
-				else {*/
+				if(valor != 0) {
 					//Reglas mas complejas 
-
 					String reglasComplejas = legalMove(destino,valor,jugador,enemigo);
 					if(reglasComplejas.length() != 0) return reglasComplejas;
 				}
@@ -378,7 +371,6 @@ public class Match extends NamedEntity{
 		//Se permite movimiento=0 (no mover a dicho disco), pero no todos pueden ser 0
 		//Si todos los movimientos enviados son 0, ilegal
 		if(sumaValores == 0) { 
-			System.out.println("No hay ningun movimiento indicado");
 			return "No se indicó ningun movimiento";
 		}
 		Disco dOrigen = getDisco(origen-1);
@@ -386,7 +378,6 @@ public class Match extends NamedEntity{
 		//Si quedan bacterias negativas en origen el mov es ilegal
 		if((dOrigen.getNumeroDeBacterias(jugador)-sumaValores)<0) { 
 			String msg = "Bacterias negativas en origen:"+origen;
-			System.out.println(msg);
 			return msg;
 		}
 		
@@ -395,7 +386,6 @@ public class Match extends NamedEntity{
 		if(bacteriasAlidasOrigen != 0 &&
 				bacteriasAlidasOrigen == dOrigen.getNumeroDeBacterias(enemigo)){ 
 			String msg = "Mismo numero de bacterias enemigas que aliadas en disco: "+origen;
-			System.out.println(msg);
 			return msg;
 		}
 		
@@ -423,7 +413,7 @@ public class Match extends NamedEntity{
 				}
 			} else {
 				if(ganadorPartida == GameWinner.UNDEFINED) {
-					ganadorPartida = player.getId() == jugador1.getId() ? GameWinner.SECOND_PLAYER : GameWinner.FIRST_PLAYER;
+					ganadorPartida = player.getId().equals(jugador1.getId()) ? GameWinner.SECOND_PLAYER : GameWinner.FIRST_PLAYER;
 					message = "You have no sarcinas left";
 				} else {
 					ganadorPartida = GameWinner.DRAW;
@@ -437,17 +427,17 @@ public class Match extends NamedEntity{
 	
 	public void binaryPhase(Jugador player1, Jugador player2) {
 		for(int i=0; i<NUMBER_OF_DISKS; i++) {
-			Integer numberOfBacteriaOfPlayer1 = getDiscos().get(i).getNumBact1();
-			Integer numberOfBacteriaOfPlayer2 = getDiscos().get(i).getNumBact2();
-			Integer numberOfSarcinaOfPlayer1 = getDiscos().get(i).getNumSarc1();
-			Integer numberOfSarcinaOfPlayer2 = getDiscos().get(i).getNumSarc2();
-			if(numberOfBacteriaOfPlayer1>0 && (numberOfBacteriaOfPlayer1-numberOfBacteriaOfPlayer2 == numberOfBacteriaOfPlayer1)
-					&& numberOfSarcinaOfPlayer2 == 0) { // solo hay bacterias del jugador 1
+			Integer numberOfBacteriaOfPlayer1OnTheDisk = getDiscos().get(i).getNumBact1();
+			Integer numberOfBacteriaOfPlayer2OnTheDisk = getDiscos().get(i).getNumBact2();
+			Integer numberOfSarcinaOfPlayer1OnTheDisk = getDiscos().get(i).getNumSarc1();
+			Integer numberOfSarcinaOfPlayer2OnTheDisk = getDiscos().get(i).getNumSarc2();
+			if(numberOfBacteriaOfPlayer1OnTheDisk>0 && (numberOfBacteriaOfPlayer1OnTheDisk-numberOfBacteriaOfPlayer2OnTheDisk == numberOfBacteriaOfPlayer1OnTheDisk)
+					&& numberOfSarcinaOfPlayer2OnTheDisk == 0) { // solo hay bacterias del jugador 1
 				getDiscos().get(i).annadirBacterias(PRIMER_JUGADOR-1, 1);
 				this.numberOfBacteriaOfPlayer1--;
 				checkToAddSarcina(PRIMER_JUGADOR-1, player1, i);
-			} else if(numberOfBacteriaOfPlayer2>0 && numberOfBacteriaOfPlayer2-numberOfBacteriaOfPlayer1 == numberOfBacteriaOfPlayer2
-					&& numberOfSarcinaOfPlayer1 == 0) { // solo hay bacterias del jugador 2
+			} else if(numberOfBacteriaOfPlayer2OnTheDisk>0 && numberOfBacteriaOfPlayer2OnTheDisk-numberOfBacteriaOfPlayer1OnTheDisk == numberOfBacteriaOfPlayer2OnTheDisk
+					&& numberOfSarcinaOfPlayer1OnTheDisk == 0) { // solo hay bacterias del jugador 2
 				getDiscos().get(i).annadirBacterias(SEGUNDO_JUGADOR-1, 1);
 				this.numberOfBacteriaOfPlayer2--;
 				checkToAddSarcina(SEGUNDO_JUGADOR-1, player2, i);
@@ -459,16 +449,16 @@ public class Match extends NamedEntity{
 		String message = "";
 		Integer i = 0;
 		while(i < NUMBER_OF_DISKS && ganadorPartida == GameWinner.UNDEFINED) {
-			Integer numberOfBacteriaOfPlayer1 = getDiscos().get(i).getNumBact1();
-			Integer numberOfBacteriaOfPlayer2 = getDiscos().get(i).getNumBact2();
-			Integer numberOfSarcinaOfPlayer1 = getDiscos().get(i).getNumSarc1();
-			Integer numberOfSarcinaOfPlayer2 = getDiscos().get(i).getNumSarc2();
-			if((numberOfSarcinaOfPlayer1*5 + numberOfBacteriaOfPlayer1)>(numberOfSarcinaOfPlayer2*5 + numberOfBacteriaOfPlayer2)) {
+			Integer numberOfBacteriaOfPlayer1OnTheDisk = getDiscos().get(i).getNumBact1();
+			Integer numberOfBacteriaOfPlayer2OnTheDisk = getDiscos().get(i).getNumBact2();
+			Integer numberOfSarcinaOfPlayer1OnTheDisk = getDiscos().get(i).getNumSarc1();
+			Integer numberOfSarcinaOfPlayer2OnTheDisk = getDiscos().get(i).getNumSarc2();
+			if((numberOfSarcinaOfPlayer1OnTheDisk*5 + numberOfBacteriaOfPlayer1OnTheDisk)>(numberOfSarcinaOfPlayer2OnTheDisk*5 + numberOfBacteriaOfPlayer2OnTheDisk)) {
 				if(contaminationNumberOfPlayer1 < 9) {
 					contaminationNumberOfPlayer1++;
 				}
 				
-			} else if((numberOfSarcinaOfPlayer1*5 + numberOfBacteriaOfPlayer1)<(numberOfSarcinaOfPlayer2*5 + numberOfBacteriaOfPlayer2)) {
+			} else if((numberOfSarcinaOfPlayer1OnTheDisk*5 + numberOfBacteriaOfPlayer1OnTheDisk)<(numberOfSarcinaOfPlayer2OnTheDisk*5 + numberOfBacteriaOfPlayer2OnTheDisk)) {
 				if(contaminationNumberOfPlayer2 < 9) {
 					contaminationNumberOfPlayer2++;
 				}
@@ -478,10 +468,10 @@ public class Match extends NamedEntity{
 		if(contaminationNumberOfPlayer1 == 9 || contaminationNumberOfPlayer2 == 9) {
 			if(contaminationNumberOfPlayer1 > contaminationNumberOfPlayer2) {
 				ganadorPartida = GameWinner.SECOND_PLAYER;
-				message = "The number of contamination has determined the winner";
+				message = CONTAMINATION_NUMBER_END_OF_GAME;
 			} else if(contaminationNumberOfPlayer2 > contaminationNumberOfPlayer1) {
 				ganadorPartida = GameWinner.FIRST_PLAYER;
-				message = "The number of contamination has determined the winner";
+				message = CONTAMINATION_NUMBER_END_OF_GAME;
 			} else {
 				message = determineWinner();
 			}
@@ -493,27 +483,27 @@ public class Match extends NamedEntity{
 		String message = "";
 		if(contaminationNumberOfPlayer1 > contaminationNumberOfPlayer2) {
 			ganadorPartida = GameWinner.SECOND_PLAYER;
-			message = "The number of contamination has determined the winner";
+			message = CONTAMINATION_NUMBER_END_OF_GAME;
 		} else if (contaminationNumberOfPlayer2 > contaminationNumberOfPlayer1) {
 			ganadorPartida = GameWinner.FIRST_PLAYER;
-			message = "The number of contamination has determined the winner";
+			message = CONTAMINATION_NUMBER_END_OF_GAME;
 		} else {
 			if(totalNumberOfTokens()[0] > totalNumberOfTokens()[1]) {
 				ganadorPartida = GameWinner.SECOND_PLAYER;
-				message = "The total number of tokens has determined the winner.";
+				message = NUMBER_OF_TOKENS_END_OF_GAME;
 			} else if(totalNumberOfTokens()[1] > totalNumberOfTokens()[0]) {
 				ganadorPartida = GameWinner.FIRST_PLAYER;
-				message = "The total number of tokens has determined the winner.";
+				message = NUMBER_OF_TOKENS_END_OF_GAME;
 			} else {
 				if(totalNumberOfSarcines()[0] > totalNumberOfSarcines()[1]) {
 					ganadorPartida = GameWinner.SECOND_PLAYER;
-					message = "The total number of sarcinas has determined the winner.";
+					message = NUMBER_OF_SARCINAS_END_OF_GAME;
 				} else if(totalNumberOfSarcines()[1] > totalNumberOfSarcines()[0]) {
 					ganadorPartida = GameWinner.FIRST_PLAYER;
-					message = "The total number of sarcinas has determined the winner.";
+					message = NUMBER_OF_SARCINAS_END_OF_GAME;
 				} else {
 					ganadorPartida = GameWinner.DRAW;
-					message = "No winner can be determined";
+					message = DRAW_END_OF_GAME;
 				}
 			}
 		}
@@ -541,11 +531,11 @@ public class Match extends NamedEntity{
 	}
 	
 	public Boolean turnoPrimerJugador() {
-		return getTurns().get(getTurn()).equals("PROPAGATION_RED_PLAYER");
+		return getTurns().get(getTurn()).equals(PROPAGATION_RED_PLAYER);
 	}
 	
 	public Integer getIdJugadorTurnoActual(){
-		return turnoPrimerJugador() ? PRIMER_JUGADOR : SEGUNDO_JUGADOR;
+		return Boolean.TRUE.equals(turnoPrimerJugador()) ? PRIMER_JUGADOR : SEGUNDO_JUGADOR;
 	}
 	
 	public void copyTransientData(Match aux) {
@@ -563,13 +553,13 @@ public class Match extends NamedEntity{
 		return getTurns().get(this.getTurn()).startsWith("PROPAGATION");
 	}
 	public Boolean esFin() {
-		return getTurns().get(this.getTurn()).equals("FIN");
+		return getTurns().get(this.getTurn()).equals(FIN);
 	}
 	public Boolean esFaseBinaria() {
-		return getTurns().get(this.getTurn()).equals("BINARY");
+		return getTurns().get(this.getTurn()).equals(BINARY);
 	}
 	public Boolean esFaseContaminacion() {
-		return getTurns().get(this.getTurn()).equals("POLLUTION");
+		return getTurns().get(this.getTurn()).equals(POLLUTION);
 	}
 	
 	public Integer totalMoves() {

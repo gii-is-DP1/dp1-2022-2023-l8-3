@@ -35,8 +35,6 @@ public class ComentarioController {
 	@PostMapping(value = "/{idMatch}/postMsg")
 	public String postMsg(@PathVariable int idMatch, @AuthenticationPrincipal Authentication user,
 			@RequestParam String msg){
-		RedirectView res = new RedirectView("/matches/"+idMatch+"/currentMatch");
-
 		Integer idJugador = ps.findPlayerByUsername(user.getName()).getId();
 
 	    Match match = ms.getMatchById(idMatch);
@@ -44,7 +42,7 @@ public class ComentarioController {
 	    boolean usuarioCorrecto = idJugador == match.getJugador1().getId() || 
 	    		idJugador == match.getJugador2().getId();
 	    
-	    if(usuarioCorrecto && msg!="") {
+	    if(usuarioCorrecto && !msg.equals("")) {
 		    Jugador j = ps.findJugadorById(idJugador);
 			Comentario c = new Comentario();
 
