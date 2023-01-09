@@ -33,6 +33,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 public class WelcomeController {
 	
@@ -147,6 +150,7 @@ public class WelcomeController {
 		ModelAndView resul;
 		
 		if (br.hasErrors()) {
+			log.error("Input error");
 			resul = new ModelAndView("jugadores/createOrUpdateJugadorForm", br.getModel());
 		} else {
 			List<Jugador> lista = playerService.findAllJugadores();
@@ -156,6 +160,7 @@ public class WelcomeController {
 			} else {
 				jugador.setEstadoOnline(false);
 				this.playerService.saveJugador(jugador);
+				log.info("Player created");
 				resul = new ModelAndView("redirect:/login");
 			}
 		}
