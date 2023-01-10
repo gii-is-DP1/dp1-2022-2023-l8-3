@@ -45,9 +45,9 @@ INSERT INTO achievements_players VALUES (1,5);
 INSERT INTO achievements_players VALUES (2,5);
 
 --Partidas con sus respectivos discos
-INSERT INTO matches(id, id_jugador1, id_jugador2, abandonada, es_privada, inicio_de_partida, ganador_de_partida, contamination_number_of_player_1,
+INSERT INTO matches(id, name, id_jugador1, id_jugador2, abandonada, es_privada, inicio_de_partida, fin_de_partida, ganador_de_partida, contamination_number_of_player_1,
 contamination_number_of_player_2, number_of_bacteria_of_player_1, number_of_bacteria_of_player_2, number_of_sarcina_of_player_1, number_of_sarcina_of_player_2, turn)
-VALUES(1, 1, 2, false, true, '1999-04-12 10:12:12.55', 'UNDEFINED', 0, 0, 20, 20, 4, 4, 0);
+VALUES(1, 'Primera partida', 1, 2, false, true, '1999-04-12 10:12:12.55', '1999-04-12 10:14:12.32', 'UNDEFINED', 0, 0, 20, 20, 4, 4, 0);
 INSERT INTO disco(id,num_bacteria_j1,num_bacteria_j2,num_sarcina_j1,num_sarcina_j2,num_movimientos_j1,num_movimientos_j2,id_match) VALUES(1,4,0,0,0,0,0,1);
 INSERT INTO disco(id,num_bacteria_j1,num_bacteria_j2,num_sarcina_j1,num_sarcina_j2,num_movimientos_j1,num_movimientos_j2,id_match) VALUES(2,1,3,0,0,0,0,1);
 INSERT INTO disco(id,num_bacteria_j1,num_bacteria_j2,num_sarcina_j1,num_sarcina_j2,num_movimientos_j1,num_movimientos_j2,id_match) VALUES(3,2,1,0,0,0,0,1);
@@ -56,9 +56,9 @@ INSERT INTO disco(id,num_bacteria_j1,num_bacteria_j2,num_sarcina_j1,num_sarcina_
 INSERT INTO disco(id,num_bacteria_j1,num_bacteria_j2,num_sarcina_j1,num_sarcina_j2,num_movimientos_j1,num_movimientos_j2,id_match) VALUES(6,2,0,0,0,0,0,1);
 INSERT INTO disco(id,num_bacteria_j1,num_bacteria_j2,num_sarcina_j1,num_sarcina_j2,num_movimientos_j1,num_movimientos_j2,id_match) VALUES(7,2,4,0,0,0,0,1);
 
-INSERT INTO matches(id, id_jugador1, id_jugador2, abandonada, es_privada, inicio_de_partida, fin_de_partida, ganador_de_partida, contamination_number_of_player_1,
+INSERT INTO matches(id, name, id_jugador1, id_jugador2, abandonada, es_privada, inicio_de_partida, fin_de_partida, ganador_de_partida, contamination_number_of_player_1,
 contamination_number_of_player_2, number_of_bacteria_of_player_1, number_of_bacteria_of_player_2, number_of_sarcina_of_player_1, number_of_sarcina_of_player_2, turn)
-VALUES(2, 3, 4, false, true, '1999-04-12 10:12:12.55', '1999-04-12 11:12:12.55', 'FIRST_PLAYER', 0, 0, 20, 20, 4, 4, 0);
+VALUES(2, 'Segunda partida', 3, 4, false, true, '1999-04-12 10:12:12.55', '1999-04-12 11:12:12.55', 'FIRST_PLAYER', 0, 0, 20, 20, 4, 4, 0);
 INSERT INTO disco(id,num_bacteria_j1,num_bacteria_j2,num_sarcina_j1,num_sarcina_j2,num_movimientos_j1,num_movimientos_j2,id_match) VALUES(8,1,0,0,0,3,2,2);
 INSERT INTO disco(id,num_bacteria_j1,num_bacteria_j2,num_sarcina_j1,num_sarcina_j2,num_movimientos_j1,num_movimientos_j2,id_match) VALUES(9,0,0,0,0,0,0,2);
 INSERT INTO disco(id,num_bacteria_j1,num_bacteria_j2,num_sarcina_j1,num_sarcina_j2,num_movimientos_j1,num_movimientos_j2,id_match) VALUES(10,0,0,0,0,4,3,2);
@@ -67,9 +67,9 @@ INSERT INTO disco(id,num_bacteria_j1,num_bacteria_j2,num_sarcina_j1,num_sarcina_
 INSERT INTO disco(id,num_bacteria_j1,num_bacteria_j2,num_sarcina_j1,num_sarcina_j2,num_movimientos_j1,num_movimientos_j2,id_match) VALUES(13,0,0,0,0,0,0,2);
 INSERT INTO disco(id,num_bacteria_j1,num_bacteria_j2,num_sarcina_j1,num_sarcina_j2,num_movimientos_j1,num_movimientos_j2,id_match) VALUES(14,0,1,0,0,0,0,2);
 
-INSERT INTO matches(id, id_jugador1, id_jugador2, abandonada, es_privada, inicio_de_partida, fin_de_partida, ganador_de_partida, contamination_number_of_player_1,
+INSERT INTO matches(id, name, id_jugador1, id_jugador2, abandonada, es_privada, inicio_de_partida, fin_de_partida, ganador_de_partida, contamination_number_of_player_1,
 contamination_number_of_player_2, number_of_bacteria_of_player_1, number_of_bacteria_of_player_2, number_of_sarcina_of_player_1, number_of_sarcina_of_player_2, turn)
-VALUES(3, 1, 2, false, false, '2000-05-17 15:12:07.55', '2000-05-17 15:20:16.43', 'FIRST_PLAYER', 0, 0, 20, 20, 4, 4, 0);
+VALUES(3, 'Tercera partida', 1, 2, false, false, '2000-05-17 15:12:07.55', '2000-05-17 15:20:16.43', 'FIRST_PLAYER', 0, 0, 20, 20, 4, 4, 0);
 
 --Comentarios
 INSERT INTO comentarios(id, match_id, texto, id_jugador, fecha_de_publicacion) 

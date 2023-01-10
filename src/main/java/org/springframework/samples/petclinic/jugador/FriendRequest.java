@@ -2,11 +2,9 @@ package org.springframework.samples.petclinic.jugador;
 
 import java.util.Objects;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-
 
 import org.springframework.samples.petclinic.model.BaseEntity;
 
@@ -24,7 +22,6 @@ public class FriendRequest extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Jugador jugador2;
 
-	@Column(name = "resultado")
 	private Boolean resultado;
 
 	public FriendRequest() {

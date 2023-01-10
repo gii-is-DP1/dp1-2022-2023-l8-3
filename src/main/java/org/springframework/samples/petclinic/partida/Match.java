@@ -19,6 +19,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -56,21 +59,9 @@ public class Match extends NamedEntity{
 	
 	//Valores representan el numero de bacterias a sumar a discoX
 	@Transient
-	private Integer disco1;
-	@Transient
-	private Integer disco2;
-	@Transient
-	private Integer disco3;
-	@Transient
-	private Integer disco4;
-	@Transient
-	private Integer disco5;
-	@Transient
-	private Integer disco6;
-	@Transient
-	private Integer disco7;
+	private Integer disco1, disco2, disco3, disco4, disco5, disco6, disco7;
 	
-	//Representa disco origen de donde viene (tiene que ser array por como esta hecho)
+	//Representa disco origen de donde viene
 	@Transient
 	private Integer[] deDisco;
 
@@ -78,35 +69,47 @@ public class Match extends NamedEntity{
 	private String movimiento;
 		
     @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
-	@Column(name = "inicio_de_partida")
+	@Column(name = "inicio_de_partida", nullable=false)
 	private LocalDateTime inicioPartida;
     
     @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss.69")
     @Column(name = "fin_de_partida")
 	private LocalDateTime finPartida;
     
-    @Column(name = "contamination_number_of_player_1")
+    @Min(0)
+    @Max(9)
+    @Column(name="contamination_number_of_player_1", nullable=false)
 	private Integer contaminationNumberOfPlayer1;
 
-    @Column(name = "contamination_number_of_player_2")
+    @Min(0)
+    @Max(9)
+    @Column(name="contamination_number_of_player_2", nullable=false)
 	private Integer contaminationNumberOfPlayer2;
     
-	@Column(name = "number_of_bacteria_of_player_1")
+	@Min(0)
+    @Max(20)
+	@Column(name="number_of_bacteria_of_player_1", nullable=false)
 	private Integer numberOfBacteriaOfPlayer1;
 
-	@Column(name = "number_of_bacteria_of_player_2")
+	@Min(0)
+    @Max(20)
+	@Column(name="number_of_bacteria_of_player_2", nullable=false)
 	private Integer numberOfBacteriaOfPlayer2;
 	
-	@Column(name = "number_of_sarcina_of_player_1")
+	@Min(0)
+    @Max(4)
+	@Column(name="number_of_sarcina_of_player_1", nullable=false)
 	private Integer numberOfSarcinaOfPlayer1;
 	
-	@Column(name = "number_of_sarcina_of_player_2")
+	@Min(0)
+    @Max(4)
+	@Column(name="number_of_sarcina_of_player_2", nullable=false)
 	private Integer numberOfSarcinaOfPlayer2;
 
-	@Column(name = "es_privada")
+	@NotNull
 	private Boolean esPrivada;
   
-	@Column(name = "turn")
+	@NotNull
 	private Integer turn;
 	
 	@Transient
@@ -129,14 +132,14 @@ public class Match extends NamedEntity{
 	@OneToMany(mappedBy="match")
 	private List<Invitacion> invitaciones;
 	
-	@Column(name = "ganador_de_partida")
 	@Enumerated(EnumType.STRING)
+	@Column(name = "ganador_de_partida", nullable=false)
 	private GameWinner ganadorPartida;	
 	
 	@OneToMany(mappedBy="match")
 	private List<Comentario> comentarios;
 	
-	@Column(name = "abandonada")
+	@Column(name = "abandonada", nullable=false)
 	private Boolean abandonada;
 	
 	

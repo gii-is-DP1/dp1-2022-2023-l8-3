@@ -34,7 +34,8 @@ public class AchievementServiceTests {
 	
 	@Test
 	public void testSaveAchievement() {
-		Achievement achievement = new Achievement("prueba", "prueba");
+		Achievement achievement = new Achievement("prueba");
+		achievement.setName("prueba");
 		achievementService.saveAchievement(achievement);
 		Integer id = achievement.getId();
 		assertNotNull(achievementService.getAchievementById(id));
@@ -42,7 +43,8 @@ public class AchievementServiceTests {
 	
 	@Test
 	public void testDeleteAchievement() {
-		Achievement achievement = new Achievement("prueba", "prueba");
+		Achievement achievement = new Achievement("prueba");
+		achievement.setName("prueba");
 		achievementService.saveAchievement(achievement);
 		Integer id = achievement.getId();
 		achievementService.deleteAchievement(achievement);
