@@ -36,6 +36,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 public class PlayerController {
 
@@ -104,7 +107,7 @@ public class PlayerController {
 		ModelAndView mav = new ModelAndView();
 		for (Authorities authority : user.getAuthorities()) {
 			if (authority.getAuthority().equals("admin")
-					|| playerService.findPlayerByUsername(auth.getName()).getId() == id) {
+					|| playerService.findPlayerByUsername(user.getUsername()).getId() == id) {
 				mav = new ModelAndView("jugadores/showJugador");
 				mav.addObject(this.playerService.findJugadorById(id));
 			}
@@ -117,7 +120,9 @@ public class PlayerController {
 	public String deletePlayer(@PathVariable("jugadorId") int id) throws Exception {
 		try {
 			playerService.deletePlayer(id);
+			log.info("Player deleted succesfully");
 		} catch (Exception e) {
+			log.warn("Not existing player");
 			throw new Exception("Player Delete Error");
 		}
 		return "redirect:/jugadores/list/1";
@@ -138,8 +143,8 @@ public class PlayerController {
 	public ModelAndView processCreationForm(@Valid JugadorDTO jugadorDto, BindingResult br, Map<String, Object> model) {
 		Boolean correctPassword = false;
 		ModelAndView resul;
-		
 		if (Boolean.TRUE.equals(br.hasErrors())) {
+			log.error("Input error");
 			resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW, br.getModel());
 		} else {
 			List<Jugador> lista = playerService.findAllJugadores();
@@ -181,6 +186,7 @@ public class PlayerController {
 		ModelAndView resul;
 		
 		if (Boolean.TRUE.equals(br.hasErrors())) {
+			log.error("Input error");
 			resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW, br.getModel());
 		} else {
 			List<Jugador> lista = playerService.findAllJugadores();
@@ -321,19 +327,22 @@ public class PlayerController {
 			@PathVariable("result") boolean result, RedirectAttributes ra) {
 		ModelAndView mv;
 		String message = "";
-		
+		System.out.println("prueba1");
 		if(result && playerService.findJugadorById(player2Id).playerFriends().size() >= FRIEND_LIMIT) {
 			message = "You have reached the limit number of friends";
+			System.out.println("prueba2");
 		} else if(result && playerService.findJugadorById(player1Id).playerFriends().size() >= FRIEND_LIMIT) {
 			message = "That player has reached the friend limit";
+			System.out.println("prueba3");
 		} else {
+			System.out.println("prueba4");
 			FriendRequest fr = friendRequestService.getNoReplyFriendRequestByPlayers(player1Id, player2Id);
 			fr.setResultado(result);
 			friendRequestService.saveFriendRequest(fr);
 			message = result ? "Request successfully accepted" : "Request successfully declined";  
 		}
 		
-		
+		System.out.println("prueba5");
 		mv = new ModelAndView("/jugadores/friendRequests");
 		mv.setViewName("redirect:/jugadores/friendRequests");
 		ra.addFlashAttribute("message", message);

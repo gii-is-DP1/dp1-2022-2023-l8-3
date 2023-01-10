@@ -28,6 +28,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 @RequestMapping("/statistics/achievements")
 public class AchievementController {
@@ -156,6 +159,7 @@ public class AchievementController {
 		ModelAndView result = showAchievementsAdmin(1);
 
 		if(Boolean.TRUE.equals(br.hasErrors())) {
+			log.error("Input error");
 			result = new ModelAndView(ACHIEVEMENTS_FORM, br.getModel());
 		} else {
 			Achievement achievement = m.convertAchievementDTOToEntity(achievementDto);
@@ -163,6 +167,7 @@ public class AchievementController {
 			BeanUtils.copyProperties(achievement, achievementToBeUpdated, "id");
 
 			achievementService.saveAchievement(achievementToBeUpdated);
+			log.info("Achievement updated");
 			result.addObject("message", "The achievement was updated succesfully");
 
 		}
@@ -188,6 +193,7 @@ public class AchievementController {
 		List<Achievement> achievements = (List<Achievement>) achievementService.getAchievements();
 		
 		if(Boolean.TRUE.equals(br.hasErrors())) {
+			log.error("Input error");
 			result = new ModelAndView(ACHIEVEMENTS_FORM, br.getModel());
 		} else {
 			Achievement achievement = m.convertAchievementDTOToEntity(achievementDto);
@@ -196,10 +202,13 @@ public class AchievementController {
 				i++;
 			}
 			if(Boolean.FALSE.equals(isRepeated)) {
+				System.out.println("prueba1");
 				achievementService.saveAchievement(achievement);
 				result = showAchievements(1);
+				log.info("Achievement updated");
 				result.addObject("message", "The achievement was added succesfully");
 			} else {
+				System.out.println("prueba2");
 				result = newAchievement();
 				result.addObject("message", "La metrica y limite coinciden con un logro existente");
 			}
@@ -211,6 +220,7 @@ public class AchievementController {
 	public ModelAndView deleteAchievement(@PathVariable int id) {
 		Achievement achievement = achievementService.getAchievementById(id);
 		achievementService.deleteAchievement(achievement);
+		log.info("Achievement deleted");
 		ModelAndView result = showAchievements(1);
 		result.addObject("message", "The achievement was deleted succesfully");
 		return result;
