@@ -2,14 +2,14 @@ package org.springframework.samples.petclinic.statistics;
 
 import java.util.List;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.samples.petclinic.jugador.Jugador;
 import org.springframework.samples.petclinic.model.NamedEntity;
@@ -23,24 +23,22 @@ import lombok.Setter;
 @Table(name = "achievements")
 public class Achievement extends NamedEntity {
 	
-	@NotBlank
-	private String name;
-	
-	@NotBlank
+	@NotEmpty
 	private String description;
 	
-	@Column(name="metrics")
+	@NotNull
 	@Enumerated(EnumType.STRING)
 	private Metrics metrics;
 	
 	@Min(0)
+	@NotNull
 	private Double threshold;
 	
-	@Column(name="visibility")
+	@NotNull
 	@Enumerated(EnumType.STRING)
 	private Visibility visibility;
 	
-	@Column(name="difficulty")
+	@NotNull
 	@Enumerated(EnumType.STRING)
 	private AchievementDifficulty difficulty;
 	
@@ -51,8 +49,7 @@ public class Achievement extends NamedEntity {
 		
 	}
 	
-	public Achievement(String name, String description) {
-		this.name = name;
+	public Achievement(String description) {
 		this.description = description;
 	}
 	

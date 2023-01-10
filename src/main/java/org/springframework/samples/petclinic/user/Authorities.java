@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 import org.springframework.samples.petclinic.model.BaseEntity;
@@ -22,6 +23,7 @@ public class Authorities extends BaseEntity{
 	User user;
 	
 	@Size(min = 3, max = 50)
+	@NotEmpty
 	String authority;
 	
 	
