@@ -44,5 +44,18 @@ public class Invitacion extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "jugador_id")
     private Jugador jugador;
+    
+    public Invitacion() {
+    	
+    }
+    
+    public Invitacion(resultadoInvitacion rI,tipoInvitacion tI,Match match,Jugador j) {
+    	this.fechaHora=LocalDate.now();
+    	this.resultado=rI;
+    	this.tipo=tI;
+    	this.match=match;
+    	this.jugador=j;
+    	
+    }
 
 }

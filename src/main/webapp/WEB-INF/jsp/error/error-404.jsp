@@ -8,8 +8,8 @@
     <div class="content">
     <img src="${sarcina}"/>
 	</div>
-    <h2>La página no se ha encontrado.</h2>
-    <p>La página solicitada no está disponible.</p>
+    <h2>La p&aacute;gina no se ha encontrado.</h2>
+    <p>La p&aacute;gina solicitada no est&aacute; disponible.</p>
 
 <style type="text/css">
 

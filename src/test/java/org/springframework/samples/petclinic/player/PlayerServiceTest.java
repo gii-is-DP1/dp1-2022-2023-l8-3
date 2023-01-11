@@ -57,6 +57,8 @@ public class PlayerServiceTest {
 	@Test
 	public void testSavePlayer() {
 		User user = new User("pepe33");
+		user.setEmail("test@test.com");
+		user.setPassword("test1");
 		Jugador player = new Jugador("Pepe", "García", user, false);
 		playerService.saveJugador(player);
 		Integer id = player.getId();
@@ -66,6 +68,8 @@ public class PlayerServiceTest {
 	@Test
 	public void testDeletePlayer() {
 		User user = new User("maria33");
+		user.setEmail("test@test.com");
+		user.setPassword("test1");
 		Jugador player = new Jugador("María", "Oliva", user, false);
 		playerService.saveJugador(player);
 		Integer id = player.getId();
