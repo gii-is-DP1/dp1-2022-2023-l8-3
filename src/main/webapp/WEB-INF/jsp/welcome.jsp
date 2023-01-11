@@ -6,7 +6,6 @@
 <!-- %@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %-->
 
 <petclinic:layout pageName="home">
-    <h2><fmt:message key="welcome"/></h2>
     <div class="row">
         <div class="col-md-12" style="display: flex; justify-content: center;">
         	<spring:url value="/resources/images/petris.png" htmlEscape="true" var="petsImage"/>
@@ -33,3 +32,9 @@
         </div>
     </div>
 </petclinic:layout>
+<style type="text/css">
+
+.img-responsive{
+	width: 50%
+}
+</style>
