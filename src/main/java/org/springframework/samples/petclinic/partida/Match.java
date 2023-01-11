@@ -56,10 +56,21 @@ public class Match extends NamedEntity{
 	
 	private static final Map<Integer, List<Integer>> map = new HashMap<>();
 	
-	
 	//Valores representan el numero de bacterias a sumar a discoX
 	@Transient
-	private Integer disco1, disco2, disco3, disco4, disco5, disco6, disco7;
+	private Integer disco1;
+	@Transient
+	private Integer disco2;
+	@Transient
+	private Integer disco3;
+	@Transient
+	private Integer disco4;
+	@Transient
+	private Integer disco5;
+	@Transient
+	private Integer disco6;
+	@Transient
+	private Integer disco7;
 	
 	//Representa disco origen de donde viene
 	@Transient
@@ -382,7 +393,7 @@ public class Match extends NamedEntity{
 		//Si mismo n de bacterias enemigas y aliadas en origen es ilegal
 		Integer bacteriasAlidasOrigen = dOrigen.getNumeroDeBacterias(jugador)-sumaValores;
 		if(bacteriasAlidasOrigen != 0 &&
-				bacteriasAlidasOrigen == dOrigen.getNumeroDeBacterias(enemigo)){ 
+				bacteriasAlidasOrigen.equals(dOrigen.getNumeroDeBacterias(enemigo))){ 
 			return "Mismo numero de bacterias enemigas que aliadas en disco: "+origen;
 		}
 		

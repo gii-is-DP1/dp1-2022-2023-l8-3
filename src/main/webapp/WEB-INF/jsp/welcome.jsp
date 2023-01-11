@@ -9,11 +9,12 @@
     <div class="row">
         <div class="col-md-12" style="display: flex; justify-content: center;">
         	<spring:url value="/resources/images/petris.png" htmlEscape="true" var="petsImage"/>
-            <img class="img-responsive" src="${petsImage}"/>
+            <img class="img-responsive" alt="Petris image" src="${petsImage}"/>
         </div>
         <h4>Ranking global de victorias:</h4>
         <div class="col-md-12" style="display: flex; justify-content: center;">
 			<table id="players" class="table table-striped">
+				<caption>These are the players with the most victories</caption>
 				<thead>
 					<tr>
 						<th class="col-md-3">Nombre de usuario</th>

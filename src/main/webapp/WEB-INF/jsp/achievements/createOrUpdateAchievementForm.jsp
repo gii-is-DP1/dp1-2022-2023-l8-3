@@ -18,19 +18,14 @@
         </h2>
         <form:form modelAttribute="achievement"
                    class="form-horizontal">
-            <input type="hidden" name="id" value="${achievement.id}"/>
-            <div class="form-group has-feedback">                
-                <petclinic:inputField label="Name" name="name"/>
-                <petclinic:inputField label="Description" name="description"/>
-        		<petclinic:selectField name="metrics" label="Metrics" names="${metrics}" size="4"/>
-                <petclinic:inputField label="Threshold" name="threshold"/>
-                <petclinic:selectField name="difficulty" label="Difficulty" names="${difficulty}" size="3"/>
-                 <petclinic:selectField name="visibility" label="Visibility" names="${visibility}" size="3"/>
-                
-              
-                
-				
-                <!-- como se haria el visibility con un checkboxs -->                
+          	<input type="hidden" name="id" value="${achievement.id}"/>
+			<div class="form-group has-feedback">                
+				<petclinic:inputField label="Name" name="name"/>
+				<petclinic:inputField label="Description" name="description"/>
+				<petclinic:selectField name="metrics" label="Metrics" names="${metrics}" size="4"/>
+				<petclinic:inputField label="Threshold" name="threshold"/>
+				<petclinic:selectField name="difficulty" label="Difficulty" names="${difficulty}" size="3"/>
+				<petclinic:selectField name="visibility" label="Visibility" names="${visibility}" size="3"/>
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
@@ -55,8 +50,5 @@
 text-align: right;
 
 }
-
-
-
 
 </style>

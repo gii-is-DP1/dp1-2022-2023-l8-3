@@ -13,6 +13,7 @@
 	</form>
 	<br>
     <table id="achievementsTable" class="table table-striped">
+    	<caption>Search results</caption>
         <thead>	
 	        <tr>
 	            <th>Username</th>

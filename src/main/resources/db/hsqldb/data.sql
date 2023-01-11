@@ -39,7 +39,8 @@ VALUES (3, false, 4, 5);
 --Logros
 INSERT INTO achievements(id,name,metrics,threshold,description,visibility,difficulty) VALUES
 	(1, 'Viciado', 'JUGAR_PARTIDAS', 10.0, 'Si juegas <THRESHOLD> partidas o más, consideramos que ya estás enganchado', 'PUBLICADO', 'BRONCE'),
-	(2, 'Triunfador', 'GANAR_PARTIDAS', 20.0, 'Si ganas <THRESHOLD> o más partidas es que eres todo un triunfador', 'PUBLICADO', 'PLATA');
+	(2, 'Triunfador', 'GANAR_PARTIDAS', 20.0, 'Si ganas <THRESHOLD> o más partidas es que eres todo un triunfador', 'PUBLICADO', 'PLATA'),
+	(3, 'Comenzando', 'GANAR_PARTIDAS', 1.0, 'Has ganado tu primera partida', 'EN_BORRADOR', 'BRONCE');
 INSERT INTO achievements_players VALUES (1,1);
 INSERT INTO achievements_players VALUES (1,5);
 INSERT INTO achievements_players VALUES (2,5);

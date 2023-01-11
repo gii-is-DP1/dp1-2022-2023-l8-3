@@ -6,7 +6,7 @@
 
     <spring:url value="/resources/images/sarcina.png" var="sarcina"/>
     <div class="content">
-    <img src="${sarcina}"/>
+    <img alt="Image of a sarcina" src="${sarcina}"/>
 	</div>
     <h2>Algo sali&oacute; mal!</h2>
     <p>El servidor encontr&oacute; un error temporal y no pudo completar la petici&oacute;n.</p>

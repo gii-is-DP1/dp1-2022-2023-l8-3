@@ -8,6 +8,7 @@
     <h2>Achievements</h2>
 
     <table id="achievementsTable" class="table table-striped">
+    	<caption>Achievement list</caption>
         <thead>
         <tr>
             <th>Name</th>

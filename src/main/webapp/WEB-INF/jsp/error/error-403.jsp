@@ -6,7 +6,7 @@
 
     <spring:url value="/resources/images/sarcina.png" var="sarcina"/>
     <div class="content">
-    <img src="${sarcina}"/>
+    <img alt="Image of a sarcina" src="${sarcina}"/>
 	</div>
     <h2>Error 403: Prohibido.</h2>
     <p>Tu cliente no tiene permiso para acceder a esta URL.</p>

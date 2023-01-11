@@ -36,6 +36,7 @@
 		</div>
 	</c:if>
     <table id="invitationTable" class="table table-striped">
+    	<caption>Here you will find the invitations, as player and guest, that the player has received</caption>
         <thead>
         <tr>
             <th>Amigo</th>
