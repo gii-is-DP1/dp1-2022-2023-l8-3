@@ -40,9 +40,22 @@
 								<c:out value="${playerMatch.jugador2.user.username}" />
 							</c:otherwise>
 						</c:choose></td>
-					<td><a
-						href="<c:url value="/matches/${playerMatch.id}/statistics" />">Ver
-							estad&iacute;sticas</a></td>
+					<td>
+						<c:choose>	
+							<c:when test="${Boolean.FALSE.equals(playerMatch.abandonada)}">
+				                <spring:url value="/matches/{idMatch}/statistics" var="estadisticasUrl">
+									<spring:param name="idMatch" value="${playerMatch.id}" />
+								</spring:url>
+								<a href="${fn:escapeXml(estadisticasUrl)}">Estad&iacute;sticas</a>
+							</c:when>
+							<c:otherwise>
+								<spring:url value="/matches/{idMatch}/abandoned" var="abandonedUrl">
+									<spring:param name="idMatch" value="${playerMatch.id}" />
+								</spring:url>
+								<a href="${fn:escapeXml(abandonedUrl)}">ABANDONO</a>
+							</c:otherwise>
+						</c:choose>
+					</td>
 				</tr>
 			</c:forEach>
 		</tbody>
