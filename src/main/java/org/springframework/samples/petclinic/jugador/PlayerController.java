@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -323,7 +322,7 @@ public class PlayerController {
 		return result;
 	}
 	
-	@RequestMapping(value = "/jugadores/friendRequests/{player1Id}/{player2Id}/{result}")
+	@GetMapping(value = "/jugadores/friendRequests/{player1Id}/{player2Id}/{result}")
 	public ModelAndView friendRequests(@PathVariable("player1Id") int player1Id, @PathVariable("player2Id") int player2Id, 
 			@PathVariable("result") boolean result, RedirectAttributes ra) {
 		ModelAndView mv;
@@ -367,7 +366,7 @@ public class PlayerController {
 		return result;
 	}
 	
-	@RequestMapping(value = "/jugadores/addFriends/{player1Id}/{player2Id}")
+	@GetMapping(value = "/jugadores/addFriends/{player1Id}/{player2Id}")
 	public ModelAndView addFriends(@PathVariable("player1Id") int player1Id, @PathVariable("player2Id") int player2Id, RedirectAttributes ra) {
 		ModelAndView result;
 		String message = "";

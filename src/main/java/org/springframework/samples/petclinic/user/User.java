@@ -2,18 +2,17 @@ package org.springframework.samples.petclinic.user;
 
 import java.util.Set;
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.springframework.samples.petclinic.jugador.Jugador;
+import org.springframework.samples.petclinic.model.BaseEntity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,19 +22,16 @@ import lombok.Setter;
 @Entity
 @Audited
 @Table(name = "users")
-public class User{
+public class User extends BaseEntity{
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Integer id;
-	
-	@Column(name="username")
+	@NotEmpty
+	@Size(min = 5, max = 50)
 	String username;
 	
-	@Column(name="email")
+	@NotEmpty
 	String email;
 	
-	@Column(name="password")
+	@NotEmpty
 	String password;
 	
 	boolean enabled;
