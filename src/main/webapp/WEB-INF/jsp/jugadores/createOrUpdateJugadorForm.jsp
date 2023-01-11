@@ -10,19 +10,16 @@
 
 <petclinic:layout pageName="jugadorForm">
 	
-				
-	
-	
 	<c:choose>
 		<c:when test="${jugador['new']}">
 			<div class="WelcomeNuevoUsu">
-		<h1>Bienvenido<p class="letras">JUGADOR</p>que tal si nos registramos</h1>
-	</div>
+				<h1>Bienvenido<p class="letras">JUGADOR</p>que tal si nos registramos</h1>
+			</div>
 		</c:when>
 		<c:otherwise>
 			<div class="WelcomeNuevoUsu">
-		<p class="letras">ACTUALIZA TU PERFIL</p>
-	</div>
+				<p class="letras">ACTUALIZA TU PERFIL</p>
+			</div>
 		</c:otherwise>
 	</c:choose>
 	<br>
@@ -39,6 +36,11 @@
 	<c:if test="${emailIncorrecto2}">
 		<div class="alert alert-info">
     	 El Email no cumple el formato correcto
+		</div>
+	</c:if>
+	<c:if test="${firstNameOrLastNameAreEmpty}">
+		<div class="alert alert-info">
+    	 El nombre y los apellidos no pueden ser vacíos
 		</div>
 	</c:if>
     <c:if test="${sinJugadores}"><div class="alert alert-info">No hay jugadores registrados actualmente</div></c:if>

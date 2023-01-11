@@ -34,7 +34,6 @@ import lombok.Setter;
 public class Jugador extends Person {
 
 	private static final int MINUTES_OF_AN_HOUR = 60;
-
 	private static final int MAXIMUM_OF_SARCINAS = 4;
 
 	private Boolean estadoOnline;

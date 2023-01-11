@@ -6,7 +6,7 @@
 
     <spring:url value="/resources/images/sarcina.png" var="sarcina"/>
     <div class="content">
-    <img src="${sarcina}"/>
+    <img alt="Image of a sarcina" src="${sarcina}"/>
 	</div>
     <h2>Something happened...</h2>
 

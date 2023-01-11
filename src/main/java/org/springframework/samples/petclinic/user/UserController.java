@@ -62,12 +62,12 @@ public class UserController {
 	}
 
 	@PostMapping(value = "/users/new")
-	public String processCreationForm(@Valid JugadorDTO jugadorDto, BindingResult result) {
+	public String processCreationForm(@Valid JugadorDTO jugadorDTO, BindingResult result) {
 		if (Boolean.TRUE.equals(result.hasErrors())) {
 			return USER_CREATE_FORM;
 		} else {
 			ManualJugadorMapper m = new ManualJugadorMapper();
-			Jugador jugador = m.convertJugadorDTOToEntity(jugadorDto);
+			Jugador jugador = m.convertJugadorDTOToEntity(jugadorDTO);
 			this.playerService.saveJugador(jugador);
 			return "redirect:/";
 		}

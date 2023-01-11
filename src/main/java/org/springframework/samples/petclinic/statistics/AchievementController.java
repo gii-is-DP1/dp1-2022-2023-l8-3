@@ -2,6 +2,7 @@ package org.springframework.samples.petclinic.statistics;
 
 
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -10,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.samples.petclinic.dto.AchievementDTO;
-import org.springframework.samples.petclinic.dto.ManualAchievementMapper;
 import org.springframework.samples.petclinic.jugador.Jugador;
 import org.springframework.samples.petclinic.jugador.PlayerService;
 import org.springframework.samples.petclinic.partida.MatchService;
@@ -43,7 +42,6 @@ public class AchievementController {
 	private UserService userService;
 	private PlayerService playerService;
 	private MatchService matchService;
-	private ManualAchievementMapper m;
 	
 	@Autowired
 	public AchievementController(AchievementService achievementService, UserService userService, PlayerService playerService, MatchService matchService) {
@@ -51,7 +49,6 @@ public class AchievementController {
 		this.userService = userService;
 		this.playerService = playerService;
 		this.matchService = matchService;
-		m = new ManualAchievementMapper();
 	}
 	
 	@GetMapping(value = "/{page}")
@@ -135,6 +132,39 @@ public class AchievementController {
 		return result;
 	}
 	
+	@GetMapping(value = "/admin/new")
+	public ModelAndView newAchievement(Map<String, Object> model) {
+		ModelAndView result = new ModelAndView(ACHIEVEMENTS_FORM);
+		model.put("achievement", new Achievement());
+		result.addObject("metrics", List.of(Metrics.values()));
+		result.addObject("difficulty", List.of(AchievementDifficulty.values()));
+		result.addObject("visibility", List.of(Visibility.values()));
+		return result;
+	}
+	
+	@PostMapping("/admin/new")
+	public ModelAndView saveAchievement(@Valid Achievement achievement, BindingResult br, Map<String, Object> model) {
+		ModelAndView result;
+		if(Boolean.TRUE.equals(br.hasErrors())) {
+			log.error("Input error");
+			result = new ModelAndView(ACHIEVEMENTS_FORM);
+			model.put("achievement", achievement);
+			result.addObject("achievement", achievement);
+		} else {
+			if(Boolean.FALSE.equals(itRepeatsTheMetricAndLimit(achievement))) {
+				achievementService.saveAchievement(achievement);
+				result = showAchievements(1);
+				log.info("Achievement created");
+				result.addObject("message", "The achievement was added succesfully");
+			} else {
+				result = new ModelAndView(ACHIEVEMENTS_FORM);
+				model.put("achievement", achievement);
+				result.addObject("message", "La metrica y limite coinciden con un logro existente");
+			}
+		}
+		return result;
+	}
+	
 	@GetMapping(value = "/admin/{id}/edit")
 	public ModelAndView editAchievement(@PathVariable int id, RedirectAttributes ra) {
 		ModelAndView result;
@@ -155,65 +185,50 @@ public class AchievementController {
 	}
 	
 	@PostMapping("/admin/{id}/edit")
-	public ModelAndView saveAchievement(@PathVariable int id, @Valid AchievementDTO achievementDto, BindingResult br) {
+	public ModelAndView saveAchievement(@PathVariable int id, @Valid Achievement achievement, BindingResult br, Map<String, Object> model) {
 		ModelAndView result = showAchievementsAdmin(1);
-
-		if(Boolean.TRUE.equals(br.hasErrors())) {
-			log.error("Input error");
-			result = new ModelAndView(ACHIEVEMENTS_FORM, br.getModel());
-		} else {
-			Achievement achievement = m.convertAchievementDTOToEntity(achievementDto);
-			Achievement achievementToBeUpdated = achievementService.getAchievementById(id);
-			BeanUtils.copyProperties(achievement, achievementToBeUpdated, "id");
-
-			achievementService.saveAchievement(achievementToBeUpdated);
-			log.info("Achievement updated");
-			result.addObject("message", "The achievement was updated succesfully");
-
-		}
-		return result;
-	}
-	
-	@GetMapping(value = "/admin/new")
-	public ModelAndView newAchievement() {
-		Achievement achievement = new Achievement();
-		ModelAndView result = new ModelAndView(ACHIEVEMENTS_FORM);
-		result.addObject(achievement);
-		result.addObject("metrics", List.of(Metrics.values()));
-		result.addObject("difficulty", List.of(AchievementDifficulty.values()));
-		result.addObject("visibility", List.of(Visibility.values()));
-		return result;
-	}
-	
-	@PostMapping("/admin/new")
-	public ModelAndView saveAchievement(@Valid AchievementDTO achievementDto, BindingResult br) {
-		ModelAndView result;
-		Integer i = 0;
-		Boolean isRepeated = false;
-		List<Achievement> achievements = (List<Achievement>) achievementService.getAchievements();
 		
 		if(Boolean.TRUE.equals(br.hasErrors())) {
 			log.error("Input error");
-			result = new ModelAndView(ACHIEVEMENTS_FORM, br.getModel());
+			result = new ModelAndView(ACHIEVEMENTS_FORM);
+			model.put("achievement", achievement);
+			result.addObject("achievement", achievement);
 		} else {
-			Achievement achievement = m.convertAchievementDTOToEntity(achievementDto);
-			while(Boolean.FALSE.equals(isRepeated) && i < achievements.size()) {
-				isRepeated = achievement.getMetrics().equals(achievements.get(i).getMetrics()) && achievement.getThreshold().equals(achievements.get(i).getThreshold());
-				i++;
-			}
-			if(Boolean.FALSE.equals(isRepeated)) {
-				System.out.println("prueba1");
-				achievementService.saveAchievement(achievement);
+			Achievement achievementToBeUpdated = achievementService.getAchievementById(id);
+			Boolean itRepeats = itRepeatsTheMetricAndLimit(achievement);
+			Boolean theyAreEquals = theyAreEquals(achievement, achievementToBeUpdated);
+			BeanUtils.copyProperties(achievement, achievementToBeUpdated, "id");
+			
+			if(Boolean.FALSE.equals(itRepeats) || Boolean.TRUE.equals(theyAreEquals)) {
+				achievementService.saveAchievement(achievementToBeUpdated);
 				result = showAchievements(1);
 				log.info("Achievement updated");
-				result.addObject("message", "The achievement was added succesfully");
+				result.addObject("message", "The achievement was updated succesfully");
 			} else {
-				System.out.println("prueba2");
-				result = newAchievement();
+				result = new ModelAndView(ACHIEVEMENTS_FORM);
+				model.put("achievement", achievement);
 				result.addObject("message", "La metrica y limite coinciden con un logro existente");
 			}
+			
+
 		}
 		return result;
+	}
+	
+	private Boolean itRepeatsTheMetricAndLimit(Achievement achievement) {
+		Boolean isRepeated = false;
+		Integer i = 0;
+		List<Achievement> achievements = (List<Achievement>) achievementService.getAchievements();
+		while(Boolean.FALSE.equals(isRepeated) && i < achievements.size()) {
+			isRepeated = achievement.getMetrics().equals(achievements.get(i).getMetrics()) && achievement.getThreshold().equals(achievements.get(i).getThreshold());
+			i++;
+		}
+		return isRepeated;
+	}
+	
+	private Boolean theyAreEquals(Achievement ach1, Achievement ach2) {
+		return ach1.getName().equals(ach2.getName()) && ach1.getDescription().equals(ach2.getDescription()) && ach1.getMetrics().equals(ach2.getMetrics())
+				&& ach1.getThreshold().equals(ach2.getThreshold()) && ach1.getDifficulty().equals(ach2.getDifficulty());
 	}
 	
 	@GetMapping("/admin/{id}/delete")

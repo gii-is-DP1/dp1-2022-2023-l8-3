@@ -31,6 +31,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -41,6 +42,7 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 public class WelcomeController {
 
+	private static final String EMAIL_PATTERN = "^.+@.+\\..+$";
 	private static final String CREATE_OR_UPDATE_PLAYER_VIEW = "jugadores/createOrUpdateJugadorForm";
 	private static final int NUMBER_OF_PLAYERS_IN_GLOBAL_RANKING = 10;
 	private InvitationService invitacionService;
@@ -114,7 +116,7 @@ public class WelcomeController {
 	}
 
 	public void checkAchievements(Jugador actualPlayer) {
-		List<Achievement> achievements = new ArrayList<>(achievementService.getAchievements());
+		List<Achievement> achievements = new ArrayList<>(achievementService.getPublicAchievements());
 		for (Achievement achievement : achievements) {
 			switch (achievement.getMetrics()) {
 			case JUGAR_PARTIDAS:
@@ -161,19 +163,21 @@ public class WelcomeController {
 			Map<String, Object> model) {
 		Boolean correctPassword = false;
 		ModelAndView resul;
+		ManualJugadorMapper m = new ManualJugadorMapper();
+		Jugador jugador = m.convertJugadorDTOToEntity(jugadorDto);
 
 		if (Boolean.TRUE.equals(br.hasErrors())) {
 			log.error("Input error");
 			resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW, br.getModel());
+			model.put("jugador", jugador);
+			resul.addObject("message", getErrorMessage(br));
 		} else {
 			List<Jugador> lista = playerService.findAllJugadores();
-			ManualJugadorMapper m = new ManualJugadorMapper();
-			Jugador jugador = m.convertJugadorDTOToEntity(jugadorDto);
 
-			if (Boolean.TRUE.equals(isRegisteredEmail(jugador, model, lista))
-					|| Boolean.FALSE.equals(isValidEmail(model, jugador))
-					|| Boolean.FALSE.equals(isCorrectPassword(jugador, model, correctPassword))) {
-				resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW);
+			if (Boolean.TRUE.equals(isRegisteredEmail(jugador, model, lista)) || Boolean.FALSE.equals(isValidEmail(model, jugador))
+					|| Boolean.FALSE.equals(isCorrectPassword(jugador, model, correctPassword)) || firstNameOrLastNameAreEmpty(jugador, model)) {
+				resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW, br.getModel());
+				model.put("jugador", jugador);
 			} else {
 				jugador.setEstadoOnline(false);
 				this.playerService.saveJugador(jugador);
@@ -182,6 +186,21 @@ public class WelcomeController {
 			}
 		}
 		return resul;
+	}
+
+	private List<String> getErrorMessage(BindingResult br) {
+		return br.getAllErrors()
+			    .stream()
+			    .map(error -> {
+			      var defaultMessage = error.getDefaultMessage();
+			      if (error instanceof FieldError) {
+			        var fieldError = (FieldError) error;
+			        return String.format("%s %s", fieldError.getField(), defaultMessage);
+			      } else {
+			        return defaultMessage;
+			      }
+			    })
+			    .collect(Collectors.toList());
 	}
 
 	private Boolean isRegisteredEmail(Jugador jugador, Map<String, Object> model, List<Jugador> lista) {
@@ -199,8 +218,7 @@ public class WelcomeController {
 
 	private Boolean isValidEmail(Map<String, Object> model, Jugador player) {
 		Boolean result = true;
-		String emailPattern = "^[_a-z0-9-]+(\\.[_a-z0-9-]+)*@" + "[a-z0-9-]+(\\.[a-z0-9-]+)*(\\.[a-z]{2,4})$";
-		Pattern pattern = Pattern.compile(emailPattern);
+		Pattern pattern = Pattern.compile(EMAIL_PATTERN);
 		Matcher matcher = pattern.matcher(player.getUser().getEmail());
 
 		if (!matcher.matches()) {
@@ -227,5 +245,11 @@ public class WelcomeController {
 		}
 
 		return correctPassword;
+	}
+	
+	private Boolean firstNameOrLastNameAreEmpty(Jugador jugador, Map<String, Object> model) {
+		Boolean result = jugador.getFirstName().trim().equals("") || jugador.getLastName().trim().equals("");
+		model.put("firstNameOrLastNameAreEmpty", result);
+		return result;
 	}
 }

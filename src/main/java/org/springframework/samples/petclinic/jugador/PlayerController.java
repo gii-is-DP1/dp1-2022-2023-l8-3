@@ -28,6 +28,7 @@ import org.springframework.samples.petclinic.partida.MatchService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -42,6 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 public class PlayerController {
 
+	private static final String EMAIL_PATTERN = "^.+@.+\\..+$";
 	private static final String CREATE_OR_UPDATE_PLAYER_VIEW = "jugadores/createOrUpdateJugadorFormAdmin";
 	private static final int RESULTS_LIMIT = 20;
 	private static final int FRIEND_LIMIT = 150;
@@ -49,6 +51,7 @@ public class PlayerController {
 	private UserService userService;
 	private MatchService matchService;
 	private FriendRequestService friendRequestService;
+	private ManualJugadorMapper m;
 
 	@Autowired
 	public PlayerController(PlayerService playerService, UserService userService, MatchService matchService,
@@ -57,6 +60,7 @@ public class PlayerController {
 		this.userService = userService;
 		this.matchService = matchService;
 		this.friendRequestService = friendRequestService;
+		m = new ManualJugadorMapper();
 	}
 
 	@InitBinder
@@ -130,8 +134,7 @@ public class PlayerController {
 
 	@GetMapping(value = "/jugadores/new")
 	public String initCreationForm(Map<String, Object> model, Map<String, Object> model2) {
-		Jugador jugador = new Jugador();
-		model.put("jugador", jugador);
+		model.put("jugador", new Jugador());
 		Collection<Jugador> c = this.playerService.findAllJugadores();
 		if (c.isEmpty()) {
 			model2.put("sinJugadores", true);
@@ -140,19 +143,23 @@ public class PlayerController {
 	}
 
 	@PostMapping(value = "/jugadores/new")
-	public ModelAndView processCreationForm(@Valid JugadorDTO jugadorDto, BindingResult br, Map<String, Object> model) {
+	public ModelAndView processCreationForm(@Valid JugadorDTO jugadorDTO, BindingResult br, Map<String, Object> model) {
 		Boolean correctPassword = false;
 		ModelAndView resul;
+		Jugador jugador = m.convertJugadorDTOToEntity(jugadorDTO);
+		
 		if (Boolean.TRUE.equals(br.hasErrors())) {
 			log.error("Input error");
-			resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW, br.getModel());
+			resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW);
+			model.put("jugador", jugador);
+			resul.addObject("message", getErrorMessage(br));
 		} else {
 			List<Jugador> lista = playerService.findAllJugadores();
-			ManualJugadorMapper m = new ManualJugadorMapper();
-			Jugador jugador = m.convertJugadorDTOToEntity(jugadorDto);
 			
-			if(isRegisteredEmail(jugador, model, lista) || !isValidEmail(model, jugador) || !isCorrectPassword(jugador, model, correctPassword)) {
+			if(Boolean.TRUE.equals(isRegisteredEmail(jugador, model, lista)) || Boolean.FALSE.equals(isValidEmail(model, jugador)) 
+					|| Boolean.FALSE.equals(isCorrectPassword(jugador, model, correctPassword)) || Boolean.TRUE.equals(firstNameOrLastNameAreEmpty(jugador, model))) {
 				resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW);
+				model.put("jugador", jugador);
 			} else {
 				jugador.setEstadoOnline(false);
 				this.playerService.saveJugador(jugador);
@@ -184,19 +191,21 @@ public class PlayerController {
 			@PathVariable("jugadorId") int jugadorId, Map<String, Object> model) {
 		Boolean correctPassword = false;
 		ModelAndView resul;
+		Jugador jugador = m.convertJugadorDTOToEntity(jugadorDto);
 		
 		if (Boolean.TRUE.equals(br.hasErrors())) {
 			log.error("Input error");
-			resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW, br.getModel());
+			resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW);
+			model.put("jugador", jugador);
+			resul.addObject("message", getErrorMessage(br));
 		} else {
 			List<Jugador> lista = playerService.findAllJugadores();
-			ManualJugadorMapper m = new ManualJugadorMapper();
-			Jugador jugador = m.convertJugadorDTOToEntity(jugadorDto);
 			
-			if((Boolean.FALSE.equals(isYourEmail(jugador, jugadorId)) && Boolean.TRUE.equals(isRegisteredEmail(jugador, model, lista))) 
-					|| Boolean.FALSE.equals(isValidEmail(model, jugador)) || Boolean.FALSE.equals(isCorrectPassword(jugador, model, correctPassword))) {
+			if(Boolean.FALSE.equals(isYourEmail(jugador, jugadorId)) && Boolean.TRUE.equals(isRegisteredEmail(jugador, model, lista)) 
+					|| Boolean.FALSE.equals(isValidEmail(model, jugador)) || Boolean.FALSE.equals(isCorrectPassword(jugador, model, correctPassword))
+							|| Boolean.TRUE.equals(firstNameOrLastNameAreEmpty(jugador, model))) {
 				resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW);
-				resul.addObject(this.playerService.findJugadorById(jugadorId));
+				model.put("jugador", jugador);
 			} else {
 				jugador.setId(jugadorId);
 				jugador.getUser().setId(playerService.findJugadorById(jugadorId).getUser().getId());
@@ -205,6 +214,21 @@ public class PlayerController {
 			}
 		}
 		return resul;
+	}
+	
+	private List<String> getErrorMessage(BindingResult br) {
+		return br.getAllErrors()
+			    .stream()
+			    .map(error -> {
+			      var defaultMessage = error.getDefaultMessage();
+			      if (error instanceof FieldError) {
+			        var fieldError = (FieldError) error;
+			        return String.format("%s %s", fieldError.getField(), defaultMessage);
+			      } else {
+			        return defaultMessage;
+			      }
+			    })
+			    .collect(Collectors.toList());
 	}
 
 	private Boolean isYourEmail(Jugador jugador, int jugadorId) {
@@ -226,8 +250,7 @@ public class PlayerController {
 	
 	private Boolean isValidEmail(Map<String, Object> model, Jugador player) {
 		Boolean result = true;
-		String emailPattern = "^[_a-z0-9-]+(\\.[_a-z0-9-]+)*@" +"[a-z0-9-]+(\\.[a-z0-9-]+)*(\\.[a-z]{2,4})$";
-		Pattern pattern = Pattern.compile(emailPattern);
+		Pattern pattern = Pattern.compile(EMAIL_PATTERN);
 		Matcher matcher = pattern.matcher(player.getUser().getEmail());
 		
 		if (Boolean.FALSE.equals(matcher.matches())) {
@@ -254,6 +277,12 @@ public class PlayerController {
 		}
 		
 		return correctPassword;
+	}
+	
+	private Boolean firstNameOrLastNameAreEmpty(Jugador jugador, Map<String, Object> model) {
+		Boolean result = jugador.getFirstName().trim().equals("") || jugador.getLastName().trim().equals("");
+		model.put("firstNameOrLastNameAreEmpty", result);
+		return result;
 	}
 
 	@GetMapping(value = "/jugadores/{jugadorId}/playerMatches")

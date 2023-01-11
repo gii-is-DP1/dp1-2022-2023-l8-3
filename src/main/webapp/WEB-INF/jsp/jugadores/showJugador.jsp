@@ -12,6 +12,7 @@
 
 
 	<table class="table table-striped">
+		<caption>Player profile information</caption>
 		<tr>
 			<th>Usuario</th>
 			<td><b><c:out value="${jugador.user.username}" /></b></td>

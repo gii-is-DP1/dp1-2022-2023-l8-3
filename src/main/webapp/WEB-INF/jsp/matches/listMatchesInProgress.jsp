@@ -11,6 +11,7 @@
 
 
     <table class="table table-striped">
+    	<caption>List of current matches</caption>
         <thead>
         <tr>
             <th style="width: 150px;">Creador de la partida</th>

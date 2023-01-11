@@ -10,6 +10,7 @@
 
 
     <table class="table table-striped">
+    	<caption>Registered players in the application</caption>
         <thead>
         <tr>
             <th style="width: 150px;">Nombre</th>

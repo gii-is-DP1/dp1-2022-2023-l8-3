@@ -17,6 +17,7 @@
 	</p>
 	<br/>
 	<table class="table table-striped">
+		<caption>Player game history</caption>
 		<thead>
 			<tr>
 				<th style="width: 150px;">Anfitri&oacute;n</th>
@@ -29,17 +30,21 @@
 		<tbody>
 			<c:forEach items="${playerMatches}" var="playerMatch">
 				<tr>
-
 					<td><c:out value="${playerMatch.jugador1.user.username}" /></td>
 					<td><c:out value="${playerMatch.jugador2.user.username}" /></td>
-					<td><c:choose>
-							<c:when test="${playerMatch.ganadorPartida==firstPlayer}">
+					<td>
+						<c:choose>
+							<c:when test="${playerMatch.ganadorPartida == 'FIRST_PLAYER'}">
 								<c:out value="${playerMatch.jugador1.user.username}" />
 							</c:when>
-							<c:otherwise>
+							<c:when test="${playerMatch.ganadorPartida == 'SECOND_PLAYER'}">
 								<c:out value="${playerMatch.jugador2.user.username}" />
-							</c:otherwise>
-						</c:choose></td>
+							</c:when>
+							<c:when test="${playerMatch.ganadorPartida == 'DRAW'}">
+								<c:out value="EMPATE" />
+							</c:when>
+						</c:choose>
+					</td>
 					<td>
 						<c:choose>	
 							<c:when test="${Boolean.FALSE.equals(playerMatch.abandonada)}">
