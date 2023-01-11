@@ -3,6 +3,7 @@ package org.springframework.samples.petclinic.statistics;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -35,6 +36,13 @@ public class AchievementServiceTests {
 	@Test
 	public void testSaveAchievement() {
 		Achievement achievement = new Achievement("prueba");
+		achievement.setDescription("");
+		achievement.setDifficulty(AchievementDifficulty.ORO);
+		achievement.setId(1);
+		achievement.setMetrics(Metrics.AMIGOS);
+		achievement.setPlayers(new ArrayList<>());
+		achievement.setThreshold(8.0);
+		achievement.setVisibility(Visibility.PUBLICADO);
 		achievement.setName("prueba");
 		achievementService.saveAchievement(achievement);
 		Integer id = achievement.getId();
@@ -44,6 +52,13 @@ public class AchievementServiceTests {
 	@Test
 	public void testDeleteAchievement() {
 		Achievement achievement = new Achievement("prueba");
+		achievement.setDescription("");
+		achievement.setDifficulty(AchievementDifficulty.ORO);
+		achievement.setId(1);
+		achievement.setMetrics(Metrics.AMIGOS);
+		achievement.setPlayers(new ArrayList<>());
+		achievement.setThreshold(8.0);
+		achievement.setVisibility(Visibility.PUBLICADO);
 		achievement.setName("prueba");
 		achievementService.saveAchievement(achievement);
 		Integer id = achievement.getId();
