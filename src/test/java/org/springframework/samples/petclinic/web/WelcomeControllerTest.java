@@ -195,7 +195,7 @@ public class WelcomeControllerTest {
     	Jugador j=new Jugador();
     	given(playerService.saveJugador(j)).willReturn(null);
     	
-    	mockMvc.perform(post("/registerNewJugador").param("user.username", "pepe").param("firstName", "Pepe")
+    	mockMvc.perform(post("/registerNewJugador").param("user.username", "pepito").param("firstName", "Pepe")
 				.param("lastName", "Ruiz").with(csrf()).param("user.email", "pepe@gmail.com")
 				.param("user.password", "contrasenya123"))
 				.andExpect(status().is3xxRedirection())

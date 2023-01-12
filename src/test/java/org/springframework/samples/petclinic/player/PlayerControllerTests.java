@@ -203,7 +203,7 @@ public class PlayerControllerTests {
 		config();
 		given(this.playerService.findAllJugadores()).willReturn(new ArrayList<>());
 		given(this.playerService.saveJugador(any(Jugador.class))).willReturn(null);
-		mockMvc.perform(post("/jugadores/new").param("user.username", "pepe").param("firstName", "Pepe")
+		mockMvc.perform(post("/jugadores/new").param("user.username", "pepito").param("firstName", "Pepe")
 				.param("lastName", "Ruiz").with(csrf()).param("user.email", "pepe@gmail.com")
 				.param("user.password", "contrasenya123")).andExpect(status().is3xxRedirection())
 				.andExpect(view().name("redirect:/jugadores/null"));
@@ -215,7 +215,7 @@ public class PlayerControllerTests {
 		config();
 		given(this.playerService.findAllJugadores()).willReturn(new ArrayList<>());
 		given(this.playerService.saveJugador(any(Jugador.class))).willReturn(null);
-		mockMvc.perform(post("/jugadores/new").param("user.username", "pepe").param("firstName", "Pepe")
+		mockMvc.perform(post("/jugadores/new").param("user.username", "pepito").param("firstName", "Pepe")
 				.param("lastName", "Ruiz").with(csrf()).param("user.email", "emailInvalido")  //email incorrecto
 				.param("user.password", "contrasenya123"))
 				.andExpect(status().isOk())
@@ -237,7 +237,7 @@ public class PlayerControllerTests {
 		given(this.playerService.findAllJugadores()).willReturn(new ArrayList<>());
 		given(this.playerService.saveJugador(any(Jugador.class))).willReturn(null);
 		mockMvc.perform(post("/jugadores/{jugadorId}/edit", TEST_PLAYER_ID).with(csrf())
-				.param("user.username", "pepe").param("firstName", "Pepe")
+				.param("user.username", "pepito").param("firstName", "Pepe")
 				.param("lastName", "Ruiz").with(csrf()).param("user.email", "pepe@gmail.com")
 				.param("user.password", "Contrasenya123456"))
 				.andExpect(status().is3xxRedirection())
