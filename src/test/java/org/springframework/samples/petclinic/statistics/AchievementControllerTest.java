@@ -250,7 +250,7 @@ public class AchievementControllerTest {
 						.param("visibility", "PUBLICADO")
 						.param("description", "descripcion"))
 				.andExpect(status().isOk())
-				.andExpect(view().name("/achievements/admin/achievementsListing"));
+				.andExpect(view().name("/achievements/achievementsListing"));
 	}
 	
 	@WithMockUser(username = "admin1", password="4dm1n")
@@ -264,7 +264,7 @@ public class AchievementControllerTest {
 		mockMvc.perform(post("/statistics/achievements/admin/{id}/edit", 1)
 						.with(csrf()))
 				.andExpect(status().isOk())
-				.andExpect(view().name("/achievements/admin/achievementsListing"));
+				.andExpect(view().name("/achievements/createOrUpdateAchievementForm"));
 	}
 
     
