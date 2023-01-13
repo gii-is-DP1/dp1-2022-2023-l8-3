@@ -190,7 +190,7 @@ public class PlayerController {
 		Boolean correctPassword = false;
 		ModelAndView resul;
 		Jugador jugador = m.convertJugadorDTOToEntity(jugadorDto);
-		
+		Jugador jugadorActual= playerService.findJugadorById(jugadorId);
 		if (Boolean.TRUE.equals(br.hasErrors())) {
 			log.error("Input error");
 			resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW);
@@ -201,7 +201,9 @@ public class PlayerController {
 			
 			if(Boolean.FALSE.equals(isYourEmail(jugador, jugadorId)) && Boolean.TRUE.equals(PlayerValidation.isRegisteredEmail(jugador, model, lista)) 
 					|| Boolean.FALSE.equals(PlayerValidation.isValidEmail(model, jugador)) || Boolean.FALSE.equals(PlayerValidation.isCorrectPassword(jugador, model, correctPassword))
-							|| Boolean.TRUE.equals(PlayerValidation.firstNameOrLastNameAreEmpty(jugador, model))) {
+							|| Boolean.TRUE.equals(PlayerValidation.firstNameOrLastNameAreEmpty(jugador, model))
+							|| (Boolean.TRUE.equals(PlayerValidation.usernameRegistered(jugador, model, lista))
+									&& PlayerValidation.noEsTuUsername(jugadorActual,jugador))) {
 				resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW);
 				model.put("jugador", jugador);
 			} else {
