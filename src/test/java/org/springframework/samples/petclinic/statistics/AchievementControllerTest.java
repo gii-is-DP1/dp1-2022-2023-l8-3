@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -328,6 +329,7 @@ public class AchievementControllerTest {
     	a.setVisibility(Visibility.PUBLICADO);
     	a.setId(1);
 		given(this.achievementService.getAchievementById(1)).willReturn(a);
+		a.setPlayers(new ArrayList<Jugador>());
 
 		mockMvc.perform(get("/statistics/achievements/admin/{id}/delete",1))
 				.andExpect(status().isOk())
