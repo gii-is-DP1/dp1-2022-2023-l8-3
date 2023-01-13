@@ -20,8 +20,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 
 import org.springframework.samples.petclinic.model.BaseEntity;
 import org.springframework.samples.petclinic.partida.Match;
@@ -42,31 +40,21 @@ import lombok.Setter;
 @Table(name = "disco")
 public class Disco extends BaseEntity{
 
-	@Min(0)
-	@Max(5)
 	@Column(name = "num_bacteria_j1", nullable=false)    
 	private Integer numBact1;
 	
-	@Min(0)
-	@Max(5)
 	@Column(name="num_bacteria_j2", nullable=false)
 	private Integer numBact2;
 
-	@Min(0)
-	@Max(1)
 	@Column(name = "num_sarcina_j1", nullable=false)        
     private Integer numSarc1;
     
-	@Min(0)
-	@Max(1)
     @Column(name="num_sarcina_j2", nullable=false)
     private Integer numSarc2;
     
-	@Min(0)
     @Column(name="num_movimientos_j1", nullable=false)
     private Integer numMov1;
     
-	@Min(0)
     @Column(name="num_movimientos_j2", nullable=false)
     private Integer numMov2;
     

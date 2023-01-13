@@ -50,5 +50,9 @@ public class AchievementService {
 	public Page<Achievement> getPublicAchievementsPageable(Pageable pageable) throws DataAccessException {
         return achievementRepository.findAllPageableByVisibility(pageable, Visibility.PUBLICADO);
     }
+	
+	public void deleteAchievement(Integer achievementId, Integer playerId) {
+		achievementRepository.deleteAchievement(achievementId, playerId);
+	}
 
 }

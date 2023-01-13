@@ -122,7 +122,7 @@ public class Jugador extends Person {
 	public Integer getNumberOfSarcinasPlaced() {
 		Integer result = 0;
 		for (Match match : gamesAsHost) {
-			result += MAXIMUM_OF_SARCINAS-match.getContaminationNumberOfPlayer1();
+			result += MAXIMUM_OF_SARCINAS-match.getNumberOfSarcinaOfPlayer1();
 		}
 		for (Match match : gamesAsGuest) {
 			result += MAXIMUM_OF_SARCINAS-match.getNumberOfSarcinaOfPlayer2();
