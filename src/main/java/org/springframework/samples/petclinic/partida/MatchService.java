@@ -20,8 +20,6 @@ public class MatchService {
 	private MatchRepository matchRepository;
 	private DishRepository diskRepository;
 	
-	
-	
 	@Autowired
 	public MatchService(MatchRepository matchRepository, DishRepository diskRepository) {
 		this.matchRepository = matchRepository;
@@ -101,7 +99,6 @@ public class MatchService {
 	            res = false;
 	            break;
 	        }
-	        System.out.println(contador +" & "+ partida.getInicioPartida().toLocalDate() +" & "+ LocalDate.now() + " & Boolean de fecha: "+ (partida.getInicioPartida().toLocalDate().equals(LocalDate.now())) + " & Boolean de player: " + (partida.getJugador1()==player||partida.getJugador2()==player));  
 	    }
 	    
 	    return res;

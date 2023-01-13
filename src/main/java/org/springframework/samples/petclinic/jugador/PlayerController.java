@@ -356,10 +356,8 @@ public class PlayerController {
 			@PathVariable("result") boolean result, RedirectAttributes ra) {
 		ModelAndView mv;
 		String message = "";
-		System.out.println("prueba1");
 		if(result && playerService.findJugadorById(player2Id).playerFriends().size() >= FRIEND_LIMIT) {
 			message = "You have reached the limit number of friends";
-			System.out.println("prueba2");
 		} else if(result && playerService.findJugadorById(player1Id).playerFriends().size() >= FRIEND_LIMIT) {
 			message = "That player has reached the friend limit";
 			System.out.println("prueba3");
@@ -371,7 +369,6 @@ public class PlayerController {
 			message = result ? "Request successfully accepted" : "Request successfully declined";  
 		}
 		
-		System.out.println("prueba5");
 		mv = new ModelAndView("/jugadores/friendRequests");
 		mv.setViewName("redirect:/jugadores/friendRequests");
 		ra.addFlashAttribute("message", message);

@@ -48,6 +48,7 @@
 		id="add-owner-form">
 		<div class="form-group has-feedback">
 			<table class="table table-borderless">
+				<caption>Player data</caption>
 				<tr>
 					<th>Nombre de usuario</th>
 					<c:choose>
