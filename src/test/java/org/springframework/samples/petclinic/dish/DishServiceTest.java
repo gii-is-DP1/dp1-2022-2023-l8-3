@@ -10,13 +10,13 @@ import org.springframework.samples.petclinic.disco.DishService;
 import org.springframework.stereotype.Service;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
-public class DishServiceTest {
+class DishServiceTest {
 
 	@Autowired
 	private DishService dishService;
 
 	@Test
-	public void testCountWithInitialData() {
+	void testCountWithInitialData() {
 		int count = dishService.dishCount();
 		assertEquals(14, count);
 	}

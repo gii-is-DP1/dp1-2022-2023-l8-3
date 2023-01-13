@@ -7,8 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -20,6 +18,7 @@ import org.springframework.samples.petclinic.invitacion.Invitacion;
 import org.springframework.samples.petclinic.invitacion.InvitationService;
 import org.springframework.samples.petclinic.jugador.Jugador;
 import org.springframework.samples.petclinic.jugador.PlayerService;
+import org.springframework.samples.petclinic.jugador.PlayerValidation;
 import org.springframework.samples.petclinic.menu.MenuService;
 import org.springframework.samples.petclinic.partida.Match;
 import org.springframework.samples.petclinic.partida.MatchService;
@@ -31,7 +30,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -42,7 +40,6 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 public class WelcomeController {
 
-	private static final String EMAIL_PATTERN = "^.+@.+\\..+$";
 	private static final String CREATE_OR_UPDATE_PLAYER_VIEW = "jugadores/createOrUpdateJugadorForm";
 	private static final int NUMBER_OF_PLAYERS_IN_GLOBAL_RANKING = 10;
 	private InvitationService invitacionService;
@@ -170,12 +167,12 @@ public class WelcomeController {
 			log.error("Input error");
 			resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW, br.getModel());
 			model.put("jugador", jugador);
-			resul.addObject("message", getErrorMessage(br));
+			resul.addObject("message", MyErrorController.getErrorMessage(br));
 		} else {
 			List<Jugador> lista = playerService.findAllJugadores();
 
-			if (Boolean.TRUE.equals(isRegisteredEmail(jugador, model, lista)) || Boolean.FALSE.equals(isValidEmail(model, jugador))
-					|| Boolean.FALSE.equals(isCorrectPassword(jugador, model, correctPassword)) || firstNameOrLastNameAreEmpty(jugador, model)) {
+			if (Boolean.TRUE.equals(PlayerValidation.isRegisteredEmail(jugador, model, lista)) || Boolean.FALSE.equals(PlayerValidation.isValidEmail(model, jugador))
+					|| Boolean.FALSE.equals(PlayerValidation.isCorrectPassword(jugador, model, correctPassword)) || PlayerValidation.firstNameOrLastNameAreEmpty(jugador, model)) {
 				resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW, br.getModel());
 				model.put("jugador", jugador);
 			} else {
@@ -188,68 +185,4 @@ public class WelcomeController {
 		return resul;
 	}
 
-	private List<String> getErrorMessage(BindingResult br) {
-		return br.getAllErrors()
-			    .stream()
-			    .map(error -> {
-			      var defaultMessage = error.getDefaultMessage();
-			      if (error instanceof FieldError) {
-			        var fieldError = (FieldError) error;
-			        return String.format("%s %s", fieldError.getField(), defaultMessage);
-			      } else {
-			        return defaultMessage;
-			      }
-			    })
-			    .collect(Collectors.toList());
-	}
-
-	private Boolean isRegisteredEmail(Jugador jugador, Map<String, Object> model, List<Jugador> lista) {
-		Boolean result = false;
-		Integer i = 0;
-		while (!result && i < lista.size()) {
-			if (lista.get(i).getUser().getEmail().equals(jugador.getUser().getEmail())) {
-				model.put("emailIncorrecto1", true);
-				result = true;
-			}
-			i++;
-		}
-		return result;
-	}
-
-	private Boolean isValidEmail(Map<String, Object> model, Jugador player) {
-		Boolean result = true;
-		Pattern pattern = Pattern.compile(EMAIL_PATTERN);
-		Matcher matcher = pattern.matcher(player.getUser().getEmail());
-
-		if (!matcher.matches()) {
-			model.put("emailIncorrecto2", true);
-			result = false;
-		}
-
-		return result;
-	}
-
-	private Boolean isCorrectPassword(Jugador player, Map<String, Object> model, Boolean correctPassword) {
-		Integer i = 0;
-
-		if (player.getUser().getPassword().length() >= 10 && player.getUser().getPassword().length() <= 50) {
-			while (Boolean.FALSE.equals(correctPassword) && i < 10) {
-				if (player.getUser().getPassword().contains(i.toString())) {
-					correctPassword = true;
-				}
-				i++;
-			}
-		}
-		if (Boolean.FALSE.equals(correctPassword)) {
-			model.put("contraseñaIncorrecta", true);
-		}
-
-		return correctPassword;
-	}
-	
-	private Boolean firstNameOrLastNameAreEmpty(Jugador jugador, Map<String, Object> model) {
-		Boolean result = jugador.getFirstName().trim().equals("") || jugador.getLastName().trim().equals("");
-		model.put("firstNameOrLastNameAreEmpty", result);
-		return result;
-	}
 }
