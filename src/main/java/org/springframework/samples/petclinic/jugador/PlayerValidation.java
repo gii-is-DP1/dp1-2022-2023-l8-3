@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.samples.petclinic.user.User;
+
 public class PlayerValidation {
 	
 	private static final String EMAIL_PATTERN = "^.+@.+\\..+$";
@@ -61,11 +63,20 @@ public class PlayerValidation {
 	
 	public static Boolean usernameRegistered(Jugador jugador,Map<String, Object> model,List<Jugador> lista) {
 		Boolean res=false;
+		
 		for (Jugador j:lista) {
 			if(j.getUser().getUsername().equals(jugador.getUser().getUsername())) {
 				res=true;
 				model.put("usernameRegistered", true);
 			}
+		}
+		return res;
+	}
+	
+	public static Boolean noEsTuUsername(Jugador jugadorActual,Jugador jugador) {
+		Boolean res=true;
+		if(jugador.getUser().getUsername().equals(jugadorActual.getUser().getUsername())) {
+			res=false;
 		}
 		return res;
 	}
