@@ -15,8 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.samples.petclinic.comentario.Comentario;
 import org.springframework.samples.petclinic.comentario.ComentarioRepository;
-import org.springframework.samples.petclinic.disco.Disco;
-import org.springframework.samples.petclinic.disco.DishRepository;
 import org.springframework.samples.petclinic.partida.Match;
 import org.springframework.samples.petclinic.partida.MatchRepository;
 import org.springframework.samples.petclinic.statistics.Achievement;
@@ -28,18 +26,16 @@ public class PlayerService {
 	private UserRepository userRepo;
 	private AuthoritiesService authService;
 	private MatchRepository matchRepo;
-	private DishRepository dishRepo;
 	private FriendRequestRepository friendRepo;
 	private ComentarioRepository commentRepo;
 
 	@Autowired
 	public PlayerService(PlayerRepository playerRepository, UserRepository userRepo, AuthoritiesService authService,
-			MatchRepository matchRepo, DishRepository dishRepo, FriendRequestRepository friendRepo, ComentarioRepository commentRepo) {
+			MatchRepository matchRepo, FriendRequestRepository friendRepo, ComentarioRepository commentRepo) {
 		this.playerRepo = playerRepository;
 		this.authService = authService;
 		this.matchRepo = matchRepo;
 		this.userRepo = userRepo;
-		this.dishRepo = dishRepo;
 		this.friendRepo = friendRepo;
 		this.commentRepo = commentRepo;
 	}
@@ -108,16 +104,10 @@ public class PlayerService {
 				}
 			}
 			for (Match m : matchRepo.findMatchsWithIdPlayer1(id)) {
-				for (Disco d : dishRepo.findDiscosWithMatchId(m.getId())) {
-					dishRepo.delete(d);
-				}
 				m.setJugador1(null);
 				matchRepo.save(m);
 			}
 			for (Match m : matchRepo.findMatchsWithIdPlayer2(id)) {
-				for (Disco d : dishRepo.findDiscosWithMatchId(m.getId())) {
-					dishRepo.delete(d);
-				}
 				m.setJugador2(null);
 				matchRepo.save(m);
 			}

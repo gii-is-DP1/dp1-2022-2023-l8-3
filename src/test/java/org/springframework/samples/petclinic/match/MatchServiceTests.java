@@ -16,7 +16,7 @@ import org.springframework.samples.petclinic.partida.MatchService;
 import org.springframework.stereotype.Service;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
-public class MatchServiceTests {
+class MatchServiceTests {
 	
 	@Autowired
 	private MatchService matchService;
@@ -29,7 +29,7 @@ public class MatchServiceTests {
 	}
 	
 	@Test
-	public void testMatchWithoutPlayer2() {
+	void testMatchWithoutPlayer2() {
 		List<Match> matches = (List<Match>) matchService.getMatchesWithoutPlayer2();
 		for (Match match : matches) {
 			assertNull(match.getJugador2());
@@ -37,7 +37,7 @@ public class MatchServiceTests {
 	}
 	
 	@Test
-	public void testMatches() {
+	void testMatches() {
 		List<Match> matches = (List<Match>) matchService.getMatches();
 		for (Match match : matches) {
 			assertNotNull(match);
@@ -45,13 +45,13 @@ public class MatchServiceTests {
 	}
 	
 	@Test
-	public void testMatchById() {
+	void testMatchById() {
 		Integer id = 1;
 		assertNotNull(matchService.getMatchById(id));
 	}
 	
 	@Test
-	public void testCreateMatchWithInitialData() {
+	void testCreateMatchWithInitialData() {
 		Match match = new Match(false, playerService.findJugadorById(1));
 		matchService.saveMatch(match);
 		Integer id = match.getId();
@@ -59,7 +59,7 @@ public class MatchServiceTests {
 	}
 	
 	@Test
-	public void tetsMatchesByGameWinner() {
+	void tetsMatchesByGameWinner() {
 		GameWinner gameWinner = GameWinner.FIRST_PLAYER;
 		assertNotNull(matchService.getMatchesByGameWinner(gameWinner));
 	}

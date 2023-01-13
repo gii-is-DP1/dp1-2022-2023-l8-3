@@ -14,13 +14,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
-public class AchievementServiceTests {
+class AchievementServiceTests {
 
 	@Autowired
 	private AchievementService achievementService;
 	
 	@Test
-	public void testAchievements() {
+	void testAchievements() {
 		List<Achievement> achievements = (List<Achievement>) achievementService.getAchievements();
 		for (Achievement achievement : achievements) {
 			assertNotNull(achievement);
@@ -28,13 +28,13 @@ public class AchievementServiceTests {
 	}
 	
 	@Test
-	public void testAchievementById() {
+	void testAchievementById() {
 		Integer id = 1;
 		assertNotNull(achievementService.getAchievementById(id));
 	}
 	
 	@Test
-	public void testSaveAchievement() {
+	void testSaveAchievement() {
 		Achievement achievement = new Achievement("prueba");
 		achievement.setDescription("");
 		achievement.setDifficulty(AchievementDifficulty.ORO);
@@ -50,7 +50,7 @@ public class AchievementServiceTests {
 	}
 	
 	@Test
-	public void testDeleteAchievement() {
+	void testDeleteAchievement() {
 		Achievement achievement = new Achievement("prueba");
 		achievement.setDescription("");
 		achievement.setDifficulty(AchievementDifficulty.ORO);

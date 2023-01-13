@@ -10,13 +10,13 @@ import org.springframework.samples.petclinic.invitacion.InvitationService;
 import org.springframework.stereotype.Service;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
-public class InvitationServiceTest {
+class InvitationServiceTest {
 
 	@Autowired
 	private InvitationService invitationService;
 
 	@Test
-	public void testCountWithInitialData() {
+	void testCountWithInitialData() {
 		int count = invitationService.invitationCount();
 		assertEquals(count, 0);
 	}

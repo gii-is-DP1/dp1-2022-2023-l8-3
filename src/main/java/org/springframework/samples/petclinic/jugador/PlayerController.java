@@ -3,8 +3,6 @@ package org.springframework.samples.petclinic.jugador;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -17,6 +15,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.samples.petclinic.user.Authorities;
 import org.springframework.samples.petclinic.user.User;
 import org.springframework.samples.petclinic.user.UserService;
+import org.springframework.samples.petclinic.web.MyErrorController;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,7 +27,6 @@ import org.springframework.samples.petclinic.partida.MatchService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -43,7 +41,6 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 public class PlayerController {
 
-	private static final String EMAIL_PATTERN = "^.+@.+\\..+$";
 	private static final String CREATE_OR_UPDATE_PLAYER_VIEW = "jugadores/createOrUpdateJugadorFormAdmin";
 	private static final int RESULTS_LIMIT = 20;
 	private static final int FRIEND_LIMIT = 150;
@@ -152,12 +149,12 @@ public class PlayerController {
 			log.error("Input error");
 			resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW);
 			model.put("jugador", jugador);
-			resul.addObject("message", getErrorMessage(br));
+			resul.addObject("message", MyErrorController.getErrorMessage(br));
 		} else {
 			List<Jugador> lista = playerService.findAllJugadores();
 			
-			if(Boolean.TRUE.equals(isRegisteredEmail(jugador, model, lista)) || Boolean.FALSE.equals(isValidEmail(model, jugador)) 
-					|| Boolean.FALSE.equals(isCorrectPassword(jugador, model, correctPassword)) || Boolean.TRUE.equals(firstNameOrLastNameAreEmpty(jugador, model))) {
+			if(Boolean.TRUE.equals(PlayerValidation.isRegisteredEmail(jugador, model, lista)) || Boolean.FALSE.equals(PlayerValidation.isValidEmail(model, jugador)) 
+					|| Boolean.FALSE.equals(PlayerValidation.isCorrectPassword(jugador, model, correctPassword)) || Boolean.TRUE.equals(PlayerValidation.firstNameOrLastNameAreEmpty(jugador, model))) {
 				resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW);
 				model.put("jugador", jugador);
 			} else {
@@ -197,13 +194,13 @@ public class PlayerController {
 			log.error("Input error");
 			resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW);
 			model.put("jugador", jugador);
-			resul.addObject("message", getErrorMessage(br));
+			resul.addObject("message", MyErrorController.getErrorMessage(br));
 		} else {
 			List<Jugador> lista = playerService.findAllJugadores();
 			
-			if(Boolean.FALSE.equals(isYourEmail(jugador, jugadorId)) && Boolean.TRUE.equals(isRegisteredEmail(jugador, model, lista)) 
-					|| Boolean.FALSE.equals(isValidEmail(model, jugador)) || Boolean.FALSE.equals(isCorrectPassword(jugador, model, correctPassword))
-							|| Boolean.TRUE.equals(firstNameOrLastNameAreEmpty(jugador, model))) {
+			if(Boolean.FALSE.equals(isYourEmail(jugador, jugadorId)) && Boolean.TRUE.equals(PlayerValidation.isRegisteredEmail(jugador, model, lista)) 
+					|| Boolean.FALSE.equals(PlayerValidation.isValidEmail(model, jugador)) || Boolean.FALSE.equals(PlayerValidation.isCorrectPassword(jugador, model, correctPassword))
+							|| Boolean.TRUE.equals(PlayerValidation.firstNameOrLastNameAreEmpty(jugador, model))) {
 				resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW);
 				model.put("jugador", jugador);
 			} else {
@@ -215,74 +212,9 @@ public class PlayerController {
 		}
 		return resul;
 	}
-	
-	private List<String> getErrorMessage(BindingResult br) {
-		return br.getAllErrors()
-			    .stream()
-			    .map(error -> {
-			      var defaultMessage = error.getDefaultMessage();
-			      if (error instanceof FieldError) {
-			        var fieldError = (FieldError) error;
-			        return String.format("%s %s", fieldError.getField(), defaultMessage);
-			      } else {
-			        return defaultMessage;
-			      }
-			    })
-			    .collect(Collectors.toList());
-	}
 
 	private Boolean isYourEmail(Jugador jugador, int jugadorId) {
 		return playerService.findJugadorById(jugadorId).getUser().getEmail().equals(jugador.getUser().getEmail());
-	}
-
-	private Boolean isRegisteredEmail(Jugador jugador, Map<String, Object> model, List<Jugador> lista) {
-		Boolean result = false;
-		Integer i = 0;
-		while(!result && i < lista.size()) {
-			if (lista.get(i).getUser().getEmail().equals(jugador.getUser().getEmail())) {
-				model.put("emailIncorrecto1", true);
-				result = true;
-			}
-			i++;
-		}
-		return result;
-	}
-	
-	private Boolean isValidEmail(Map<String, Object> model, Jugador player) {
-		Boolean result = true;
-		Pattern pattern = Pattern.compile(EMAIL_PATTERN);
-		Matcher matcher = pattern.matcher(player.getUser().getEmail());
-		
-		if (Boolean.FALSE.equals(matcher.matches())) {
-			model.put("emailIncorrecto2", true);
-			result = false;
-		}
-		
-		return result;
-	}
-
-	private Boolean isCorrectPassword(Jugador player, Map<String, Object> model, Boolean correctPassword) {
-		Integer i = 0;
-		
-		if(player.getUser().getPassword().length() >= 10 && player.getUser().getPassword().length() <= 50) {
-			while(Boolean.FALSE.equals(correctPassword) && i < 10) {
-				if (player.getUser().getPassword().contains(i.toString())) {
-					correctPassword = true;
-				}
-				i++;
-			}
-		}
-		if(Boolean.FALSE.equals(correctPassword)) {
-			model.put("contraseñaIncorrecta", true);
-		}
-		
-		return correctPassword;
-	}
-	
-	private Boolean firstNameOrLastNameAreEmpty(Jugador jugador, Map<String, Object> model) {
-		Boolean result = jugador.getFirstName().trim().equals("") || jugador.getLastName().trim().equals("");
-		model.put("firstNameOrLastNameAreEmpty", result);
-		return result;
 	}
 
 	@GetMapping(value = "/jugadores/{jugadorId}/playerMatches")

@@ -1,11 +1,16 @@
 package org.springframework.samples.petclinic.web;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
@@ -33,4 +38,19 @@ public class MyErrorController implements ErrorController{
 	  public String getErrorPath() {
 	    return "/error";
 	  }
+	
+	public static List<String> getErrorMessage(BindingResult br) {
+		return br.getAllErrors()
+			    .stream()
+			    .map(error -> {
+			      var defaultMessage = error.getDefaultMessage();
+			      if (error instanceof FieldError) {
+			        var fieldError = (FieldError) error;
+			        return String.format("%s %s", fieldError.getField(), defaultMessage);
+			      } else {
+			        return defaultMessage;
+			      }
+			    })
+			    .collect(Collectors.toList());
+	}
 }
