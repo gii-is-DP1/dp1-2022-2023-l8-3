@@ -173,9 +173,9 @@ public class WelcomeController {
 			resul.addObject("message", getErrorMessage(br));
 		} else {
 			List<Jugador> lista = playerService.findAllJugadores();
-
 			if (Boolean.TRUE.equals(isRegisteredEmail(jugador, model, lista)) || Boolean.FALSE.equals(isValidEmail(model, jugador))
-					|| Boolean.FALSE.equals(isCorrectPassword(jugador, model, correctPassword)) || firstNameOrLastNameAreEmpty(jugador, model)) {
+					|| Boolean.FALSE.equals(isCorrectPassword(jugador, model, correctPassword)) || firstNameOrLastNameAreEmpty(jugador, model)
+					|| Boolean.TRUE.equals(usernameRegistered(jugador,model))) {
 				resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW, br.getModel());
 				model.put("jugador", jugador);
 			} else {
@@ -186,6 +186,17 @@ public class WelcomeController {
 			}
 		}
 		return resul;
+	}
+	
+	private Boolean usernameRegistered(Jugador jugador,Map<String, Object> model) {
+		Boolean res=false;
+		for (Jugador j:playerService.findAllJugadores()) {
+			if(j.getUser().getUsername().equals(jugador.getUser().getUsername())) {
+				res=true;
+				model.put("usernameRegistered", true);
+			}
+		}
+		return res;
 	}
 
 	private List<String> getErrorMessage(BindingResult br) {

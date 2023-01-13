@@ -157,7 +157,8 @@ public class PlayerController {
 			List<Jugador> lista = playerService.findAllJugadores();
 			
 			if(Boolean.TRUE.equals(isRegisteredEmail(jugador, model, lista)) || Boolean.FALSE.equals(isValidEmail(model, jugador)) 
-					|| Boolean.FALSE.equals(isCorrectPassword(jugador, model, correctPassword)) || Boolean.TRUE.equals(firstNameOrLastNameAreEmpty(jugador, model))) {
+					|| Boolean.FALSE.equals(isCorrectPassword(jugador, model, correctPassword)) || Boolean.TRUE.equals(firstNameOrLastNameAreEmpty(jugador, model))
+					|| Boolean.TRUE.equals(usernameRegistered(jugador, model))) {
 				resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW);
 				model.put("jugador", jugador);
 			} else {
@@ -167,6 +168,17 @@ public class PlayerController {
 			}
 		}
 		return resul;
+	}
+	
+	private Boolean usernameRegistered(Jugador jugador,Map<String, Object> model) {
+		Boolean res=false;
+		for (Jugador j:playerService.findAllJugadores()) {
+			if(j.getUser().getUsername().equals(jugador.getUser().getUsername())) {
+				res=true;
+				model.put("usernameRegistered", true);
+			}
+		}
+		return res;
 	}
 
 	@GetMapping(value = "/jugadores/{jugadorId}/edit")
