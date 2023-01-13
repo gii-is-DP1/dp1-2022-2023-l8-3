@@ -9,27 +9,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.IntStream;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.samples.petclinic.configuration.SecurityConfiguration;
 import org.springframework.samples.petclinic.invitacion.Invitacion;
 import org.springframework.samples.petclinic.invitacion.InvitationController;
@@ -37,17 +29,13 @@ import org.springframework.samples.petclinic.invitacion.InvitationService;
 import org.springframework.samples.petclinic.invitacion.resultadoInvitacion;
 import org.springframework.samples.petclinic.invitacion.tipoInvitacion;
 import org.springframework.samples.petclinic.jugador.FriendRequest;
-import org.springframework.samples.petclinic.jugador.FriendRequestService;
 import org.springframework.samples.petclinic.jugador.Jugador;
-import org.springframework.samples.petclinic.jugador.PlayerController;
 import org.springframework.samples.petclinic.jugador.PlayerService;
 import org.springframework.samples.petclinic.menu.MenuService;
-import org.springframework.samples.petclinic.partida.GameWinner;
 import org.springframework.samples.petclinic.partida.Match;
 import org.springframework.samples.petclinic.partida.MatchService;
 import org.springframework.samples.petclinic.user.Authorities;
 import org.springframework.samples.petclinic.user.User;
-import org.springframework.samples.petclinic.user.UserService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;

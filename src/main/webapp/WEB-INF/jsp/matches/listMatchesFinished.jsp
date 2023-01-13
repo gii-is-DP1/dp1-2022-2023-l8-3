@@ -47,7 +47,8 @@
 			                <td>
 			                	<c:choose>
 			                		<c:when test="${partida.ganadorPartida==firstPlayer}"><c:out value="${partida.jugador1.user.username}"/></c:when>
-			                		<c:otherwise><c:out value="${partida.jugador2.user.username}"/></c:otherwise>
+			                		<c:when test="${partida.ganadorPartida==secondPlayer}"><c:out value="${partida.jugador2.user.username}"/></c:when>
+			                		<c:otherwise><c:out value="EMPATE"/></c:otherwise>
 			                    </c:choose>
 			                </td>
 			                <td>

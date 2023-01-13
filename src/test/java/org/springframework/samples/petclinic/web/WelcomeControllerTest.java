@@ -1,13 +1,11 @@
 package org.springframework.samples.petclinic.web;
 
 import static org.mockito.BDDMockito.given;
-import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,20 +14,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.persistence.criteria.CriteriaBuilder.In;
-
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
-import org.assertj.core.util.Arrays;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.samples.petclinic.configuration.SecurityConfiguration;
 import org.springframework.samples.petclinic.invitacion.Invitacion;
 import org.springframework.samples.petclinic.invitacion.InvitationService;
@@ -39,9 +31,7 @@ import org.springframework.samples.petclinic.jugador.FriendRequest;
 import org.springframework.samples.petclinic.jugador.Jugador;
 import org.springframework.samples.petclinic.jugador.PlayerService;
 import org.springframework.samples.petclinic.menu.MenuService;
-import org.springframework.samples.petclinic.partida.GameWinner;
 import org.springframework.samples.petclinic.partida.Match;
-import org.springframework.samples.petclinic.partida.MatchController;
 import org.springframework.samples.petclinic.partida.MatchService;
 import org.springframework.samples.petclinic.statistics.AchievementService;
 import org.springframework.samples.petclinic.user.Authorities;

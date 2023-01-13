@@ -266,7 +266,7 @@ public class MatchController {
 	
 
 	@PostMapping("/{idMatch}/currentMatch")
-	public ModelAndView nextPhase(@PathVariable int idMatch, MatchDTO matchDto, @AuthenticationPrincipal Authentication user, HttpServletResponse response) {
+	public ModelAndView nextPhase(@PathVariable int idMatch, MatchDTO matchDTO, @AuthenticationPrincipal Authentication user, HttpServletResponse response) {
 		ModelAndView result = new ModelAndView(CURRENT_MATCH_VIEW);
 		Match match = matchService.getMatchById(idMatch);
 		Jugador player1 = match.getJugador1();
@@ -274,7 +274,7 @@ public class MatchController {
 
 		if(Boolean.TRUE.equals(match.esPropagacion())) {
 			ManualMatchMapper m = new ManualMatchMapper();
-			Match auxMatch = m.convertMatchDTOToEntity(matchDto);
+			Match auxMatch = m.convertMatchDTOToEntity(matchDTO);
 			match.copyTransientData(auxMatch);
 			//Si es "" es correcto. Si tiene un mensaje es un msg de error
 			String validacion = match.validateMove();
@@ -283,10 +283,8 @@ public class MatchController {
 			if(validacion.length()==0) {
 				if(Boolean.TRUE.equals(match.turnoPrimerJugador())) { // Realizar movimiento
 					movingBacteria(0, player1, auxMatch, match);
-					playerService.saveJugador(player1);
 				} else {
 					movingBacteria(1, player2, auxMatch, match);
-					playerService.saveJugador(player2);
 				}
 				match.nextTurn();
 				matchService.saveMatch(match);
@@ -429,6 +427,7 @@ public class MatchController {
 
 		model2.put("sinPartidas", b);
 		model3.put("firstPlayer", GameWinner.FIRST_PLAYER);
+		model3.put("secondPlayer", GameWinner.SECOND_PLAYER);
 		return "matches/listMatchesFinished";
 	}
 

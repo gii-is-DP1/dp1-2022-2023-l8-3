@@ -43,12 +43,12 @@ import lombok.Setter;
 public class Disco extends BaseEntity{
 
 	@Min(0)
-	@Max(4)
+	@Max(5)
 	@Column(name = "num_bacteria_j1", nullable=false)    
 	private Integer numBact1;
 	
 	@Min(0)
-	@Max(4)
+	@Max(5)
 	@Column(name="num_bacteria_j2", nullable=false)
 	private Integer numBact2;
 
