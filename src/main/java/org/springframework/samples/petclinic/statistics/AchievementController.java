@@ -227,8 +227,7 @@ public class AchievementController {
 	}
 	
 	private Boolean theyAreEquals(Achievement ach1, Achievement ach2) {
-		return ach1.getName().equals(ach2.getName()) && ach1.getDescription().equals(ach2.getDescription()) && ach1.getMetrics().equals(ach2.getMetrics())
-				&& ach1.getThreshold().equals(ach2.getThreshold()) && ach1.getDifficulty().equals(ach2.getDifficulty());
+		return ach1.getMetrics().equals(ach2.getMetrics()) && ach1.getThreshold().equals(ach2.getThreshold());
 	}
 	
 	@GetMapping("/admin/{id}/delete")

@@ -20,7 +20,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 @ControllerAdvice(assignableTypes = {ComentarioController.class,DishController.class,InvitationController.class,PlayerController.class,MatchController.class,AchievementController.class})
@@ -35,7 +34,6 @@ public class MenuController {
 		this.menuService=menuService;
 		this.invitacionService=invitacionService;
 		this.matchService=matchService;
-
 	}
 	
 	@ModelAttribute

@@ -7,13 +7,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
-public class ComentarioServiceTest {
+class ComentarioServiceTest {
 
 	@Autowired
 	private ComentarioService comentarioService;
 
 	@Test
-	public void test() {
+	void test() {
 	}
 
 }

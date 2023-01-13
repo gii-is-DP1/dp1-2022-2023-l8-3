@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 @RequestMapping("/chat")
 public class ComentarioController {
 
 
+	private static final int MAXIMUM_COMMENT_LENGTH = 200;
 	private ComentarioService cs;
 	private MatchService ms;
 	private PlayerService ps;
@@ -42,7 +42,7 @@ public class ComentarioController {
 	    boolean usuarioCorrecto = idJugador == match.getJugador1().getId() || 
 	    		idJugador == match.getJugador2().getId();
 	    
-	    if(usuarioCorrecto && !msg.equals("")) {
+	    if(usuarioCorrecto && !msg.trim().equals("") && msg.trim().length() <= MAXIMUM_COMMENT_LENGTH) {
 		    Jugador j = ps.findJugadorById(idJugador);
 			Comentario c = new Comentario();
 
