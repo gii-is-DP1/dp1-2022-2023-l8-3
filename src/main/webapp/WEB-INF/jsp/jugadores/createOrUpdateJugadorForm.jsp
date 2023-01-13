@@ -43,6 +43,11 @@
     	 El nombre y los apellidos no pueden ser vacíos
 		</div>
 	</c:if>
+	<c:if test="${usernameRegistered}">
+		<div class="alert alert-info">
+    	 Username incorrecto, ya esta registrado a nombre de otro jugador
+		</div>
+	</c:if>
     <c:if test="${sinJugadores}"><div class="alert alert-info">No hay jugadores registrados actualmente</div></c:if>
 	<form:form modelAttribute="jugador" class="form-horizontal"
 		id="add-owner-form">
@@ -51,14 +56,7 @@
 				<caption>Player data</caption>
 				<tr>
 					<th>Nombre de usuario</th>
-					<c:choose>
-						<c:when test="${jugador['new']}">
-							<td><input class="form-control" type="text" name="user.username"/></td>
-						</c:when>
-						<c:otherwise>
-							<td><input class="form-control" value="${jugador.user.username}" type="text" name="user.username"/></td>
-						</c:otherwise>
-					</c:choose>
+					<td><input class="form-control" value="${jugador.user.username}" type="text" name="user.username"/></td>
 				</tr>
 				<tr>
 					<th>Nombre</th>
@@ -70,7 +68,7 @@
 				</tr>
 				<tr>
 					<th>Email</th>
-					<td><input class="form-control" value="${jugador.user.email}" type="email" name="user.email"/></td>
+					<td><input class="form-control" value="${jugador.user.email}" type="text" name="user.email"/></td>
 				</tr>
 				<tr>
 					<th>Contrase&ntilde;a</th>

@@ -172,7 +172,8 @@ public class WelcomeController {
 			List<Jugador> lista = playerService.findAllJugadores();
 
 			if (Boolean.TRUE.equals(PlayerValidation.isRegisteredEmail(jugador, model, lista)) || Boolean.FALSE.equals(PlayerValidation.isValidEmail(model, jugador))
-					|| Boolean.FALSE.equals(PlayerValidation.isCorrectPassword(jugador, model, correctPassword)) || PlayerValidation.firstNameOrLastNameAreEmpty(jugador, model)) {
+					|| Boolean.FALSE.equals(PlayerValidation.isCorrectPassword(jugador, model, correctPassword)) || PlayerValidation.firstNameOrLastNameAreEmpty(jugador, model)
+					|| Boolean.TRUE.equals(PlayerValidation.usernameRegistered(jugador, model, lista))) {
 				resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW, br.getModel());
 				model.put("jugador", jugador);
 			} else {
@@ -184,5 +185,6 @@ public class WelcomeController {
 		}
 		return resul;
 	}
+
 
 }

@@ -59,4 +59,15 @@ public class PlayerValidation {
 		return result;
 	}
 	
+	public static Boolean usernameRegistered(Jugador jugador,Map<String, Object> model,List<Jugador> lista) {
+		Boolean res=false;
+		for (Jugador j:lista) {
+			if(j.getUser().getUsername().equals(jugador.getUser().getUsername())) {
+				res=true;
+				model.put("usernameRegistered", true);
+			}
+		}
+		return res;
+	}
+	
 }
