@@ -233,6 +233,9 @@ public class AchievementController {
 	@GetMapping("/admin/{id}/delete")
 	public ModelAndView deleteAchievement(@PathVariable int id) {
 		Achievement achievement = achievementService.getAchievementById(id);
+		for (Jugador player : achievement.getPlayers()) {
+			achievementService.deleteAchievement(achievement.getId(), player.getId());
+		}
 		achievementService.deleteAchievement(achievement);
 		log.info("Achievement deleted");
 		ModelAndView result = showAchievements(1);

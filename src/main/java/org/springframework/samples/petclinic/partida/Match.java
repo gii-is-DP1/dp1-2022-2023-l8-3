@@ -19,8 +19,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.DynamicUpdate;
@@ -87,33 +85,21 @@ public class Match extends NamedEntity{
     @Column(name = "fin_de_partida")
 	private LocalDateTime finPartida;
     
-    @Min(0)
-    @Max(9)
     @Column(name="contamination_number_of_player_1", nullable=false)
 	private Integer contaminationNumberOfPlayer1;
 
-    @Min(0)
-    @Max(9)
     @Column(name="contamination_number_of_player_2", nullable=false)
 	private Integer contaminationNumberOfPlayer2;
     
-	@Min(0)
-    @Max(20)
 	@Column(name="number_of_bacteria_of_player_1", nullable=false)
 	private Integer numberOfBacteriaOfPlayer1;
 
-	@Min(0)
-    @Max(20)
 	@Column(name="number_of_bacteria_of_player_2", nullable=false)
 	private Integer numberOfBacteriaOfPlayer2;
 	
-	@Min(0)
-    @Max(4)
 	@Column(name="number_of_sarcina_of_player_1", nullable=false)
 	private Integer numberOfSarcinaOfPlayer1;
 	
-	@Min(0)
-    @Max(4)
 	@Column(name="number_of_sarcina_of_player_2", nullable=false)
 	private Integer numberOfSarcinaOfPlayer2;
 
