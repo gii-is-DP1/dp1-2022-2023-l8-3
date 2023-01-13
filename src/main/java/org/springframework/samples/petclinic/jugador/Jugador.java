@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -35,10 +34,8 @@ import lombok.Setter;
 public class Jugador extends Person {
 
 	private static final int MINUTES_OF_AN_HOUR = 60;
-
 	private static final int MAXIMUM_OF_SARCINAS = 4;
 
-	@Column(name = "estado_Online")
 	private Boolean estadoOnline;
 	
 	@OneToOne(cascade = CascadeType.ALL)
@@ -124,11 +121,11 @@ public class Jugador extends Person {
 	
 	public Integer getNumberOfSarcinasPlaced() {
 		Integer result = 0;
-		for (Match match : gamesAsGuest) {
+		for (Match match : gamesAsHost) {
 			result += MAXIMUM_OF_SARCINAS-match.getNumberOfSarcinaOfPlayer1();
 		}
-		for (Match match : gamesAsHost) {
-			result += MAXIMUM_OF_SARCINAS-match.getContaminationNumberOfPlayer2();
+		for (Match match : gamesAsGuest) {
+			result += MAXIMUM_OF_SARCINAS-match.getNumberOfSarcinaOfPlayer2();
 		}
 		return result;
 	}

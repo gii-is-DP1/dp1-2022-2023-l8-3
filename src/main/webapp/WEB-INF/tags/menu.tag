@@ -29,7 +29,7 @@
 				</petclinic:menuItem>
 				
 				<sec:authorize access="hasAuthority('jugador')">
-				<petclinic:menuItem active="${name eq ''}" url="/matches/createMatch"
+				<petclinic:menuItem active="${name eq 'createMatch'}" url="/matches/createMatch"
 					title="crear partida">
 					<span class="glyphicon glyphicon-certificate" aria-hidden="true"></span>
 					<span>Crear partida</span>
@@ -37,7 +37,7 @@
 				</sec:authorize>
 				
 				<sec:authorize access="hasAuthority('jugador')">
-				<petclinic:menuItem active="${name eq 'buscarPartida'}" url="/matches/matchesList"
+				<petclinic:menuItem active="${name eq 'matchesList'}" url="/matches/matchesList"
 					title="buscar partidas">
 					<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
 					<span>Buscar partida</span>
@@ -112,20 +112,20 @@
 				</sec:authorize>
 				<sec:authorize access="isAuthenticated()">
 					<c:if test="${tengoInvitaciones}">
-						<a href="<c:url value="/invitacionesPendientes"/>" class="btn btn-light" style="margin-top: 4.5%;">
-							<span class="glyphicon glyphicon-bell" aria-hidden="true" style="color: orange;font-size: 3em">
+						<a href="<c:url value="/invitacionesPendientes"/>" class="btn btn-light" style="margin-top: 5%;">
+							<span class="glyphicon glyphicon-bell" aria-hidden="true" style="color: orange;font-size: 2.1em">
 							</span>
 						</a>
 					</c:if>
 					<c:choose>
 						<c:when test="${partidaPendiente}">
-							<a href="<c:url value="/matches/${matchId}/currentMatch"/>" class="btn btn-light" style="margin-top: 4.5%;">
-								<span class="glyphicon glyphicon-alert" aria-hidden="true" style="color: red;font-size: 3em"></span>
+							<a href="<c:url value="/matches/${matchId}/currentMatch"/>" class="btn btn-light" style="margin-top: 5%;">
+								<span class="glyphicon glyphicon-alert" aria-hidden="true" style="color: red;font-size: 2.1em"></span>
 							</a>
 						</c:when>
 						<c:when test="${jugador2NoUnido}">
-							<a href="<c:url value="/matches/${matchId}/waitForMatch"/>" class="btn btn-light" style="margin-top: 4.5%;">
-							<span class="glyphicon glyphicon-alert" aria-hidden="true" style="color: red;font-size: 3em"></span>
+							<a href="<c:url value="/matches/${matchId}/waitForMatch"/>" class="btn btn-light" style="margin-top: 5%;">
+							<span class="glyphicon glyphicon-alert" aria-hidden="true" style="color: red;font-size: 2.1em"></span>
 							</a>
 						</c:when>
 					</c:choose>

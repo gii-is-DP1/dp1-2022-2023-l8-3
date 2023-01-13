@@ -3,8 +3,6 @@ package org.springframework.samples.petclinic.jugador;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -17,9 +15,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.samples.petclinic.user.Authorities;
 import org.springframework.samples.petclinic.user.User;
 import org.springframework.samples.petclinic.user.UserService;
+import org.springframework.samples.petclinic.web.MyErrorController;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.samples.petclinic.dto.JugadorDTO;
+import org.springframework.samples.petclinic.dto.ManualJugadorMapper;
 import org.springframework.samples.petclinic.partida.GameWinner;
 import org.springframework.samples.petclinic.partida.Match;
 import org.springframework.samples.petclinic.partida.MatchService;
@@ -31,19 +32,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Controller
 public class PlayerController {
 
+	private static final String CREATE_OR_UPDATE_PLAYER_VIEW = "jugadores/createOrUpdateJugadorFormAdmin";
 	private static final int RESULTS_LIMIT = 20;
 	private static final int FRIEND_LIMIT = 150;
 	private PlayerService playerService;
 	private UserService userService;
 	private MatchService matchService;
 	private FriendRequestService friendRequestService;
+	private ManualJugadorMapper m;
 
 	@Autowired
 	public PlayerController(PlayerService playerService, UserService userService, MatchService matchService,
@@ -52,6 +57,7 @@ public class PlayerController {
 		this.userService = userService;
 		this.matchService = matchService;
 		this.friendRequestService = friendRequestService;
+		m = new ManualJugadorMapper();
 	}
 
 	@InitBinder
@@ -73,7 +79,7 @@ public class PlayerController {
 		Integer numberOfPages = results.getTotalPages();
 		Integer thisPage = page;
 
-		if(thisPage > numberOfPages) 
+		if(thisPage > numberOfPages && numberOfPages != 0) 
 			return "redirect:/jugadores/list/"+numberOfPages;
 		
 		model.put("numberOfPages", numberOfPages);
@@ -102,7 +108,7 @@ public class PlayerController {
 		ModelAndView mav = new ModelAndView();
 		for (Authorities authority : user.getAuthorities()) {
 			if (authority.getAuthority().equals("admin")
-					|| playerService.findPlayerByUsername(auth.getName()).getId() == id) {
+					|| playerService.findPlayerByUsername(user.getUsername()).getId() == id) {
 				mav = new ModelAndView("jugadores/showJugador");
 				mav.addObject(this.playerService.findJugadorById(id));
 			}
@@ -115,7 +121,9 @@ public class PlayerController {
 	public String deletePlayer(@PathVariable("jugadorId") int id) throws Exception {
 		try {
 			playerService.deletePlayer(id);
+			log.info("Player deleted succesfully");
 		} catch (Exception e) {
+			log.warn("Not existing player");
 			throw new Exception("Player Delete Error");
 		}
 		return "redirect:/jugadores/list/1";
@@ -123,27 +131,33 @@ public class PlayerController {
 
 	@GetMapping(value = "/jugadores/new")
 	public String initCreationForm(Map<String, Object> model, Map<String, Object> model2) {
-		Jugador jugador = new Jugador();
-		model.put("jugador", jugador);
+		model.put("jugador", new Jugador());
 		Collection<Jugador> c = this.playerService.findAllJugadores();
 		if (c.isEmpty()) {
 			model2.put("sinJugadores", true);
 		}
-		return "jugadores/createOrUpdateJugadorFormAdmin";
+		return CREATE_OR_UPDATE_PLAYER_VIEW;
 	}
 
 	@PostMapping(value = "/jugadores/new")
-	public ModelAndView processCreationForm(@Valid Jugador jugador, BindingResult br, Map<String, Object> model) {
+	public ModelAndView processCreationForm(@Valid JugadorDTO jugadorDTO, BindingResult br, Map<String, Object> model) {
 		Boolean correctPassword = false;
 		ModelAndView resul;
+		Jugador jugador = m.convertJugadorDTOToEntity(jugadorDTO);
 		
-		if (br.hasErrors()) {
-			resul = new ModelAndView("jugadores/createOrUpdateJugadorFormAdmin", br.getModel());
+		if (Boolean.TRUE.equals(br.hasErrors())) {
+			log.error("Input error");
+			resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW);
+			model.put("jugador", jugador);
+			resul.addObject("message", MyErrorController.getErrorMessage(br));
 		} else {
 			List<Jugador> lista = playerService.findAllJugadores();
 			
-			if(isRegisteredEmail(jugador, model, lista) || !isValidEmail(model, jugador) || !isCorrectPassword(jugador, model, correctPassword)) {
-				resul = new ModelAndView("jugadores/createOrUpdateJugadorFormAdmin");
+			if(Boolean.TRUE.equals(PlayerValidation.isRegisteredEmail(jugador, model, lista)) || Boolean.FALSE.equals(PlayerValidation.isValidEmail(model, jugador)) 
+					|| Boolean.FALSE.equals(PlayerValidation.isCorrectPassword(jugador, model, correctPassword)) || Boolean.TRUE.equals(PlayerValidation.firstNameOrLastNameAreEmpty(jugador, model))
+					|| Boolean.TRUE.equals(PlayerValidation.usernameRegistered(jugador, model, lista))) {
+				resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW);
+				model.put("jugador", jugador);
 			} else {
 				jugador.setEstadoOnline(false);
 				this.playerService.saveJugador(jugador);
@@ -154,15 +168,15 @@ public class PlayerController {
 	}
 
 	@GetMapping(value = "/jugadores/{jugadorId}/edit")
-	public ModelAndView initUpdateOwnerForm(@PathVariable("jugadorId") int jugadorId) {
+	public ModelAndView initUpdateJugadorForm(@PathVariable("jugadorId") int jugadorId) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		User user = userService.findUser(auth.getName()).get();
 		ModelAndView mav = new ModelAndView();
 		for (Authorities authority : user.getAuthorities()) {
 			if (authority.getAuthority().equals("admin")) {
-				mav = new ModelAndView("jugadores/createOrUpdateJugadorFormAdmin");
+				mav = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW);
 				mav.addObject(this.playerService.findJugadorById(jugadorId));
-			}else if(playerService.findPlayerByUsername(auth.getName()).getId() == jugadorId){
+			}else if(playerService.findPlayerByUsername(auth.getName()).getId().equals(jugadorId)){
 			    mav = new ModelAndView("jugadores/createOrUpdateJugadorForm");
                 mav.addObject(this.playerService.findJugadorById(jugadorId));
 			}
@@ -171,19 +185,27 @@ public class PlayerController {
 	}
 
 	@PostMapping(value = "/jugadores/{jugadorId}/edit")
-	public ModelAndView processUpdateOwnerForm(@Valid Jugador jugador, BindingResult br,
+	public ModelAndView processUpdateJugadorForm(@Valid JugadorDTO jugadorDto, BindingResult br,
 			@PathVariable("jugadorId") int jugadorId, Map<String, Object> model) {
 		Boolean correctPassword = false;
 		ModelAndView resul;
-		
-		if (br.hasErrors()) {
-			resul = new ModelAndView("jugadores/createOrUpdateJugadorFormAdmin", br.getModel());
+		Jugador jugador = m.convertJugadorDTOToEntity(jugadorDto);
+		Jugador jugadorActual= playerService.findJugadorById(jugadorId);
+		if (Boolean.TRUE.equals(br.hasErrors())) {
+			log.error("Input error");
+			resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW);
+			model.put("jugador", jugador);
+			resul.addObject("message", MyErrorController.getErrorMessage(br));
 		} else {
 			List<Jugador> lista = playerService.findAllJugadores();
 			
-			if((!isYourEmail(jugador, jugadorId) && isRegisteredEmail(jugador, model, lista)) || !isValidEmail(model, jugador) || !isCorrectPassword(jugador, model, correctPassword)) {
-				resul = new ModelAndView("jugadores/createOrUpdateJugadorFormAdmin");
-				resul.addObject(this.playerService.findJugadorById(jugadorId));
+			if(Boolean.FALSE.equals(isYourEmail(jugador, jugadorId)) && Boolean.TRUE.equals(PlayerValidation.isRegisteredEmail(jugador, model, lista)) 
+					|| Boolean.FALSE.equals(PlayerValidation.isValidEmail(model, jugador)) || Boolean.FALSE.equals(PlayerValidation.isCorrectPassword(jugador, model, correctPassword))
+							|| Boolean.TRUE.equals(PlayerValidation.firstNameOrLastNameAreEmpty(jugador, model))
+							|| (Boolean.TRUE.equals(PlayerValidation.usernameRegistered(jugador, model, lista))
+									&& PlayerValidation.noEsTuUsername(jugadorActual,jugador))) {
+				resul = new ModelAndView(CREATE_OR_UPDATE_PLAYER_VIEW);
+				model.put("jugador", jugador);
 			} else {
 				jugador.setId(jugadorId);
 				jugador.getUser().setId(playerService.findJugadorById(jugadorId).getUser().getId());
@@ -196,51 +218,6 @@ public class PlayerController {
 
 	private Boolean isYourEmail(Jugador jugador, int jugadorId) {
 		return playerService.findJugadorById(jugadorId).getUser().getEmail().equals(jugador.getUser().getEmail());
-	}
-
-	private Boolean isRegisteredEmail(Jugador jugador, Map<String, Object> model, List<Jugador> lista) {
-		Boolean result = false;
-		Integer i = 0;
-		while(!result && i < lista.size()) {
-			if (lista.get(i).getUser().getEmail().equals(jugador.getUser().getEmail())) {
-				model.put("emailIncorrecto1", true);
-				result = true;
-			}
-			i++;
-		}
-		return result;
-	}
-	
-	private Boolean isValidEmail(Map<String, Object> model, Jugador player) {
-		Boolean result = true;
-		String emailPattern = "^[_a-z0-9-]+(\\.[_a-z0-9-]+)*@" +"[a-z0-9-]+(\\.[a-z0-9-]+)*(\\.[a-z]{2,4})$";
-		Pattern pattern = Pattern.compile(emailPattern);
-		Matcher matcher = pattern.matcher(player.getUser().getEmail());
-		
-		if (!matcher.matches()) {
-			model.put("emailIncorrecto2", true);
-			result = false;
-		}
-		
-		return result;
-	}
-
-	private Boolean isCorrectPassword(Jugador player, Map<String, Object> model, Boolean correctPassword) {
-		Integer i = 0;
-		
-		if(player.getUser().getPassword().length() >= 10 && player.getUser().getPassword().length() <= 50) {
-			while(!correctPassword && i < 10) {
-				if (player.getUser().getPassword().contains(i.toString())) {
-					correctPassword = true;
-				}
-				i++;
-			}
-		}
-		if(!correctPassword) {
-			model.put("contraseñaIncorrecta", true);
-		}
-		
-		return correctPassword;
 	}
 
 	@GetMapping(value = "/jugadores/{jugadorId}/playerMatches")
@@ -309,23 +286,23 @@ public class PlayerController {
 		return result;
 	}
 	
-	@RequestMapping(value = "/jugadores/friendRequests/{player1Id}/{player2Id}/{result}")
+	@GetMapping(value = "/jugadores/friendRequests/{player1Id}/{player2Id}/{result}")
 	public ModelAndView friendRequests(@PathVariable("player1Id") int player1Id, @PathVariable("player2Id") int player2Id, 
 			@PathVariable("result") boolean result, RedirectAttributes ra) {
 		ModelAndView mv;
 		String message = "";
-		
 		if(result && playerService.findJugadorById(player2Id).playerFriends().size() >= FRIEND_LIMIT) {
 			message = "You have reached the limit number of friends";
 		} else if(result && playerService.findJugadorById(player1Id).playerFriends().size() >= FRIEND_LIMIT) {
 			message = "That player has reached the friend limit";
+			System.out.println("prueba3");
 		} else {
+			System.out.println("prueba4");
 			FriendRequest fr = friendRequestService.getNoReplyFriendRequestByPlayers(player1Id, player2Id);
 			fr.setResultado(result);
 			friendRequestService.saveFriendRequest(fr);
 			message = result ? "Request successfully accepted" : "Request successfully declined";  
 		}
-		
 		
 		mv = new ModelAndView("/jugadores/friendRequests");
 		mv.setViewName("redirect:/jugadores/friendRequests");
@@ -350,7 +327,7 @@ public class PlayerController {
 		return result;
 	}
 	
-	@RequestMapping(value = "/jugadores/addFriends/{player1Id}/{player2Id}")
+	@GetMapping(value = "/jugadores/addFriends/{player1Id}/{player2Id}")
 	public ModelAndView addFriends(@PathVariable("player1Id") int player1Id, @PathVariable("player2Id") int player2Id, RedirectAttributes ra) {
 		ModelAndView result;
 		String message = "";
@@ -402,7 +379,7 @@ public class PlayerController {
 		
 		result.setViewName("redirect:/jugadores/{jugadorId1}/playerFriends");
 		
-		if (hasDeletedFriend) {
+		if (Boolean.TRUE.equals(hasDeletedFriend)) {
 			ra.addFlashAttribute("message", "Friend was deleted succesfully");
 		}
 

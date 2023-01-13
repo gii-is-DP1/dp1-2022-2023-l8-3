@@ -19,6 +19,7 @@
 	</c:if>
 
 	<table id="matchesList" class="table table-striped">
+		<caption>List of matches to play</caption>
 		<thead>
 			<tr>
 				<th class="col-md-3">Anfitrion</th>
@@ -52,10 +53,11 @@
 	<h2>Partidas como espectador</h2>
 
 	<table id="matches" class="table table-striped">
+		<caption>List of matches to view</caption>
 		<thead>
 			<tr>
 				<th class="col-md-3">Anfitrion</th>
-				<th class="col-md-3">Jugador 2</th>
+				<th class="col-md-3">Invitado</th>
 				<th class="col-md-3">Fecha Inicio</th>
 				<th class="col-md-3"></th>
 			</tr>

@@ -40,22 +40,22 @@ import lombok.Setter;
 @Table(name = "disco")
 public class Disco extends BaseEntity{
 
-	@Column(name = "num_bacteria_j1")        
+	@Column(name = "num_bacteria_j1", nullable=false)    
 	private Integer numBact1;
 	
-	@Column(name="num_bacteria_j2")
+	@Column(name="num_bacteria_j2", nullable=false)
 	private Integer numBact2;
 
-	@Column(name = "num_sarcina_j1")        
+	@Column(name = "num_sarcina_j1", nullable=false)        
     private Integer numSarc1;
     
-    @Column(name="num_sarcina_j2")
+    @Column(name="num_sarcina_j2", nullable=false)
     private Integer numSarc2;
     
-    @Column(name="num_movimientos_j1")
+    @Column(name="num_movimientos_j1", nullable=false)
     private Integer numMov1;
     
-    @Column(name="num_movimientos_j2")
+    @Column(name="num_movimientos_j2", nullable=false)
     private Integer numMov2;
     
     @ManyToOne

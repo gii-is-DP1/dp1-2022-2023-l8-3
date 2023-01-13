@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +19,6 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
@@ -249,7 +249,7 @@ public class AchievementControllerTest {
 						.param("visibility", "PUBLICADO")
 						.param("description", "descripcion"))
 				.andExpect(status().isOk())
-				.andExpect(view().name("/achievements/admin/achievementsListing"));
+				.andExpect(view().name("/achievements/achievementsListing"));
 	}
 	
 	@WithMockUser(username = "admin1", password="4dm1n")
@@ -297,12 +297,26 @@ public class AchievementControllerTest {
     @WithMockUser(username = "admin1", password="4dm1n")
     @Test
 	void testSaveAchievementFails() throws Exception {
-		
+		Achievement a= new Achievement();
+		a.setId(10);
+		a.setMetrics(Metrics.AMIGOS);
+		a.setThreshold(100.0);
+		Collection<Achievement> lista=new ArrayList<Achievement>();
+		lista.add(a);
+		given(achievementService.getAchievements()).willReturn(lista);
+    	
 		mockMvc.perform(post("/statistics/achievements/admin/new")
-						.with(csrf()))
-				.andExpect(model().attributeHasErrors("achievement"))
+				.with(csrf())
+				.param("id", "10")
+				.param("name", "nombre")
+				.param("metrics", "AMIGOS")
+				.param("threshold", "100")
+				.param("difficulty", "ORO")
+				.param("visibility", "PUBLICADO")
+				.param("description", "descripcion")) 
 				.andExpect(status().isOk())
 				.andExpect(view().name("/achievements/createOrUpdateAchievementForm"));
+		// ya existe un logro con esa metrica y treshold asi que te devuelve a la pagina de creacion de logros
 	}
 
     

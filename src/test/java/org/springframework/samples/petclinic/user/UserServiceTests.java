@@ -9,13 +9,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
-public class UserServiceTests {
+class UserServiceTests {
 
 	@Autowired
 	private UserService userService;
 	
 	@Test
-	public void testUser() {
+	void testUser() {
 		String username = "juamarher";
 		assertNotNull(userService.findUser(username));
 	}

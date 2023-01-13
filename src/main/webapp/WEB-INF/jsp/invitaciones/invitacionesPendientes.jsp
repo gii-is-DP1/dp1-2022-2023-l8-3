@@ -17,12 +17,26 @@
 			La partida a la que intenta unirse como espectador a&uacute;n no ha comenzado, por favor vuelva a intentarlo m&aacute;s tarde
 		</div>
 	</c:if>
+	
+	<c:if test="${maxPartidasDiarias}">
+	    <div class="alert alert-info">
+			Ya has llegado al n&uacute;mero m&aacute;ximo de partidas diarias
+		</div>
+	</c:if>
+	
+	<c:if test="${YaEstasJugandoUnaPartida}">
+	    <div class="alert alert-info">
+			Actualmente te encuentras jugando una partida, por favor finl&iacute;zala antes de intentar unirte a otra
+		</div>
+	</c:if>
+	
 	<c:if test="${maxNumeroEspectadores}">
 	    <div class="alert alert-info">
 			La partida a la que le han invitado como espectador tiene el n&uacute;mero m&aacute;ximo de espectadores
 		</div>
 	</c:if>
     <table id="invitationTable" class="table table-striped">
+    	<caption>Here you will find the invitations, as player and guest, that the player has received</caption>
         <thead>
         <tr>
             <th>Amigo</th>

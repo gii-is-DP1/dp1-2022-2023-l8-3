@@ -13,20 +13,29 @@
 		</c:when>
 		<c:otherwise>
 			<table id="friendRequests" class="table table-striped">
+				<caption>Friend requests received by the player</caption>
+				<thead>
+					<tr>
+						<th>First name</th>
+						<th>Last name</th>
+						<th>Username</th>
+						<th></th>
+					</tr>
+				</thead>
 				<tbody>
-					<div>
-						<c:forEach items="${listPlayers}" var="player">
-							<tr>
-								<td><c:out value="${player.user.username}" /></td>
-								<td>
-									<a class="btn btn-success" href="<c:url value="/jugadores/friendRequests/${player.id}/${loggedPlayerId}/${true}" />">
-									Accept</a>
-									<a class="btn btn-danger" href="<c:url value="/jugadores/friendRequests/${player.id}/${loggedPlayerId}/${false}" />">
-									Decline</a>
-								</td>
-							</tr>
-						</c:forEach>
-					</div>
+					<c:forEach items="${listPlayers}" var="player">
+						<tr>
+							<td><c:out value="${player.firstName}" /></td>
+							<td><c:out value="${player.lastName}" /></td>
+							<td><c:out value="${player.user.username}" /></td>
+							<td>
+								<a class="btn btn-success" href="<c:url value="/jugadores/friendRequests/${player.id}/${loggedPlayerId}/${true}" />">
+								Accept</a>
+								<a class="btn btn-danger" href="<c:url value="/jugadores/friendRequests/${player.id}/${loggedPlayerId}/${false}" />">
+								Decline</a>
+							</td>
+						</tr>
+					</c:forEach>
 				</tbody>
 			</table>
 		</c:otherwise>

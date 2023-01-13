@@ -34,11 +34,10 @@ public class MenuController {
 		this.menuService=menuService;
 		this.invitacionService=invitacionService;
 		this.matchService=matchService;
-
 	}
 	
 	@ModelAttribute
-	public void addAtributes(Model model,@AuthenticationPrincipal Authentication user) {
+	public void addAttributes(Model model,@AuthenticationPrincipal Authentication user) {
 		if(user.isAuthenticated()) {
 			Boolean b=true;
 			for(Authorities a:menuService.findUser(user.getName()).get().getAuthorities()) {

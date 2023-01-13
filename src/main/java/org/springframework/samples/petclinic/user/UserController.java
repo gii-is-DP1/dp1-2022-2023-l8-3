@@ -20,6 +20,8 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.dto.JugadorDTO;
+import org.springframework.samples.petclinic.dto.ManualJugadorMapper;
 import org.springframework.samples.petclinic.jugador.Jugador;
 import org.springframework.samples.petclinic.jugador.PlayerService;
 import org.springframework.stereotype.Controller;
@@ -60,11 +62,12 @@ public class UserController {
 	}
 
 	@PostMapping(value = "/users/new")
-	public String processCreationForm(@Valid Jugador jugador, BindingResult result) {
-		if (result.hasErrors()) {
+	public String processCreationForm(@Valid JugadorDTO jugadorDTO, BindingResult result) {
+		if (Boolean.TRUE.equals(result.hasErrors())) {
 			return USER_CREATE_FORM;
 		} else {
-			// creating player, user, and authority
+			ManualJugadorMapper m = new ManualJugadorMapper();
+			Jugador jugador = m.convertJugadorDTOToEntity(jugadorDTO);
 			this.playerService.saveJugador(jugador);
 			return "redirect:/";
 		}

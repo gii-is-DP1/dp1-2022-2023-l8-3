@@ -3,6 +3,7 @@ package org.springframework.samples.petclinic.statistics;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -13,13 +14,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
-public class AchievementServiceTests {
+class AchievementServiceTests {
 
 	@Autowired
 	private AchievementService achievementService;
 	
 	@Test
-	public void testAchievements() {
+	void testAchievements() {
 		List<Achievement> achievements = (List<Achievement>) achievementService.getAchievements();
 		for (Achievement achievement : achievements) {
 			assertNotNull(achievement);
@@ -27,22 +28,38 @@ public class AchievementServiceTests {
 	}
 	
 	@Test
-	public void testAchievementById() {
+	void testAchievementById() {
 		Integer id = 1;
 		assertNotNull(achievementService.getAchievementById(id));
 	}
 	
 	@Test
-	public void testSaveAchievement() {
-		Achievement achievement = new Achievement("prueba", "prueba");
+	void testSaveAchievement() {
+		Achievement achievement = new Achievement("prueba");
+		achievement.setDescription("");
+		achievement.setDifficulty(AchievementDifficulty.ORO);
+		achievement.setId(1);
+		achievement.setMetrics(Metrics.AMIGOS);
+		achievement.setPlayers(new ArrayList<>());
+		achievement.setThreshold(8.0);
+		achievement.setVisibility(Visibility.PUBLICADO);
+		achievement.setName("prueba");
 		achievementService.saveAchievement(achievement);
 		Integer id = achievement.getId();
 		assertNotNull(achievementService.getAchievementById(id));
 	}
 	
 	@Test
-	public void testDeleteAchievement() {
-		Achievement achievement = new Achievement("prueba", "prueba");
+	void testDeleteAchievement() {
+		Achievement achievement = new Achievement("prueba");
+		achievement.setDescription("");
+		achievement.setDifficulty(AchievementDifficulty.ORO);
+		achievement.setId(1);
+		achievement.setMetrics(Metrics.AMIGOS);
+		achievement.setPlayers(new ArrayList<>());
+		achievement.setThreshold(8.0);
+		achievement.setVisibility(Visibility.PUBLICADO);
+		achievement.setName("prueba");
 		achievementService.saveAchievement(achievement);
 		Integer id = achievement.getId();
 		achievementService.deleteAchievement(achievement);

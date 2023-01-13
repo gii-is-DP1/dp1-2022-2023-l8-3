@@ -3,6 +3,7 @@ package org.springframework.samples.petclinic.invitacion;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.jugador.Jugador;
@@ -13,13 +14,11 @@ import org.springframework.samples.petclinic.partida.MatchService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 public class InvitationController {
@@ -84,8 +83,8 @@ public class InvitationController {
 	
 	
 	@PostMapping(value = "/invitarAmigo/{id}/{tipoInvitacion}")
-	public RedirectView createMatch(@RequestParam String nombre,@RequestParam Boolean tipoPartida, @AuthenticationPrincipal Authentication user) {
-		    String playerName = user.getName();
+	public ModelAndView createInvitation(@RequestParam String nombre,@RequestParam Boolean tipoPartida, @AuthenticationPrincipal Authentication user) {
+			String playerName = user.getName();
 	        Jugador player = playerService.findPlayerByUsername(playerName);
 	        Match match = new Match(false, player);
 	        match.setName(nombre);
@@ -93,11 +92,10 @@ public class InvitationController {
 	        match.getDisco(2).annadirBacterias(0, 1);
 	        match.getDisco(4).annadirBacterias(1, 1);
 	        match.setJugador1(player);
-		    this.matchService.saveMatch(match);
+		    match=this.matchService.saveMatch(match);
 		    int id = match.getId();
 		    String matchId=String.valueOf(id);
-		    RedirectView result = new RedirectView("/matches/"+matchId+"/waitForMatch");
-		    
+		    ModelAndView result = new ModelAndView("redirect:/matches/"+matchId+"/waitForMatch");
 		    Jugador actualPlayer=playerService.findPlayerByUsername(playerName);
 		    for(Integer h=0;h<player.getAmigosInvitados().size();h++) {
 		    	Jugador j=player.getAmigosInvitados().get(h);
@@ -126,7 +124,7 @@ public class InvitationController {
 	
 	
 	@GetMapping(value="/invitacionesPendientes")
-	public ModelAndView invitarAmigos(@AuthenticationPrincipal Authentication user) {
+	public ModelAndView invitacionesPendientes(@AuthenticationPrincipal Authentication user) {
 		ModelAndView result=new ModelAndView("/invitaciones/invitacionesPendientes");
 		List<Invitacion> lista=invitationService.getInvitacionByInvitadoId(playerService.findPlayerByUsername(user.getName()).getId());
 		result.addObject("invitaciones",lista);
@@ -135,21 +133,22 @@ public class InvitationController {
 	
 	
 	@GetMapping(value="/rechazarInvitacion/{id}")
-	public String rechazarPartida(@AuthenticationPrincipal Authentication user,@PathVariable("id") Integer invitacionId) {
+	public ModelAndView rechazarInvitacion(@AuthenticationPrincipal Authentication user,@PathVariable("id") Integer invitacionId) {
+		ModelAndView result=new ModelAndView("redirect:/invitacionesPendientes");
 		Invitacion invitacion=invitationService.getInvitacionById(invitacionId);
 		Jugador jugadorActual=playerService.findPlayerByUsername(user.getName());
 		if(invitacion.getJugador()==jugadorActual) {
 			invitationService.delete(invitacion);
 		}
-		return "redirect:/invitacionesPendientes";
+		return result;
 	}
 	
 	@GetMapping(value="/aceptarInvitacion/{id}")
-	public ModelAndView aceptarPartida(@AuthenticationPrincipal Authentication user,@PathVariable("id") Integer invitacionId) {
+	public ModelAndView aceptarInvitacion(@AuthenticationPrincipal Authentication user,@PathVariable("id") Integer invitacionId) {
 		ModelAndView result=new ModelAndView("redirect:/");
 		Invitacion invitacion=invitationService.getInvitacionById(invitacionId);
 		Jugador jugadorActual=playerService.findPlayerByUsername(user.getName());
-		if(invitacion.getJugador()==jugadorActual) {
+		if(invitacion.getJugador()==jugadorActual && matchService.canIplay(jugadorActual) && matchService.imPlaying(jugadorActual)) {
 			Match match=invitacion.getMatch();
 			if(invitacion.getTipo()==tipoInvitacion.JUGADOR) {
 				if(match.getJugador2()!=null) {
@@ -182,9 +181,25 @@ public class InvitationController {
 						result.addObject("invitaciones",lista);
 					}
 					else {
+						invitationService.delete(invitacion);
+						Set<Jugador> espectadores=match.getEspectadores();
+						espectadores.add(jugadorActual);
+						match.setEspectadores(espectadores);
+						matchService.saveMatch(match);
 						result.setViewName("redirect:/matches/"+match.getId()+"/currentMatchSpectated");
 					}
 				}
+			}
+		}
+		else {
+			invitationService.delete(invitacion);
+			if(!matchService.canIplay(jugadorActual)) {
+				result.addObject("maxPartidasDiarias",true);
+				result.setViewName("/invitaciones/invitacionesPendientes");
+			}
+			if(!matchService.imPlaying(jugadorActual)){
+				result.addObject("YaEstasJugandoUnaPartida",true);
+				result.setViewName("/invitaciones/invitacionesPendientes");
 			}
 		}
 		return result;

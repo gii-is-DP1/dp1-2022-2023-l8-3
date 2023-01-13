@@ -2,7 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="petclinic" tagdir="/WEB-INF/tags" %>
 
-<petclinic:layout pageName="500-error">
+<petclinic:layout pageName="error">
 
     <spring:url value="/resources/images/sarcina.png" var="sarcina"/>
     <div class="content">

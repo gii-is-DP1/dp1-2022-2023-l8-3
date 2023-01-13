@@ -8,6 +8,7 @@
     <h2>Achievements</h2>
 
     <table id="achievementsTable" class="table table-striped">
+    	<caption>Achievement list</caption>
         <thead>
         <tr>
             <th>Name</th>
@@ -15,6 +16,7 @@
             <th>Difficulty</th>
             <th>Metrics</th>
             <th>Threshold</th>
+            <th>Visibility</th>
             <th></th>
             <th></th>
         </tr>
@@ -34,8 +36,11 @@
                    <td>       
                     <c:out value="${achievement.metrics} "/>
                 </td>
-                   <td>       
+				<td>       
                     <c:out value="${achievement.threshold} "/>
+                </td>
+                <td>
+                	<c:out value="${achievement.visibility} "/>
                 </td>
                 <td>
                 	<a href="<c:url value="/statistics/achievements/admin/${achievement.id}/edit" />"> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>

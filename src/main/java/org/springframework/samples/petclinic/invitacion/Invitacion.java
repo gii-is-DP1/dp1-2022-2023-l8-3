@@ -4,9 +4,12 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.petclinic.jugador.Jugador;
@@ -22,14 +25,16 @@ import lombok.Setter;
 @Table(name = "invitaciones")
 public class Invitacion extends BaseEntity{
     
-    @Column(name="fechahora")
+	@NotNull
     @DateTimeFormat(pattern = "yyyy/MM/dd")
     private LocalDate fechaHora;
     
-    @Column(name="resultado")
+    @NotNull
+    @Enumerated(EnumType.STRING)
     private resultadoInvitacion resultado;
     
-    @Column(name="tipo_invitacion")
+	@Enumerated(EnumType.STRING)
+    @Column(name="tipo_invitacion", nullable=false)
     private tipoInvitacion tipo;
     
     @ManyToOne
@@ -39,5 +44,18 @@ public class Invitacion extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "jugador_id")
     private Jugador jugador;
+    
+    public Invitacion() {
+    	
+    }
+    
+    public Invitacion(resultadoInvitacion rI,tipoInvitacion tI,Match match,Jugador j) {
+    	this.fechaHora=LocalDate.now();
+    	this.resultado=rI;
+    	this.tipo=tI;
+    	this.match=match;
+    	this.jugador=j;
+    	
+    }
 
 }

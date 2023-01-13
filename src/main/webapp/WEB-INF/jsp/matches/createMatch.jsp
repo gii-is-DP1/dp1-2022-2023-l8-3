@@ -30,6 +30,7 @@
 			</c:if>
 			<br/>
 			<table style="width: 100%">
+				<caption>Players on your friends list</caption>
 				<thead>
 					<th style="text-align: center">AMIGO</th>
 					<th style="text-align: center">ESTADO</th>

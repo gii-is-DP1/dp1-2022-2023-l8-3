@@ -17,25 +17,25 @@ import org.springframework.samples.petclinic.user.User;
 import org.springframework.stereotype.Service;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
-public class PlayerServiceTest {
+class PlayerServiceTest {
 	
 	@Autowired
 	private PlayerService playerService;
 	
 	@Test
-	public void testCountWithInitialData() {
+	void testCountWithInitialData() {
 		int count = playerService.playerCount();
 		assertEquals(6, count);;
 	}
 	
 	@Test
-	public void testPlayerById() {
+	void testPlayerById() {
 		Integer id = 1;
 		assertNotNull(playerService.findJugadorById(id));
 	}
 	
 	@Test
-	public void testPlayers() {
+	void testPlayers() {
 		List<Jugador> players = (List<Jugador>) playerService.findAllJugadores();
 		for (Jugador player : players) {
 			assertNotNull(player);
@@ -43,20 +43,22 @@ public class PlayerServiceTest {
 	}
 	
 	@Test
-	public void testPlayerByLastName() {
+	void testPlayerByLastName() {
 		String lastName = "Martin";
 		assertNotNull(playerService.findPlayerByLastName(lastName));
 	}
 	
 	@Test
-	public void testPlayerByUsername() {
+	void testPlayerByUsername() {
 		String username = "davdancab";
 		assertNotNull(playerService.findPlayerByUsername(username));
 	}
 	
 	@Test
-	public void testSavePlayer() {
+	void testSavePlayer() {
 		User user = new User("pepe33");
+		user.setEmail("test@test.com");
+		user.setPassword("test1");
 		Jugador player = new Jugador("Pepe", "García", user, false);
 		playerService.saveJugador(player);
 		Integer id = player.getId();
@@ -64,8 +66,10 @@ public class PlayerServiceTest {
 	}
 	
 	@Test
-	public void testDeletePlayer() {
+	void testDeletePlayer() {
 		User user = new User("maria33");
+		user.setEmail("test@test.com");
+		user.setPassword("test1");
 		Jugador player = new Jugador("María", "Oliva", user, false);
 		playerService.saveJugador(player);
 		Integer id = player.getId();

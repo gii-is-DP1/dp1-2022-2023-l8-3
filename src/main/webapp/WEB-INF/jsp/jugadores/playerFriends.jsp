@@ -13,18 +13,29 @@
 		</c:when>
 		<c:otherwise>
 			<table id="playerFriends" class="table table-striped">
+				<caption>Player friends</caption>
+				<thead>
+					<tr>
+						<th>First name</th>
+						<th>Last name</th>
+						<th>Username</th>
+						<th>Online status</th>
+						<th></th>
+					</tr>
+				</thead>
 				<tbody>
-					<div>					
-						<c:forEach items="${playerFriends}" var="friend">
-							<tr>
-								<td><c:out value="${friend.user.username}" /></td>
-								<td>
-									<a href="<c:url value="/jugadores/${jugadorId}/playerFriends/${friend.id}/delete" />">
-									<span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
-								</td>
-							</tr>
-						</c:forEach>
-					</div>
+					<c:forEach items="${playerFriends}" var="friend">
+						<tr>
+							<td><c:out value="${friend.firstName}" /></td>
+							<td><c:out value="${friend.lastName}" /></td>
+							<td><c:out value="${friend.user.username}" /></td>
+							<td><c:out value="${friend.estadoOnline}" /></td>
+							<td>
+								<a href="<c:url value="/jugadores/${jugadorId}/playerFriends/${friend.id}/delete" />">
+								<span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+							</td>
+						</tr>
+					</c:forEach>
 				</tbody>
 			</table>
 		</c:otherwise>

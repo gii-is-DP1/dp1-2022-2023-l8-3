@@ -6,7 +6,21 @@
 
 <petclinic:layout pageName="abandono">
 
-  <h1>LA PARTIDA NO PUDO TERMINAR SATISFACTORIAMENTE, EL GANADOR ES: <b>${winner.user.username}</b>, YA QUE EL ORTRO JUGADOR ABANDONÓ</h1>
-   
+	<c:if test="${match.ganadorPartida == 'FIRST_PLAYER'}">
+	    <c:if test="${match.jugador1.user.username != null}">
+	    	<h1>EL GANADOR ES: <b>${winner.user.username}</b>, YA QUE EL JUGADOR INVITADO ABANDONÓ</h1>
+		</c:if>
+		<c:if test="${match.jugador1.user.username == null}">
+			<h1>EL GANADOR ES EL JUGADOR ANFITRIÓN, YA QUE EL JUGADOR INVITADO ABANDONÓ</h1>
+		</c:if>
+	</c:if>
+	<c:if test="${match.ganadorPartida == 'SECOND_PLAYER'}">
+		<c:if test="${match.jugador2.user.username != null}">
+			<h1>EL GANADOR ES: <b>${winner.user.username}</b>, YA QUE EL JUGADOR ANFITRIÓN ABANDONÓ</h1>
+		</c:if>
+		<c:if test="${match.jugador2.user.username == null}">
+			<h1>EL GANADOR ES EL JUGADOR INVITADO, YA QUE EL JUGADOR ANFITRIÓN ABANDONÓ</h1>
+		</c:if>
+	</c:if>   
 
 </petclinic:layout>
